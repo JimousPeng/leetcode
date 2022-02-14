@@ -3,9 +3,167 @@
  * @FilePath: \leetcode\src\Array.js
  */
 
+/**两数之和
+ * 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标
+ * 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+ * 你可以按任意顺序返回答案
+ * 只会存在一个有效答案
+ */
+//  输入：nums = [2,7,11,15], target = 9
+//  输出：[0,1]
+//  解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1]
+// 输入：nums = [3,3], target = 6
+// 输出：[0,1]
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+    // 方案1：暴力求解
+    // 执行用时： 160 ms , 在所有 JavaScript 提交中击败了 17.09% 的用户
+    // 内存消耗： 41.6 MB , 在所有 JavaScript 提交中击败了 12.50% 的用户
+    // for (let i = 0; i < nums.length; i++) {
+    //     let targetIndex = nums.indexOf(target - nums[i])
+    //     if (targetIndex > -1 && targetIndex !== i) {
+    //         return [i, targetIndex]
+    //     }
+    // }
+
+    // 方案2:  哈希表
+    // 执行用时： 68 ms , 在所有 JavaScript 提交中击败了 92.48% 的用户
+    // 内存消耗： 42 MB , 在所有 JavaScript 提交中击败了 9.97% 的用户
+    const resolveObj = {}
+    for (let i = 0; i < nums.length; i++) {
+        if (resolveObj.hasOwnProperty(nums[i])) {
+            return [resolveObj[nums[i]], i]
+        } else {
+            resolveObj[target - nums[i]] = i
+        }
+    }
+}
+
+// console.log(twoSum([2, 7, 11, 15], 9))
+
+/**移动零 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序
+ * 请注意 ，必须在不复制数组的情况下原地对数组进行操作。
+ */
+//  输入: nums = [0,1,0,3,12]
+//  输出: [1,3,12,0,0]
+// 输入: nums = [0]
+// 输出: [0]
+/**
+ * @param {number[]} nums
+ * @return {void} Do not return anything, modify nums in-place instead.
+ */
+var moveZeroes = function (nums) {
+    // 方案实现1： (有点过度设计了)
+    // 执行用时： 308 ms , 在所有 JavaScript 提交中击败了 13.52% 的用户
+    // 内存消耗： 51.3 MB , 在所有 JavaScript 提交中击败了 5.05% 的用户
+    // left: 非零指针
+    // let left = nums.findIndex((num) => num !== 0)
+    // // right: 0值指针
+    // let right = nums.indexOf(0)
+    // let numsLen = nums.length
+    // if (right < 0 || left < 0 || numsLen < 2) {
+    //     return nums
+    // }
+    // if (left > right) {
+    //     // 先调整两个指针位置,非零指针在前
+    //     let curLeft = left
+    //     left = right
+    //     right = curLeft
+    //     nums[left] = nums[right]
+    //     nums[right] = 0
+    // } else {
+    //     left = right - 1
+    // }
+    // while (right < numsLen) {
+    //     if (nums[++right] && nums[right] !== 0) {
+    //         nums[++left] = nums[right]
+    //         nums[right] = 0
+    //     }
+    //     console.log(right, left, '打印看看')
+    // }
+    // return nums
+
+    // 方案2：
+    // 执行用时： 84 ms , 在所有 JavaScript 提交中击败了 94.16% 的用户
+    // 内存消耗： 46.2 MB , 在所有 JavaScript 提交中击败了 5.05% 的用户
+    let zeroCount = 0
+    // 题解：这里可以参照双指针的思路解决，指针j是一直往后移动的，如果指向的值不等于0才对他进行操作。而i统计的是前面0的个数，我们可以把j-i看做另一个指针，它是指向前面第一个0的位置，然后我们让j指向的值和j-i指向的值交换
+    for (let left = 0; left < nums.length; left++) {
+        if (nums[left] === 0) {
+            zeroCount++
+        } else if (zeroCount !== 0) {
+            nums[left - zeroCount] = nums[left]
+            nums[left] = 0
+        }
+    }
+    return nums
+}
+// console.log(moveZeroes([0, 1, 0, 3, 12]))
+// console.log(moveZeroes([1, 0, 1]))
+// console.log(moveZeroes([0, 1, 0, 3, 12]))
+// console.log(moveZeroes([4, 2, 4, 0, 0, 3, 0, 5, 1, 0]))
+
+/**加一
+ * 给定一个由 整数 组成的 非空 数组所表示的非负整数，在该数的基础上加一
+ * 最高位数字存放在数组的首位， 数组中每个元素只存储单个数字。
+ * 你可以假设除了整数 0 之外，这个整数不会以零开头。
+ * @param {number[]} digits
+ * @return {number[]}
+ * 1 <= digits.length <= 100
+ * 0 <= digits[i] <= 9
+ */
+//  输入：digits = [1,2,3]
+//  输出：[1,2,4]
+//  解释：输入数组表示数字 123。
+var plusOne = function (digits) {
+    let increase = 1
+    const digistLen = digits.length
+    // 执行用时：64 ms, 在所有 JavaScript 提交中击败了87.17%的用户
+    // 内存消耗：40.9 MB, 在所有 JavaScript 提交中击败了11.07%的用户
+    for (let i = digistLen - 1; i >= 0; i--) {
+        // 原有写法
+
+        // 如果还存在进位
+        // if (increase) {
+        // 判断当前项是否溢出
+        // if (digits[i] + increase > 9) {
+        //     // digits[i] = 0
+        //     // if (i === 0) {
+        //     //     digits.unshift(1)
+        //     // }
+        // } else {
+        //     digits[i] = digits[i] + increase
+        //     // 进位被消耗
+        //     increase = 0
+        // }
+        // } else {
+        //     break;
+        // }
+
+        // 改进:
+        digits[i] = digits[i] + 1
+        digits[i] = digits[i] % 10
+        if (digits[i] !== 0) {
+            return digits
+        }
+    }
+
+    digits.unshift(1)
+    return digits
+}
+// console.log(plusOne([9]))
+
 /**两个数组的交集 II
  * 给你两个整数数组 nums1 和 nums2 ，请你以数组形式返回两数组的交集。
  * 返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序
+ *
+ * 本题除了双指针，可存一个哈希表，即用短的数组遍历，保存一个对象数组结构，把短的每个不重复的数字作为key,value存出现次数
+ * 之后遍历长数组，每一项去匹配之前的哈希表(对象),当有值的时候，即为交集，存入交集数组，并对应value -1，然后进入下一项匹配
+ *
  * @param {*} nums
  * @returns
  * eg:
@@ -13,44 +171,113 @@
  * 输出：[2,2]
  */
 var intersect = function (nums1, nums2) {
+    /** 实现1思路跟题解不一致，题解只需要返回数字交集， 不需要顺序上的交集 */
+    // function compareLen(list1, list2) {
+    //     let longNums = null
+    //     let shortNums = null
+    //     if (!(list1.length < list2.length)) {
+    //         longNums = list1
+    //         shortNums = list2
+    //     } else {
+    //         longNums = list2
+    //         shortNums = list1
+    //     }
+    //     return {
+    //         longNums,
+    //         shortNums,
+    //     }
+    // }
+    // /**先找出两个数组标识长短 */
+    // const { longNums, shortNums } = compareLen(nums1, nums2)
+    // console.log(longNums, shortNums, '12')
+    // // markArr: [起始点，终点，count]
+    // let markArr = [null, 0, 0]
+    // // getLongFirst: 获取更长的数组对应的index
+    // let longIndex = null
+    // for (i = 0; i < shortNums.length; i++) {
+    //     longIndex = typeof longIndex === 'number' ? longIndex : longNums.indexOf(shortNums[i])
+    //     if (longIndex > -1) {
+    //         // 如果当前起始点不是null, 那记录起始点
+    //         if (Object.prototype.toString.call(markArr[0]) === '[object Null]') {
+    //             markArr[0] = i
+    //             markArr[2] = ++markArr[2]
+    //         }
+    //         // 存在起始点，判断下一个
+    //         else {
+    //             if (shortNums[i] !== longNums[longIndex] && typeof markArr[0] === 'number') {
+    //                 markArr[1] = i - 1
+    //                 break
+    //             } else if (shortNums[i] === longNums[longIndex] && typeof markArr[0] === 'number') {
+    //                 markArr[1] = i
+    //                 markArr[2] = ++markArr[2]
+    //             }
+    //         }
+    //         ++longIndex
+    //     } else {
+    //         markArr = [0, 0, 0]
+    //     }
+    // }
+    // console.log(markArr, '打印mark')
+    // if (markArr[2] === 0) {
+    //     return []
+    // } else {
+    //     return shortNums.slice(markArr[0], markArr[1] + 1)
+    // }
     function compareLen(list1, list2) {
-        let longNums = null
-        let shortNums = null
-        if (list1.length > list2.length) {
-            longNums = list1.sort()
-            shortNums = list2.sort()
+        let BigNums = null
+        let smallNums = null
+        // 默认sort会按照字符串比较大小，首先它比较第一个字符串的索引，如果第一个字符串的索引和那个比较的字符串中的第一个字符串的索引不相等就比较第一个字符串的索引，不再比较后面的，不管后面有没有大于它的，如果相等那么继续比较后面的字符串索引，直到比较完最后一个字符串的索引
+        // 如果需要按照number比较，需要传入自定义比较参数 (a, b) => a - b -》 表示正序
+        list1.sort((a, b) => a - b)
+        list2.sort((a, b) => a - b)
+        if (!(list1[0] < list2[0])) {
+            BigNums = list1
+            smallNums = list2
         } else {
-            longNums = list2.sort()
-            shortNums = list1.sort()
+            BigNums = list2
+            smallNums = list1
         }
         return {
-            longNums,
-            shortNums,
+            BigNums,
+            smallNums,
         }
     }
-    /**先找出两个数组标识长短，并分别排序 */
-    const { longNums, shortNums } = compareLen(nums1, nums2)
-    console.log(longNums, shortNums, '12')
-    // markArr: [起始点，终点，count]
-    let markArr = [null, 0, 0]
-    for (right = 0; right < shortNums.length; right++) {
-        if (longNums.indexOf(shortNums[right])) {
-            if (Object.prototype.toString.call(markArr[0]) !== '[object Null]') {
-                /**开始记录起始点 */
-                markArr[0] = right
-            } else {
-                // 计算count
-                markArr[2] = markArr[2] + 1
-            }
+    // /**先找出两个数组标识长短 */
+    const { BigNums, smallNums } = compareLen(nums1, nums2)
+    let commonList = []
+    var left = 0
+    var right = 0
+    do {
+        if (smallNums[left] < BigNums[right]) {
+            left++
+        } else if (smallNums[left] > BigNums[right]) {
+            right++
         } else {
-            if (right > 1 && markArr[0]) {
-                /**开始记录起始点 */
-                markArr[0] = right
-            }
+            commonList.push(smallNums[left])
+            left++
+            right++
         }
-    }
+    } while (left < smallNums.length && right < BigNums.length)
+    return commonList.sort()
 }
-console.log(intersect([1, 2, 2, 1], [2, 2]))
+// console.log(intersect([1, 2, 2, 1], [2, 2]))
+// console.log(
+//     intersect(
+//         [
+//             61, 24, 20, 58, 95, 53, 17, 32, 45, 85, 70, 20, 83, 62, 35, 89, 5, 95, 12, 86, 58, 77, 30, 64, 46, 13, 5, 92, 67, 40, 20, 38, 31, 18, 89,
+//             85, 7, 30, 67, 34, 62, 35, 47, 98, 3, 41, 53, 26, 66, 40, 54, 44, 57, 46, 70, 60, 4, 63, 82, 42, 65, 59, 17, 98, 29, 72, 1, 96, 82, 66,
+//             98, 6, 92, 31, 43, 81, 88, 60, 10, 55, 66, 82, 0, 79, 11, 81,
+//         ],
+//         [
+//             5, 25, 4, 39, 57, 49, 93, 79, 7, 8, 49, 89, 2, 7, 73, 88, 45, 15, 34, 92, 84, 38, 85, 34, 16, 6, 99, 0, 2, 36, 68, 52, 73, 50, 77, 44, 61,
+//             48,
+//         ]
+//     )
+// )
+// console.log([5, 4, 57, 79, 7, 89, 88, 45, 34, 92, 38, 85, 6, 0, 77, 44, 61].sort())
+// console.log(intersect([1], [1]))
+// console.log(intersect([2,1], [1, 2]));
+// console.log(intersect([4, 9, 5], [9, 4, 9, 8, 4]))
 
 /**
  * 只出现一次的数字，给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
@@ -83,7 +310,7 @@ var singleNumber = function (nums) {
     // 异或运算, 原理： 例如： 1^2^2 输出1
     return nums.reduce((total, el) => total ^ el, 0)
 }
-console.log(singleNumber([2, 2, 1]))
+// console.log(singleNumber([2, 2, 1]))
 
 /**旋转数组
  * @param {number[]} nums
