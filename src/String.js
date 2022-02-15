@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-01-28 10:49:52
  * @LastEditors: jimouspeng
- * @Description: 描述文件内容
- * @LastEditTime: 2022-01-28 10:50:16
+ * @Description: 字符操作
+ * @LastEditTime: 2022-02-15 10:53:34
  * @FilePath: \leetcode\src\String.js
  */
 
@@ -27,4 +27,4 @@
 
 let str = ["h","e","l","l","o"];
 
-console.log(reverseString(str));
+// console.log(reverseString(str));
