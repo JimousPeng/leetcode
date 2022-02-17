@@ -1,8 +1,8 @@
 /*
  * @Date: 2022-02-15 10:52:04
- * @LastEditors: jimouspeng
+ * @LastEditors: Please set LastEditors
  * @Description: 动态规划
- * @LastEditTime: 2022-02-15 16:18:41
+ * @LastEditTime: 2022-02-17 23:03:58
  * @FilePath: \leetcode\src\dynamic.js
  */
 const dynamic = ['1. 确定状态', '  2. 找到转移公式', '  3. 确定初始条件及边界条件', '  4. 计算结果']
@@ -35,10 +35,13 @@ var rob = function (nums) {
     // }
     const len = nums.length
     const stoleList = new Array(len)
-    stoleList[0] = nums[0]
     let maxStole = nums[0]
-    for (let i = 2; i < len; i++) {
-        stoleList[i] = Math.max(maxStole, nums[i])
+    let totalStole = nums[0]; // 总收益
+    let getIndex = 0; // 默认偶数项是收益
+    for (let i = 1; i < len; i++) {
+        let lastStole = maxStole;
+        maxStole = i % 2 === getIndex ? maxStole + nums[i] : Math.max(maxStole, totalStole - maxStole + nums[i])
+        getIndex = Number(!(maxStole === lastStole + nums[i]) )
     }
     return maxStole
 }
