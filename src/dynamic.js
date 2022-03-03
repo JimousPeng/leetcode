@@ -2,7 +2,7 @@
  * @Date: 2022-02-15 10:52:04
  * @LastEditors: Please set LastEditors
  * @Description: 动态规划
- * @LastEditTime: 2022-02-19 18:59:09
+ * @LastEditTime: 2022-03-01 12:54:18
  * @FilePath: \leetcode\src\dynamic.js
  */
 const dynamic = ['1. 确定状态', '  2. 找到转移公式', '  3. 确定初始条件及边界条件', '  4. 计算结果'];
@@ -84,14 +84,10 @@ var rob = function (nums) {
         dp1 = dp0 + nums[i]
         dp0 = temMax
     }
-    // return Math.max(dp[len - 1][0], dp[len -1][1])
-    return Math.max(dp0, dp1)
-};
-let price = [2, 1, 1, 2];
-// let price = [2, 4, 2]
-// let price = [1, 1, 1]
-// let price = [1, 2, 1, 0]
-console.log(rob(price));
+    return maxStole
+}
+let price = [1, 2, 3, 1]
+// console.log(rob(price))
 
 /**最大子序和
  * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。

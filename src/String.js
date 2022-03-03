@@ -2,92 +2,73 @@
  * @Date: 2022-01-28 10:49:52
  * @LastEditors: Please set LastEditors
  * @Description: 字符操作
- * @LastEditTime: 2022-02-27 15:55:46
+ * @LastEditTime: 2022-03-03 22:13:03
  * @FilePath: \leetcode\src\String.js
  */
 
-/** 字符串中的第一个唯一字符
- * 给定一个字符串 s ，找到 它的第一个不重复的字符，并返回它的索引 。如果不存在，则返回 -1
- * 输入: s = "leetcode" 输出: 0
+/** 有效的字母异位词
+ * 给定两个字符串 s 和 t ，编写一个函数来判断 t 是否是 s 的字母异位词
+ * 注意：若 s 和 t 中每个字符出现的次数都相同，则称 s 和 t 互为字母异位词
+ * 输入: s = "anagram", t = "nagaram"
+ * 输出: true
+ *
+ * 输入: s = "rat", t = "car"
+ * 输出: false
  */
 /**
  * @param {string} s
- * @return {number}
+ * @param {string} t
+ * @return {boolean}
  */
-var firstUniqChar = function (s) {
-    // 执行用时： 108 ms , 在所有 JavaScript 提交中击败了 55.96% 的用户
-    // 内存消耗： 47.2 MB , 在所有 JavaScript 提交中击败了 15.78% 的用户
-    const arryS = s.split('');
-    const mapS = {};
-    arryS.forEach((el) => {
-        if (!mapS[el]) {
-            mapS[el] = { value: 1 };
+var isAnagram = function (s, t) {
+    // 执行用时： 76 ms , 在所有 JavaScript 提交中击败了 85.56% 的用户
+    // 内存消耗： 42.2 MB , 在所有 JavaScript 提交中击败了 50.77% 的用户
+    const firstMap = {}
+    let judge = true
+    ;[].slice.call(s).forEach((el) => {
+        if (firstMap[el]) {
+            ++firstMap[el].value
         } else {
-            let val = mapS[el].value;
-            mapS[el].value = ++val;
+            firstMap[el] = {
+                value: 1,
+            }
         }
-    });
-    const keyList = Object.keys(mapS);
-    for (let i = 0; i < keyList.length; i++) {
-        if (mapS[keyList[i]].value === 1) {
-            return arryS.indexOf(keyList[i]);
+    })
+    ;[].slice.call(t).forEach((el) => {
+        if (firstMap[el]) {
+            --firstMap[el].value
+        } else {
+            judge = false
         }
-    }
-    return -1
-};
-console.log(firstUniqChar('leetcode'));
-
-/** 整数反转
- * 给你一个 32 位的有符号整数 x ，返回将 x 中的数字部分反转后的结果。
-
-如果反转后整数超过 32 位的有符号整数的范围 [−231,  231 − 1] ，就返回 0
-输入：x = 123
-输出：321
-
-输入：x = 120
-输出：21
-
-输入：x = -123
-输出：-321
- */
-/**
- * @param {number} x
- * @return {number}
- */
-var reverse = function (x) {
-    if (x == 0) {
-        return x;
-    }
-    const xlessZero = x < 0;
-    const strX = String(Math.abs(x));
-    const strArray = strX.split('');
-    strArray.reverse();
-    const newStr = strArray.join('');
-    let numX = xlessZero ? -1 * Number(newStr) : Number(newStr);
-    numX = numX > 2 ** 31 - 1 || numX < -1 * 2 ** 31 ? 0 : numX;
-    return numX;
-};
-// console.log(reverse(1534236469));
+    })
+    Object.keys(firstMap).forEach((key) => {
+        if (firstMap[key].value > 0) {
+            judge = false
+        }
+    })
+    return judge
+}
+console.log(isAnagram('ratt', 'car'))
 
 /**反转字符串
  * @param {character[]} s
  * @return {void} Do not return anything, modify s in-place instead.
  */
 var reverseString = function (s) {
-    let left = 0;
+    let left = 0
     for (let right = s.length - 1; right > 0; right--) {
         if (right > left) {
-            let leftItem = s[left];
-            s[left] = s[right];
-            s[right] = leftItem;
+            let leftItem = s[left]
+            s[left] = s[right]
+            s[right] = leftItem
         } else {
-            break;
+            break
         }
-        left++;
+        left++
     }
-    return s;
-};
+    return s
+}
 
-let str = ['h', 'e', 'l', 'l', 'o'];
+let str = ['h', 'e', 'l', 'l', 'o']
 
 // console.log(reverseString(str));
