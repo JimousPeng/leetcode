@@ -1,12 +1,12 @@
 /*
  * @Date: 2022-02-15 10:52:04
- * @LastEditors: jimouspeng
+ * @LastEditors: Please set LastEditors
  * @Description: 动态规划
  * @LastEditTime: 2022-03-01 12:54:18
  * @FilePath: \leetcode\src\dynamic.js
  */
-const dynamic = ['1. 确定状态', '  2. 找到转移公式', '  3. 确定初始条件及边界条件', '  4. 计算结果']
-console.log(dynamic.join(' ->'))
+const dynamic = ['1. 确定状态', '  2. 找到转移公式', '  3. 确定初始条件及边界条件', '  4. 计算结果'];
+console.log(dynamic.join(' ->'));
 
 /**打家劫舍
  * 你是一个专业的小偷，计划偷窃沿街的房屋。
@@ -21,6 +21,10 @@ console.log(dynamic.join(' ->'))
 输出：12
 解释：偷窃 1 号房屋 (金额 = 2), 偷窃 3 号房屋 (金额 = 9)，接着偷窃 5 号房屋 (金额 = 1)。
      偷窃到的最高金额 = 2 + 9 + 1 = 12 。
+
+状态公式
+f(i)不偷的最大金额 = Math.max(f(i-1)偷, f(i-1)不偷)
+f(i)偷的最大金额 = f(i-1)不偷的金额 + nums[i]
  */
 /**
  * @param {number[]} nums
@@ -33,15 +37,52 @@ var rob = function (nums) {
     //     }
     //     return calculateNum(n - 1, nums[n] + total)
     // }
-    const len = nums.length
-    const stoleList = new Array(len)
-    let maxStole = nums[0]
-    let totalStole = nums[0]; // 总收益
-    let getIndex = 0; // 默认偶数项是收益
-    for (let i = 1; i < len; i++) {
-        let lastStole = maxStole;
-        maxStole = i % 2 === getIndex ? maxStole + nums[i] : Math.max(maxStole, totalStole - maxStole + nums[i])
-        getIndex = Number(!(maxStole === lastStole + nums[i]) )
+    // const len = nums.length;
+    // let maxStole = nums[0];
+    // let lastStole = 0; // 损失的收益
+    // let getIndex = 0; // 默认偶数项是收益
+    // for (let i = 1; i < len; i++) {
+    //     if(nums[i] === 0) {
+    //         continue
+    //     }
+    //     if (i % 2 === getIndex) {
+    //         // 如果当前是收益项，那么直接计算收益
+    //         maxStole += nums[i];
+    //     } else {
+    //         lastStole += nums[i];
+    //         if (maxStole < lastStole) {
+    //             getIndex = i % 2;
+    //             let tempStole = lastStole;
+    //             lastStole = maxStole;
+    //             maxStole = tempStole;
+    //         } else if(maxStole && i-2 >= 0 && maxStole === lastStole) {
+    //             maxStole = maxStole - nums[i - 2] + nums[i]
+    //             getIndex = i % 2; 
+    //         }
+    //     }
+    // }
+    // return maxStole;
+    if(nums === null || nums.length  === 0) {
+        return 0;
+    }
+    let len = nums.length;
+    // let dp = nums.reduce((total, el) => {
+    //     total.push([])
+    //     return total;
+    // }, []);
+    // dp.forEach(el => el = [])
+    // dp[0][0] = 0
+    // dp[0][1] = nums[0];
+    let dp0 = 0;
+    let dp1 = nums[0]
+    for(let i = 1; i < len; i++) {
+        // dp[i][0] 表示第i家偷了的最大金额,    
+        // dp[i][1]表示第i家没偷的最大金额，如果i家要偷，那么i-1就不能偷，那么就用i-1没偷的最大数+当前金额，即dp[i-1][0] + num[i]
+        // dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1]);
+        // dp[i][1] = dp[i-1][0] + nums[i]
+        temMax = Math.max(dp0, dp1);
+        dp1 = dp0 + nums[i]
+        dp0 = temMax
     }
     return maxStole
 }
@@ -85,17 +126,17 @@ var maxSubArray = function (nums) {
     // 优化
     // 执行用时： 76 ms , 在所有 JavaScript 提交中击败了 97.13% 的用户
     // 内存消耗： 49.2 MB , 在所有 JavaScript 提交中击败了 28.64% 的用户
-    let calculate = nums[0] // 计算差值
-    let max = nums[0]
+    let calculate = nums[0]; // 计算差值
+    let max = nums[0];
     for (let i = 1; i < nums.length; i++) {
         // dp[i]用来表示，终点在i的子序列的最佳子序和
         // 如果dp[i-1]大于0，就继续累加，dp[i]=dp[i-1]+num[i]。如果dp[i-1]小于0，我们直接把前面的舍弃，也就是说重新开始计算，否则会越加越小的，直接让dp[i]=num[i]
-        calculate = Math.max(calculate, 0) + nums[i]
+        calculate = Math.max(calculate, 0) + nums[i];
         // 再比较当前dp[i]是否大于max，如果大于max, 那么重新开始计算
-        max = Math.max(max, calculate)
+        max = Math.max(max, calculate);
     }
-    return max
-}
+    return max;
+};
 // let maxlist = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
 // console.log(maxSubArray(maxlist))
 
@@ -128,17 +169,17 @@ var maxProfit = function (prices) {
     // }
     // return maxNum
     // 方法2： 一次遍历
-    let minProfit = Infinity
-    let maxPro = 0
+    let minProfit = Infinity;
+    let maxPro = 0;
     for (let i = 0; i < prices.length; i++) {
         if (prices[i] < minProfit) {
-            minProfit = prices[i]
+            minProfit = prices[i];
         } else if (prices[i] - minProfit > maxPro) {
-            maxPro = prices[i] - minProfit
+            maxPro = prices[i] - minProfit;
         }
     }
-    return maxPro
-}
+    return maxPro;
+};
 // let price = [7, 1, 5, 3, 6, 4]
 // let price = [7, 6, 4, 3, 1]
 // let price = [3, 2, 6, 5, 0, 3]
@@ -170,11 +211,11 @@ var climbStairs = function (n) {
     // 递归优化 1+1+2+3+5+8+...+n  其实就是一个斐波那契数列,求n, n = (n-1) + (n-2), n>=3
     function climbStair(n, a, b) {
         if (n <= 1) {
-            return b // 由上一个a+b计算而来，从第3项开始，每一项都等于前两项之和
+            return b; // 由上一个a+b计算而来，从第3项开始，每一项都等于前两项之和
         }
-        return climbStair(n - 1, b, a + b)
+        return climbStair(n - 1, b, a + b);
     }
-    return climbStair(n, 1, 1)
-}
+    return climbStair(n, 1, 1);
+};
 
 // console.log(climbStairs(5))
