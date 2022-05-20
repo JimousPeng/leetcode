@@ -1,6 +1,6 @@
 /*
  * @Author: jimouspeng
- * @LastEditTime: 2022-03-05 17:57:19
+ * @LastEditTime: 2022-05-20 13:22:50
  * @Description: 链表
  * @FilePath: \leetcode\src\linked-list.js
  * 可以输入预定的版权声明、个性签名、空行等
@@ -17,12 +17,39 @@
  * 输入：head = [1,2], n = 1
  * 输出：[1]
  */
+
 /**
  * @param {ListNode} head
  * @param {number} n
  * @return {ListNode}
  */
-var removeNthFromEnd = function (head, n) {};
+var removeNthFromEnd = function (head, n) {
+    /** 先遍历出链表长度 */
+    let currentNode = head;
+    let nodeLen = 0;
+    while (currentNode) {
+        nodeLen++;
+        currentNode = currentNode.next;
+    }
+    if (n === nodeLen) {
+        console.log(n, nodeLen);
+        /** 删除第一个，那么直接返回head.next */
+        return head.next;
+    }
+    for (let i = 0; i < nodeLen; i++) {
+        if (i === nodeLen - n) {
+            /** 找到要删除的节点对应的位置, 处理当前currentNode;
+             * 正常逻辑应该是 currentNode = currentNode ? currentNode.next : head; =》 即 currentNode = currentNode.next
+             * 由于是要删除的节点，那么currentNode跳过本次取值，按照运算表达式从右往左复制，执行的是 (本次遍历的上一个节点).next = (命中要删除的节点).next
+             */
+            currentNode.next = currentNode.next.next;
+            continue; // 后续节点的.next需要补上，所以不能跳出循环
+        }
+        /** 其实这里是用来重置当前节点为head节点，之前while遍历里面currentNode已经指向null */
+        currentNode = currentNode ? currentNode.next : head;
+    }
+    return head;
+};
 
 /** 删除链表中的节点
  * 请编写一个函数，用于 删除单链表中某个特定节点 。在设计函数时需要注意，你无法访问链表的头节点 head ，只能直接访问 要被删除的节点 。
