@@ -1,10 +1,128 @@
 /*
  * @Author: jimouspeng
- * @LastEditTime: 2022-05-20 13:22:50
+ * @LastEditTime: 2022-07-07 17:47:22
  * @Description: 链表
  * @FilePath: \leetcode\src\linked-list.js
  * 可以输入预定的版权声明、个性签名、空行等
  */
+
+/** 回文链表:
+ * 给你一个单链表的头节点 head ，请你判断该链表是否为回文链表。如果是，返回 true ；否则，返回 false */
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var isPalindrome = function (head) {
+    // 执行用时： 160 ms , 在所有 JavaScript 提交中击败了 50.82% 的用户
+    // 内存消耗： 70.5 MB , 在所有 JavaScript 提交中击败了 41.62% 的用户
+    let listArray = [];
+    while (head) {
+        listArray.push(head.val);
+        head = head.next;
+    }
+    if (listArray.length < 2) {
+        return true;
+    }
+    const nodeLen = listArray.length;
+    for (let i = 0; i < nodeLen; i++) {
+        if (listArray[i] !== listArray[nodeLen - 1 - i]) {
+            return false;
+        } else if (i > nodeLen - 1 - i) {
+            return true;
+        }
+    }
+};
+
+/** 环形链表: 给你一个链表的头节点 head ，判断链表中是否有环
+ * 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。
+ * 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。注意：pos 不作为参数进行传递 。仅仅是为了标识链表的实际情况
+ * 如果链表中存在环 ，则返回 true 。 否则，返回 false
+ */
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+
+/**
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function (head) {
+    if (!head || !head.next) {
+        // 单节点链表，直接返回false
+        return false;
+    }
+    /**
+     * 快慢指针：如果相遇就说明有环，如果有一个为空说明没有环
+     * 执行用时： 68 ms , 在所有 JavaScript 提交中击败了 87.16% 的用户 
+     * 内存消耗： 43.7 MB , 在所有 JavaScript 提交中击败了 56.59% 的用户
+     */
+    let slowNode = head;
+    let fastNode = head;
+    while (fastNode !== null && slowNode !== null) {
+        slowNode = slowNode.next;
+        fastNode = fastNode?.next?.next ? fastNode.next.next : null;
+        if (slowNode === fastNode) {
+            return true;
+        }
+    }
+    return false;
+};
+
+/** 合并两个有序链表
+ * 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的
+ */
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val, next) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.next = (next===undefined ? null : next)
+ * }
+ */
+/**
+ * @param {ListNode} list1
+ * @param {ListNode} list2
+ * @return {ListNode}
+ */
+var mergeTwoLists = function (list1, list2) {
+    if (list1 === null) {
+        return list2;
+    } else if (list2 === null) {
+        return list1;
+    }
+    const newNode = new ListNode(0);
+    curNode = newNode;
+    if (list1.val > list2.val) {
+        bigNode = list1;
+        smallNode = list2;
+    } else {
+        bigNode = list2;
+        smallNode = list1;
+    }
+    while (bigNode && smallNode) {
+        if (bigNode.val > smallNode.val) {
+            // bigNode > newNode, newNode后移
+            curNode.next = smallNode;
+            smallNode = smallNode.next;
+        } else {
+            curNode.next = bigNode;
+            bigNode = bigNode.next;
+        }
+        curNode = curNode.next;
+    }
+    curNode.next = bigNode ? bigNode : smallNode;
+    return newNode.next;
+};
 
 /** 删除链表的倒数第N个节点
  * 给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
