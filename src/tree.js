@@ -1,6 +1,6 @@
 /*
  * @Author: jimouspeng
- * @LastEditTime: 2022-03-05 18:09:17
+ * @LastEditTime: 2022-07-11 09:44:38
  * @Description: 二叉树
  * @FilePath: \leetcode\src\tree.js
  * 可以输入预定的版权声明、个性签名、空行等
@@ -18,4 +18,14 @@
  * @param {TreeNode} root
  * @return {number}
  */
-var maxDepth = function (root) {};
+var maxDepth = function (root) {
+    if (root.length === 0) {
+        return 0;
+    }
+    let maxDeep = 0;
+    let idx = 0;
+    while (root[idx]) {
+        maxDeep += 1;
+        idx = 2^maxDeep - 1
+    }
+};
