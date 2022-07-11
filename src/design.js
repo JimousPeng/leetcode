@@ -1,6 +1,6 @@
 /*
  * @Author: jimouspeng
- * @LastEditTime: 2022-07-11 11:38:10
+ * @LastEditTime: 2022-07-11 15:07:40
  * @Description: 设计问题
  * @FilePath: \leetcode\src\design.js
  * 可以输入预定的版权声明、个性签名、空行等
@@ -30,17 +30,37 @@ solution.shuffle();    // 随机返回数组 [1, 2, 3] 打乱后的结果。例�
 /**
  * @param {number[]} nums
  */
-var Solution = function (nums) {};
+var Solution = function (nums) {
+    this.orignList = nums;
+};
 
 /**
  * @return {number[]}
  */
-Solution.prototype.reset = function () {};
+Solution.prototype.reset = function () {
+    return this.orignList;
+};
 
 /**
  * @return {number[]}
  */
-Solution.prototype.shuffle = function () {};
+Solution.prototype.shuffle = function () {
+    const newList = JSON.parse(JSON.stringify(this.orignList));
+
+    for (let i = 1; i < newList.length; i++) {
+        let randomIdx = Math.floor(Math.random() * (i + 1));
+        resetItem(newList, i, randomIdx);
+    }
+
+    return newList;
+};
+
+function resetItem(list, i, j) {
+    console.log(list, i, j);
+    let temp = list[i];
+    list[i] = list[j];
+    list[j] = temp;
+}
 
 /**
  * Your Solution object will be instantiated and called as such:
@@ -69,28 +89,47 @@ minStack.pop();
 minStack.top();      --> 返回 0.
 minStack.getMin();   --> 返回 -2.
  */
-var MinStack = function () {};
+var MinStack = function () {
+    this.list = [];
+};
 
 /**
  * @param {number} val
  * @return {void}
  */
-MinStack.prototype.push = function (val) {};
+MinStack.prototype.push = function (val) {
+    this.list.unshift(val);
+};
 
 /**
  * @return {void}
  */
-MinStack.prototype.pop = function () {};
+MinStack.prototype.pop = function () {
+    this.list.shift();
+};
 
 /**
  * @return {number}
  */
-MinStack.prototype.top = function () {};
+MinStack.prototype.top = function () {
+    return this.list[0];
+};
 
 /**
  * @return {number}
  */
-MinStack.prototype.getMin = function () {};
+MinStack.prototype.getMin = function () {
+    if (this.list.length === 0) {
+        return 0;
+    }
+    let min = Infinity;
+    for (let i = 0; i < this.list.length; i++) {
+        if (this.list[i] < min) {
+            min = this.list[i];
+        }
+    }
+    return min;
+};
 
 /**
  * Your MinStack object will be instantiated and called as such:
