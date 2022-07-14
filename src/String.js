@@ -2,9 +2,63 @@
  * @Date: 2022-01-28 10:49:52
  * @LastEditors: Please set LastEditors
  * @Description: 字符操作
- * @LastEditTime: 2022-07-12 16:09:40
+ * @LastEditTime: 2022-07-14 17:26:16
  * @FilePath: \leetcode\src\String.js
  */
+
+/** 外观数列
+ * 给定一个正整数 n ，输出外观数列的第 n 项。
+ * 
+前五项如下：
+1.     1
+2.     11
+3.     21
+4.     1211
+5.     111221
+第一项是数字 1 
+描述前一项，这个数是 1 即 “ 一 个 1 ”，记作 "11"
+描述前一项，这个数是 11 即 “ 二 个 1 ” ，记作 "21"
+描述前一项，这个数是 21 即 “ 一 个 2 + 一 个 1 ” ，记作 "1211"
+描述前一项，这个数是 1211 即 “ 一 个 1 + 一 个 2 + 二 个 1 ” ，记作 "111221"
+ */
+/**
+ * @param {number} n
+ * @return {string}
+ */
+var countAndSay = function (n) {
+    /** 执行用时： 76 ms , 在所有 JavaScript 提交中击败了 19.58% 的用户
+     * 内存消耗： 48.1 MB , 在所有 JavaScript 提交中击败了 5.04% 的用户 */
+    if (n === 1) {
+        return '1';
+    }
+    let hashMap = {};
+    let initStr = '1';
+    let endStr = '';
+    while (n > 1) {
+        let curKey = initStr[0];
+        for (let i = 0; i < initStr.length; i++) {
+            if (initStr[i] !== curKey) {
+                endStr += hashMap[curKey] + curKey;
+                hashMap = {};
+                curKey = initStr[i];
+            }
+            if (hashMap[curKey]) {
+                hashMap[curKey]++;
+            } else {
+                hashMap[curKey] = 1;
+            }
+            if (i === initStr.length - 1) {
+                endStr += hashMap[curKey] + curKey;
+            }
+        }
+        initStr = endStr;
+        endStr = '';
+        hashMap = {};
+        n--;
+    }
+    return initStr;
+};
+console.log(countAndSay(6));
 
 /** 最长公共前缀
  * 编写一个函数来查找字符串数组中的最长公共前缀。如果不存在公共前缀，返回空字符串 ""
@@ -14,7 +68,38 @@
  * @param {string[]} strs
  * @return {string}
  */
-var longestCommonPrefix = function (strs) {};
+var longestCommonPrefix = function (strs) {
+    // let minStr = Infinity;
+    // const strLen = strs.length;
+    // const publicStr = '';
+    // for (let i = 0; i < strLen; i++) {
+    //     if (strs[i].length < minStr) {
+    //         minStr = strs[i]; // 找到最短的字符
+    //     }
+    // }
+    // for (let i = 0; i < minStr.length; i++) {
+    //     console.log(minStr[i]);
+
+    // }
+    /**
+     * startsWith:
+     * 执行用时： 60 ms , 在所有 JavaScript 提交中击败了 86.32% 的用户
+     * 内存消耗： 41 MB , 在所有 JavaScript 提交中击败了 94.54% 的用户
+     *
+     * indexOf
+     * 执行用时： 64 ms , 在所有 JavaScript 提交中击败了 71.21% 的用户 内存消耗：
+     * 41.2 MB , 在所有 JavaScript 提交中击败了 74.38% 的用户
+     *  */
+    return strs.reduce((total, item) => {
+        // while (item.indexOf(total) !== 0) {
+        while (!item.startsWith(total)) {
+            total = total.slice(0, total.length - 1);
+        }
+        return total;
+    }, strs[0]);
+};
+
+longestCommonPrefix(['flower', 'flow', 'flight']);
 
 /** 字符串转换整数 (atoi)
  * 实现一个 myAtoi(string s) 函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）
