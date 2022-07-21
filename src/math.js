@@ -1,10 +1,36 @@
 /*
  * @Author: jimouspeng
- * @LastEditTime: 2022-07-15 17:06:36
+ * @LastEditTime: 2022-07-21 17:42:42
  * @Description: 数学问题
  * @FilePath: \leetcode\src\math.js
  * 可以输入预定的版权声明、个性签名、空行等
  */
+/** 计数质数
+ * 给定整数 n ，返回 所有小于非负整数 n 的质数的数量
+ * 
+ * 质数： 质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数
+ * 
+输入：n = 10
+输出：4
+解释：小于 10 的质数一共有 4 个, 它们是 2, 3, 5, 7 。
+ */
+/**
+ * @param {number} n
+ * @return {number}
+ */
+var countPrimes = function (n) {
+    if (n < 2) {
+        return 0;
+    }
+    let count = 0;
+    for (let i = 2; i < n; i++) {
+        if (n % i === 0 && (n / i) % 2 !== 0) {
+            count++;
+        }
+    }
+    return count;
+};
+console.log(countPrimes(10));
 
 /** 3的幂
  * 给定一个整数，写一个函数来判断它是否是 3 的幂次方。如果是，返回 true ；否则，返回 false;
@@ -63,14 +89,14 @@ C 可以放在 D (500) 和 M (1000) 的左边，来表示 400 和 900。
  */
 var romanToInt = function (s) {
     const typeMap = {
-        'I': 1,
-        'V': 5, // I 放在 V (5)的左边，表示 4
-        'X': 10, // I 放在 X (10)的左边，表示 9
-        'L': 50, // X 放在 L (50)左边，表示 40
-        'C': 100, // X 放在C (100) 的左边，表示 90
-        'D': 500,
-        'M': 1000
-    }
+        I: 1,
+        V: 5, // I 放在 V (5)的左边，表示 4
+        X: 10, // I 放在 X (10)的左边，表示 9
+        L: 50, // X 放在 L (50)左边，表示 40
+        C: 100, // X 放在C (100) 的左边，表示 90
+        D: 500,
+        M: 1000,
+    };
     let count = 0;
     let curStr = s;
     // while(curStr.length) {
@@ -78,5 +104,4 @@ var romanToInt = function (s) {
     //         case M
     //     }
     // }
-
 };

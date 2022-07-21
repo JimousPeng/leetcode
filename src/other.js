@@ -1,10 +1,77 @@
 /*
  * @Author: jimouspeng
- * @LastEditTime: 2022-07-18 11:27:24
+ * @LastEditTime: 2022-07-21 16:58:40
  * @Description: 其他问题
  * @FilePath: \leetcode\src\other.js
  * 可以输入预定的版权声明、个性签名、空行等
  */
+/** 位1的个数
+ * 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为汉明重量）
+ * 
+ * 输入：00000000000000000000000000001011
+输出：3
+解释：输入的二进制串 00000000000000000000000000001011 中，共有三位为 '1'。
+ */
+var hammingWeight = function (n) {
+    return n.toString(2).split('').filter(item => item === '1').length
+};
+
+/** 
+ * 汉明距离
+ * 两个整数之间的 汉明距离 指的是这两个数字对应二进制位不同的位置的数目。
+ * 给你两个整数 x 和 y，计算并返回它们之间的汉明距离
+ * 
+ * 输入：x = 1, y = 4
+输出：2
+解释：
+1   (0 0 0 1)
+4   (0 1 0 0)
+       ↑   ↑
+上面的箭头指出了对应二进制位不同的位置。
+ */
+/**
+ * @param {number} x
+ * @param {number} y
+ * @return {number}
+ */
+var hammingDistance = function (x, y) {
+    console.log((x ^ y).toString(2));
+    return (x ^ y)
+        .toString(2)
+        .split('')
+        .filter((item) => item === '1').length;
+};
+
+hammingDistance(1, 4);
+
+/** 颠倒二进制位
+ * 颠倒给定的 32 位无符号整数的二进制位
+输入：n = 00000010100101000001111010011100
+输出：964176192 (00111001011110000010100101000000)
+解释：输入的二进制串 00000010100101000001111010011100 表示无符号整数 43261596，
+     因此返回 964176192，其二进制表示形式为 00111001011110000010100101000000。
+ */
+/**
+ * @param {number} n - a positive integer
+ * @return {number} - a positive integer
+ */
+/**
+ * >>有符号右位移
+ * >>> 无符号右位移
+ * | 位或
+ * & 位与
+ */
+var reverseBits = function (n) {
+    let num = 0;
+    let t = 32;
+    while (t--) {
+        num = num << 1;
+        num |= n & 1;
+        n = n >>> 1;
+    }
+    num = num >>> 0;
+    return num;
+};
 
 /** 杨辉三角
  *在「杨辉三角」中，每个数是它左上方和右上方的数的和
@@ -14,21 +81,45 @@
 
 输入: numRows = 1
 输出: [[1]]
+
  */
 /**
- * @param {number} numRows
+ * @param {number} numRows 1 <= numRows <= 30
  * @return {number[][]}
  */
 var generate = function (numRows) {
+    /** 执行用时： 56 ms , 在所有 JavaScript 提交中击败了 82.97% 的用户
+     * 内存消耗： 41.1 MB , 在所有 JavaScript 提交中击败了 47.30% 的用户 */
     if (numRows === 1) {
         return [[1]];
     }
-    let curList = [[1]]
-    while (numRows) {
-
+    if (numRows === 2) {
+        return [[1], [1, 1]];
+    }
+    let initList = [[1], [1, 1]];
+    let curList;
+    while (numRows > 2) {
+        const curLen = initList.length;
+        let lastList = initList[curLen - 1];
+        curList = lastList.reduce(
+            (total, item, index) => {
+                if (lastList[index + 1]) {
+                    // 如果存在下一个
+                    total.push(item + lastList[index + 1]);
+                } else {
+                    total.push(item);
+                }
+                return total;
+            },
+            [1]
+        );
+        initList.push(curList);
         numRows--;
     }
+    return initList;
 };
+
+console.info(generate(5));
 
 /** 有效的括号
  * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效
