@@ -4,6 +4,69 @@
  * @FilePath: \leetcode\src\Array.js
  */
 
+/** 旋转图像
+ * 
+输入：matrix = [  [1,2,3],  [4,5,6],  [7,8,9]  ]
+
+输出：[  [7,4,1],  [8,5,2],  [9,6,3]  ]
+
+
+
+输入：matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]
+
+输出：[[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
+
+ */
+/**
+ * @param {number[][]} matrix
+ * @return {void} Do not return anything, modify matrix in-place instead.
+ */
+var rotate = function (matrix) {
+    // let listMap = {};
+    // const list = [];
+    // for (let i = matrix.length - 1; i >= 0; i--) {
+    //     // debugger;
+    //     const curList = matrix[i];
+    //     for (let j = 0; j < curList.length; j++) {
+    //         if (!listMap[j]) {
+    //             listMap[j] = [curList[j]];
+    //         } else {
+    //             listMap[j].push(curList[j]);
+    //         }
+    //     }
+    // }
+    // for (let key in listMap) {
+    //     list.push(listMap[key]);
+    // }
+    // return list;
+
+    // 先上下交换
+    let listLen = matrix.length;
+    for (let i = 0; i < listLen / 2; i++) {
+        let tempList = matrix[i];
+        matrix[i] = matrix[listLen - 1 - i];
+        matrix[listLen - i - 1] = tempList;
+    }
+
+    //在按照对角线交换
+    for (let i = 0; i < listLen; ++i) {
+        for (let j = i + 1; j < listLen; ++j) {
+            let temp = matrix[i][j];
+            matrix[i][j] = matrix[j][i];
+            matrix[j][i] = temp;
+        }
+    }
+    return matrix;
+};
+
+console.log(
+    rotate([
+        [1, 2, 3],
+        [4, 5, 6],
+        [7, 8, 9],
+    ])
+);
+
 /**数独
  * 请你判断一个 9 x 9 的数独是否有效。只需要 根据以下规则 ，验证已经填入的数字是否有效即可
  * 数字 1-9 在每一行只能出现一次
@@ -47,32 +110,60 @@
 // board[i].length == 9
 // board[i][j] 是一位数字（1-9）或者 '.'
 /**
+ * 区间段处理：
+ * [i0-i2]
+ * [i3-i5]
+ * [i6-i8]
+ *
+ */
+/**
  * @param {character[][]} board
  * @return {boolean}
  */
 var isValidSudoku = function (board) {
-    const sudokuList = [];
+    // for (let i = 0; i < board.length; i++) {
+    //     const curList = board[i];
+    //     for (let j = 0; j < curList.length; j++) {
+
+    //     }
+    // }
+    let row = {};
+    let col = {};
+    let box = {};
     for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board[i].length; j++) {
-            
+        const curList = board[i];
+        for (let j = 0; j < curList.length; j++) {
+            let num = curList[j];
+            if (num !== '.') {
+                let boxindex = Math.floor(i / 3) * 3 + Math.floor(j / 3);
+                if (row[i + '' + num] || col[j + '' + num] || box[boxindex + '' + num]) {
+                    // 横列row要不能有一致的  竖列col不能有一致的  小方块中不能有一致的
+                    return false;
+                }
+                row[i + '' + num] = true;
+                col[j + '' + num] = true;
+                box[boxindex + '' + num] = true;
+            }
         }
     }
-}
+    console.log(row, col, box);
+    return true;
+};
 
 const a = [
-    ['5', '3', '.',      '.', '7', '.',         '.', '.', '.'],
-    ['6', '.', '.',      '1', '9', '5',         '.', '.', '.'],
-    ['.', '9', '8',      '.', '.', '.',         '.', '6', '.'],
-        
-    ['8', '.', '.',      '.', '6', '.',         '.', '.', '3'],
-    ['4', '.', '.',      '8', '.', '3',         '.', '.', '1'],
-    ['7', '.', '.',      '.', '2', '.',         '.', '.', '6'],
-        
-    ['.', '6', '.',      '.', '.', '.',         '2', '8', '.'],
-    ['.', '.', '.',      '4', '1', '9',         '.', '.', '5'],
-    ['.', '.', '.',      '.', '8', '.',         '.', '7', '9'],
-]
-console.log(isValidSudoku(a))
+    ['5', '3', '.', '.', '7', '.', '.', '.', '.'],
+    ['6', '.', '.', '1', '9', '5', '.', '.', '.'],
+    ['.', '9', '8', '.', '.', '.', '.', '6', '.'],
+
+    ['8', '.', '.', '.', '6', '.', '.', '.', '3'],
+    ['4', '.', '.', '8', '.', '3', '.', '.', '1'],
+    ['7', '.', '.', '.', '2', '.', '.', '.', '6'],
+
+    ['.', '6', '.', '.', '.', '.', '2', '8', '.'],
+    ['.', '.', '.', '4', '1', '9', '.', '.', '5'],
+    ['.', '.', '.', '.', '8', '.', '.', '7', '9'],
+];
+// console.log(isValidSudoku(a));
 
 /**两数之和
  * 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标
@@ -104,15 +195,15 @@ var twoSum = function (nums, target) {
     // 方案2:  哈希表
     // 执行用时： 68 ms , 在所有 JavaScript 提交中击败了 92.48% 的用户
     // 内存消耗： 42 MB , 在所有 JavaScript 提交中击败了 9.97% 的用户
-    const resolveObj = {}
+    const resolveObj = {};
     for (let i = 0; i < nums.length; i++) {
         if (resolveObj.hasOwnProperty(nums[i])) {
-            return [resolveObj[nums[i]], i]
+            return [resolveObj[nums[i]], i];
         } else {
-            resolveObj[target - nums[i]] = i
+            resolveObj[target - nums[i]] = i;
         }
     }
-}
+};
 
 // console.log(twoSum([2, 7, 11, 15], 9))
 
@@ -161,18 +252,18 @@ var moveZeroes = function (nums) {
     // 方案2：
     // 执行用时： 84 ms , 在所有 JavaScript 提交中击败了 94.16% 的用户
     // 内存消耗： 46.2 MB , 在所有 JavaScript 提交中击败了 5.05% 的用户
-    let zeroCount = 0
+    let zeroCount = 0;
     // 题解：这里可以参照双指针的思路解决，指针j是一直往后移动的，如果指向的值不等于0才对他进行操作。而i统计的是前面0的个数，我们可以把j-i看做另一个指针，它是指向前面第一个0的位置，然后我们让j指向的值和j-i指向的值交换
     for (let left = 0; left < nums.length; left++) {
         if (nums[left] === 0) {
-            zeroCount++
+            zeroCount++;
         } else if (zeroCount !== 0) {
-            nums[left - zeroCount] = nums[left]
-            nums[left] = 0
+            nums[left - zeroCount] = nums[left];
+            nums[left] = 0;
         }
     }
-    return nums
-}
+    return nums;
+};
 // console.log(moveZeroes([0, 1, 0, 3, 12]))
 // console.log(moveZeroes([1, 0, 1]))
 // console.log(moveZeroes([0, 1, 0, 3, 12]))
@@ -191,8 +282,8 @@ var moveZeroes = function (nums) {
 //  输出：[1,2,4]
 //  解释：输入数组表示数字 123。
 var plusOne = function (digits) {
-    let increase = 1
-    const digistLen = digits.length
+    let increase = 1;
+    const digistLen = digits.length;
     // 执行用时：64 ms, 在所有 JavaScript 提交中击败了87.17%的用户
     // 内存消耗：40.9 MB, 在所有 JavaScript 提交中击败了11.07%的用户
     for (let i = digistLen - 1; i >= 0; i--) {
@@ -216,16 +307,16 @@ var plusOne = function (digits) {
         // }
 
         // 改进:
-        digits[i] = digits[i] + 1
-        digits[i] = digits[i] % 10
+        digits[i] = digits[i] + 1;
+        digits[i] = digits[i] % 10;
         if (digits[i] !== 0) {
-            return digits
+            return digits;
         }
     }
 
-    digits.unshift(1)
-    return digits
-}
+    digits.unshift(1);
+    return digits;
+};
 // console.log(plusOne([9]))
 
 /**两个数组的交集 II
@@ -295,42 +386,42 @@ var intersect = function (nums1, nums2) {
     //     return shortNums.slice(markArr[0], markArr[1] + 1)
     // }
     function compareLen(list1, list2) {
-        let BigNums = null
-        let smallNums = null
+        let BigNums = null;
+        let smallNums = null;
         // 默认sort会按照字符串比较大小，首先它比较第一个字符串的索引，如果第一个字符串的索引和那个比较的字符串中的第一个字符串的索引不相等就比较第一个字符串的索引，不再比较后面的，不管后面有没有大于它的，如果相等那么继续比较后面的字符串索引，直到比较完最后一个字符串的索引
         // 如果需要按照number比较，需要传入自定义比较参数 (a, b) => a - b -》 表示正序
-        list1.sort((a, b) => a - b)
-        list2.sort((a, b) => a - b)
+        list1.sort((a, b) => a - b);
+        list2.sort((a, b) => a - b);
         if (!(list1[0] < list2[0])) {
-            BigNums = list1
-            smallNums = list2
+            BigNums = list1;
+            smallNums = list2;
         } else {
-            BigNums = list2
-            smallNums = list1
+            BigNums = list2;
+            smallNums = list1;
         }
         return {
             BigNums,
             smallNums,
-        }
+        };
     }
     // /**先找出两个数组标识长短 */
-    const { BigNums, smallNums } = compareLen(nums1, nums2)
-    let commonList = []
-    var left = 0
-    var right = 0
+    const { BigNums, smallNums } = compareLen(nums1, nums2);
+    let commonList = [];
+    var left = 0;
+    var right = 0;
     do {
         if (smallNums[left] < BigNums[right]) {
-            left++
+            left++;
         } else if (smallNums[left] > BigNums[right]) {
-            right++
+            right++;
         } else {
-            commonList.push(smallNums[left])
-            left++
-            right++
+            commonList.push(smallNums[left]);
+            left++;
+            right++;
         }
-    } while (left < smallNums.length && right < BigNums.length)
-    return commonList.sort()
-}
+    } while (left < smallNums.length && right < BigNums.length);
+    return commonList.sort();
+};
 // console.log(intersect([1, 2, 2, 1], [2, 2]))
 // console.log(
 //     intersect(
@@ -358,7 +449,7 @@ var intersect = function (nums1, nums2) {
  * 输出: 1
  */
 var singleNumber = function (nums) {
-    let getNum = null
+    let getNum = null;
     // let hasShow = []
     // for (let i = 0; i < nums.length; i++) {
     //     if (!hasShow.includes(nums[i]) && nums.lastIndexOf(nums[i]) === i) {
@@ -379,8 +470,8 @@ var singleNumber = function (nums) {
     // }
     // return getNum
     // 异或运算, 原理： 例如： 1^2^2 输出1
-    return nums.reduce((total, el) => total ^ el, 0)
-}
+    return nums.reduce((total, el) => total ^ el, 0);
+};
 // console.log(singleNumber([2, 2, 1]))
 
 /**旋转数组
@@ -434,7 +525,7 @@ var rotate = function (nums, k) {
     // reverse(nums, 0, nums.length - 1)
     // reverse(nums, 0, k - 1)
     // reverse(nums, k, nums.length - 1)
-}
+};
 // console.log(rotate([1, 2, 3, 4], 3))
 
 /**存在重复元素
@@ -445,9 +536,9 @@ var rotate = function (nums, k) {
 //  输入：nums = [1,1,1,3,3,4,3,2,4,2]
 //  输出：true
 var containsDuplicate = function (nums) {
-    const newList = Array.from(new Set(nums))
-    return newList.length < nums.length
-}
+    const newList = Array.from(new Set(nums));
+    return newList.length < nums.length;
+};
 
 /**删除排序数组中的重复项
  * @param {number[]} nums
@@ -457,14 +548,14 @@ var containsDuplicate = function (nums) {
 //  输出：2, nums = [1,2]
 //  解释：函数应该返回新的长度 2 ，并且原数组 nums 的前两个元素被修改为 1, 2 。不需要考虑数组中超出新长度后面的元素。
 var removeDuplicates = function (nums) {
-    let left = 0
+    let left = 0;
     for (let right = 1; right < nums.length; right++) {
         if (nums[right] !== nums[left]) {
-            nums[++left] = nums[right]
+            nums[++left] = nums[right];
         }
     }
-    return ++left
-}
+    return ++left;
+};
 
 /** 买卖股票的最佳时机 II
  * @param {number[]} prices
@@ -476,15 +567,15 @@ var removeDuplicates = function (nums) {
 //       随后，在第 4 天（股票价格 = 3）的时候买入，在第 5 天（股票价格 = 6）的时候卖出, 这笔交易所能获得利润 = 6-3 = 3 。
 var maxProfit = function (prices) {
     // 利润记录
-    let profix = 0
+    let profix = 0;
     // 记录价格锚点
-    let buyPrice = prices[0]
+    let buyPrice = prices[0];
     for (let i = 1; i < prices.length; i++) {
         if (prices[i] > buyPrice) {
             // 只要当前股价不是下跌，那么记录价格点位,并抛出
-            profix += prices[i] - buyPrice
+            profix += prices[i] - buyPrice;
         }
-        buyPrice = prices[i]
+        buyPrice = prices[i];
     }
-    return profix
-}
+    return profix;
+};

@@ -1,14 +1,54 @@
 /*
  * @Author: jimouspeng
- * @LastEditTime: 2022-07-21 17:42:42
+ * @LastEditTime: 2022-07-26 17:29:56
  * @Description: 数学问题
  * @FilePath: \leetcode\src\math.js
  * 可以输入预定的版权声明、个性签名、空行等
  */
+
+/** Fizz Buzz
+ * 给你一个整数 n ，找出从 1 到 n 各个整数的 Fizz Buzz 表示，并用字符串数组 answer（下标从 1 开始）返回结果，其中：
+answer[i] == "FizzBuzz" 如果 i 同时是 3 和 5 的倍数。
+answer[i] == "Fizz" 如果 i 是 3 的倍数。
+answer[i] == "Buzz" 如果 i 是 5 的倍数。
+answer[i] == i （以字符串形式）如果上述条件全不满足。
+
+输入：n = 3
+输出：["1","2","Fizz"]
+
+
+输入：n = 5
+输出：["1","2","Fizz","4","Buzz"]
+
+
+ */
+
+/**
+ * @param {number} n
+ * @return {string[]}
+ */
+var fizzBuzz = function (n) {
+    let countList = [];
+    for (let i = 1; i <= n; i++) {
+        if (i % 3 === 0 && i % 5 === 0) {
+            countList.push('FizzBuzz');
+        } else if (i % 3 === 0) {
+            countList.push('Fizz');
+        } else if (i % 5 === 0) {
+            countList.push('Buzz');
+        } else {
+            countList.push(i + '');
+        }
+    }
+    return countList;
+};
+
+console.log(fizzBuzz(3));
+
 /** 计数质数
  * 给定整数 n ，返回 所有小于非负整数 n 的质数的数量
  * 
- * 质数： 质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数
+ * 【质数： 质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数】
  * 
 输入：n = 10
 输出：4
@@ -19,18 +59,55 @@
  * @return {number}
  */
 var countPrimes = function (n) {
-    if (n < 2) {
+    /** 这个方法大数会超时 */
+    // if (n <= 2) {
+    //     return 0;
+    // }
+    // function isPrimes(num) {
+    //     let flag = true;
+    //     for (let i = 2; i < num; i++) {
+    //         // debugger;
+    //         if (num % i === 0) {
+    //             flag = false;
+    //         }
+    //     }
+    //     return flag;
+    // }
+    // let countList = [];
+    // n--;
+    // while (n > 1) {
+    //     if (n === 2) {
+    //         countList.push(n);
+    //     } else if (n % 2 !== 0) {
+    //         if (isPrimes(n) && countList.indexOf(n) < 0) {
+    //             countList.push(n);
+    //         }
+    //     }
+    //     n--;
+    // }
+    // console.log(countList);
+    // return countList.length;
+
+    if (n < 3) {
         return 0;
     }
+    const result = new Array(n).fill(true);
     let count = 0;
+    let list = [];
     for (let i = 2; i < n; i++) {
-        if (n % i === 0 && (n / i) % 2 !== 0) {
-            count++;
+        if (result[i]) ++count;
+        for (let j = i * 2; j < n; j = j + i) {
+            // debugger
+            if (j % i === 0) {
+                result[j] = false;
+                list.push(j);
+            }
         }
     }
+    // console.log(list);
     return count;
 };
-console.log(countPrimes(10));
+console.log(countPrimes(20));
 
 /** 3的幂
  * 给定一个整数，写一个函数来判断它是否是 3 的幂次方。如果是，返回 true ；否则，返回 false;
