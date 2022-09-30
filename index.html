@@ -2,7 +2,7 @@
  * @Date: 2022-01-28 10:10:06
  * @LastEditors: Please set LastEditors
  * @Description: 描述文件内容
- * @LastEditTime: 2022-07-26 16:16:16
+ * @LastEditTime: 2022-09-29 11:07:33
  * @FilePath: \leetcode\index.html
 -->
 <!DOCTYPE html>
@@ -21,5 +21,13 @@
         <!-- <script src="./src/String.js"></script> -->
         <script src="./src/math.js"></script>
         <!-- <script src="./src/other.js"></script> -->
+        <script>
+            function calculate(n) {
+                console.log(n);
+                if (n === 1) return n;
+                return calculate(n - 1) + n;
+            }
+            console.log('计算结果', calculate(5));
+        </script>
     </body>
 </html>

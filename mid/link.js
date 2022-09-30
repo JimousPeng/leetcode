@@ -1,3 +1,27 @@
+/** 相交链表 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null
+ * 注意，函数返回结果后，链表必须 保持其原始结构
+ * 题目数据 保证 整个链式结构中不存在环
+ *
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ * @param {ListNode} headA
+ * @param {ListNode} headB
+ * @return {ListNode}
+ */
+var getIntersectionNode = function (headA, headB) {
+    if (headA === null || headB === null) {
+        return null;
+    }
+    let curHeadA = headA;
+    let curHeadB = headB;
+    while(curHeadA || curHeadB) {
+        curHeadA
+    }
+};
+
 /** 奇偶链表
  * 给定单链表的头节点 head ，将所有索引为奇数的节点和索引为偶数的节点分别组合在一起，然后返回重新排序的列表
  * 第一个节点的索引被认为是 奇数 ， 第二个节点的索引为 偶数 ，以此类推
@@ -15,27 +39,22 @@
  * @return {ListNode}
  */
 var oddEvenList = function (head) {
-    const initLink = new ListNode(0); // 记录偶数节点
-    let ouLink = initLink;
-    // const anotherLink = new ListNode(0); // 记录奇数节点
-    // let qiLink = anotherLink;
-    let flag = 1;
-    let curNode = head;
-    while (curNode) {
-        if (flag % 2 === 1) {
-            // 奇数项
-            if (curNode.next.next) {
-                curNode = curNode.next?.next;
-            }
-        } else {
-            // 偶数项
-            ouLink.val = curNode.val;
-            curNode = curNode.next?.next;
-            ouLink.next = new ListNode(0);
-            ouLink = ouLink.next;
-        }
-        flag++;
+    if (head === null || head.next === null) {
+        return head;
     }
+    let oddHead = head; // 奇数链表的头节点
+    let oddCur = oddHead; // 奇数链表的当前节点
+    let evenHead = head.next; // 偶数链表的头结点
+    let evenCur = evenHead; // 偶数链表的当前节点
+    while (evenCur !== null && evenCur.next !== null) {
+        oddCur.next = oddCur.next.next;
+        evenCur.next = evenCur.next.next;
+        // 奇偶指针往后移
+        oddCur = oddCur.next;
+        evenCur = evenCur.next;
+    }
+    oddCur.next = evenHead;
+    return oddHead;
 };
 
 //
@@ -116,4 +135,3 @@ var addTwoNumbers = function (l1, l2) {
     }
     return initNode.next;
 };
-
