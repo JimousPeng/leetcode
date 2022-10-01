@@ -1,31 +1,40 @@
 /*
  * @Author: jimouspeng
- * @LastEditTime: 2022-07-11 09:44:38
+ * @LastEditTime: 2022-09-17 10:05:33
  * @Description: 二叉树
  * @FilePath: \leetcode\src\tree.js
  * 可以输入预定的版权声明、个性签名、空行等
  */
 
-/** 二叉树的最大深度
- * 给定一个二叉树，找出其最大深度
- * 二叉树的深度为根节点到最远叶子节点的最长路径上的节点数
- * 说明: 叶子节点是指没有子节点的节点
- * 给定二叉树 [3,9,20,null,null,15,7]
- * 返回它的最大深度 3
- */
+/** 验证二叉搜索树-给你一个二叉树的根节点 root ，判断其是否是一个有效的二叉搜索树
+ * 有效 二叉搜索树定义如下：
 
+节点的左子树只包含 小于 当前节点的数。
+节点的右子树只包含 大于 当前节点的数。
+所有左子树和右子树自身必须也是二叉搜索树
+  */
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
 /**
  * @param {TreeNode} root
- * @return {number}
+ * @return {boolean}
  */
-var maxDepth = function (root) {
-    if (root.length === 0) {
-        return 0;
+var isValidBST = function (root) {
+    return isValidBST(root, Infinity, -Infinity)
+}
+
+isValidBST = function (root, maxNum = Infinity, minNum = -Infinity) {
+    if (root === null) {
+        return true
     }
-    let maxDeep = 0;
-    let idx = 0;
-    while (root[idx]) {
-        maxDeep += 1;
-        idx = 2^maxDeep - 1
+    if (root.val >= maxNum || root.val <= minNum) {
+        return false
     }
-};
+    return isValidBST(root.left, root.val, -Infinity) && isValidBST(root.right, Infinity, root.val)
+}
