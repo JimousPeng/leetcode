@@ -1,8 +1,8 @@
 <!--
  * @Date: 2022-01-28 10:10:06
- * @LastEditors: jimouspeng
+ * @LastEditors: Please set LastEditors
  * @Description: 描述文件内容
- * @LastEditTime: 2022-10-01 13:02:12
+ * @LastEditTime: 2022-10-08 15:48:53
  * @FilePath: \leetcode\index.html
 -->
 <!DOCTYPE html>
@@ -20,6 +20,12 @@
         <!-- <script src="./src/Array.js"></script> -->
         <!-- <script src="./src/String.js"></script> -->
         <!-- <script src="./src/math.js"></script> -->
+        <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+        </ul>
         <script src="./src/tree.js"></script>
         <!-- <script src="./src/other.js"></script> -->
         <script>
@@ -29,6 +35,33 @@
                 return calculate(n - 1) + n;
             }
             console.log('计算结果', calculate(5));
+
+            let flag = 0;
+            while (flag < 3) {
+                // const liList = document.getElementsByTagName('li');
+                // 如果用var命名，会导致每个打印都是4
+                // for (var i = 0; i < liList.length; i++) {
+                for (let i = 0; i < 15; i++) {
+                    // liList[i].addEventListener('click', () => {
+                    //     console.log(i);
+                    // });
+                    // liList[i].onclick = function (e) {
+                    //     console.log(i);
+                    // };
+                    console.log(i);
+                    flag++;
+                    if (flag > 3) {
+                        break;
+                    }
+                }
+                console.log('这里打印下', flag);
+            }
+
+            let a = 5;
+            while (a < 9) {
+                console.log(a);
+                a++;
+            }
         </script>
     </body>
 </html>
