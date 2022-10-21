@@ -1,5 +1,4 @@
 /**
- * 路径总和--减法处理
  * Definition for a binary tree node.
  * function TreeNode(val, left, right) {
  *     this.val = (val===undefined ? 0 : val)
@@ -7,7 +6,19 @@
  *     this.right = (right===undefined ? null : right)
  * }
  */
+
 /**
+ * 从中序与后序遍历序列构造二叉树
+ * @param {number[]} inorder
+ * @param {number[]} postorder
+ * @return {TreeNode}
+ */
+var buildTree = function (inorder, postorder) {
+    
+};
+
+/**
+ * 路径总和--减法处理
  * @param {TreeNode} root
  * @param {number} targetSum
  * @return {boolean}
@@ -22,14 +33,6 @@ var hasPathSum = function (root, targetSum) {
 
 /**
  * 对称二叉树
- * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
- * }
- */
-/**
  * @param {TreeNode} root
  * @return {boolean}
  */
@@ -47,14 +50,6 @@ var isSymmetric = function (root) {
 
 /**
  * 二叉树的最大深度
- * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
- * }
- */
-/**
  * @param {TreeNode} root
  * @return {number}
  */
@@ -63,6 +58,7 @@ var maxDepth = function (root) {
 
     function getDepth(root, dep) {
         if (root == null) return dep;
+        /** +1 是因为要算上root这层深度 */
         return Math.max(getDepth(root.left, dep + 1), getDepth(root.right, dep + 1));
     }
     return getDepth(root, depth);
