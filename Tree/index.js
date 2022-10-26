@@ -23,11 +23,12 @@ var buildTree = function (preorder, inorder) {
     // 前序遍历，第一个节点为二叉树的root节点
     // 中序遍历，root节点划分左右子树
     const rootIdx = 0;
+    const rootVal = preorder[rootIdx];
+    const root = new TreeNode(rootVal);
+    const rootIndex = inorder.findIndex((item) => item === rootVal);
+
     const treeCreate = (initLeft, initRight) => {
         if (initLeft < initRight) return null;
-        const rootVal = preorder[rootIdx];
-        const root = new TreeNode(rootVal);
-        const rootIndex = inorder.findIndex((item) => item === rootVal);
         rootIdx++;
 
         root.left = treeCreate(initLeft, rootIndex - 1);
@@ -36,6 +37,85 @@ var buildTree = function (preorder, inorder) {
         return root;
     };
     return treeCreate(0, inorder.length - 1);
+};
+
+// 二叉树的序列化与反序列化---把二叉树转化为一个字符串，并且还能把这个字符串还原成原来的二叉树
+/**
+ * Encodes a tree to a single string.
+ *
+ * @param {TreeNode} root
+ * @return {string}
+ */
+var serialize = function (root) {
+    if (root === null) return '#';
+    const treeList = [];
+    function transform(root, row) {
+        if (!treeList[row]) {
+            treeList[row] = [];
+        }
+
+        if (root == null) {
+            treeList[row].push('#', ',');
+            return;
+        } else {
+            treeList[row].push(root.val, ',');
+        }
+        transform(root.left, row + 1);
+        transform(root.right, row + 1);
+    }
+    transform(root, 0);
+    const strList = treeList.reduce((total, item) => {
+        total.push(...item, '|');
+        return total;
+    }, []);
+    console.log('hahah', treeList);
+    return strList.join('');
+};
+
+/**
+ * Decodes your encoded data to tree.
+ *
+ * @param {string} data
+ * @return {TreeNode}
+ *
+ * [ '1,', '2,3,', '#,#,4,5,', '#,#,#,#,', '' ]
+ */
+var deserialize = function (data) {
+    if (data === '#') return null;
+    const nodeList = data.split('|');
+    console.log(data, nodeList);
+    const rootNode = new TreeNode(nodeList[0].split(',')[0]);
+    function createTree(root, row) {
+        rootNode.left = createTree(row + 1);
+        rootNode.right = createTree(row + 1);
+        return rootNode;
+    }
+    createTree(rootNode, 0);
+};
+
+/**
+ * Your functions will be called as such:
+ * deserialize(serialize(root));
+ */
+
+/**
+ * 填充每个节点的下一个右侧节点指针
+ * @param {Node} root
+ * @return {Node}
+ * 输入：root = [1,2,3,4,5,6,7]
+ * 输出：[1,#,2,3,#,4,5,6,7,#]
+ */
+var connect = function (root) {
+    if (root == null) return [];
+    function dfs(left, right) {
+        if (left == null || left.next == right) return;
+        left.next = right;
+        dfs(left.left, left.right);
+        right.left ? dfs(left.right, right.left) : dfs(left.right, right.right);
+        dfs(right.left, right.right);
+    }
+    dfs(root.left, root.right);
+    return root;
 };
 
 /**
