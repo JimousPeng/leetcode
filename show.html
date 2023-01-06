@@ -13,7 +13,7 @@
                 background-color: rgb(26, 85, 153);
             }
             .container {
-                background: rgba(0, 149, 182);     
+                background: rgba(0, 149, 182);
             }
             .container span {
                 font-size: 0.32rem;
@@ -31,5 +31,23 @@
         <div class="container"><span>那些你很冒险的梦</span></div>
 
         <div><span></span></div>
+
+        <script>
+            var removeDuplicates = function (nums) {
+                const len = nums.length;
+                let left = 0;
+                let right = 1;
+                while (right <= len - 1) {
+                    while (nums[right] === nums[left]) {
+                        right++;
+                    }
+                    let nextVal = nums[right];
+                    nums[++left] = nextVal;
+                    right++;
+                }
+                return left + 1;
+            };
+            console.log(removeDuplicates([-1, 0, 0, 0, 0, 3, 3]));
+        </script>
     </body>
 </html>
