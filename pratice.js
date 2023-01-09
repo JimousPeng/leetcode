@@ -1,3 +1,75 @@
+/** 反转字符串
+ * 编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 s 的形式给出
+ * 
+ * 直接前后双指针处理
+ *
+ * 输入：s = ["h","e","l","l","o"]
+ * 输出：["o","l","l","e","h"]
+ * @param {character[]} s
+ * @return {void} Do not return anything, modify s in-place instead.
+ */
+var reverseString = function (s) {};
+
+/** 字符串相乘
+ * 定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式
+ */
+var multiply = function (num1, num2) {
+    if (num1 === '0' || num2 === '0') return '0';
+    const num1Len = num1.length;
+    const num2Len = num2.length;
+    const strList = new Array(num1Len + num2Len).fill(0);
+    for (let i = num1Len - 1; i >= 0; i--) {
+        for (let j = num2Len - 1; j >= 0; j--) {
+            // 将当前位的相乘结果加上要放置的新的数组对应的下标内的值，该值保存了上次相加的进位数
+            // 比如 12 * 9； strList初始值是[0, 0, 0], 当倒叙遍历时， 计算2*9的值是放在strList[2]内，先加上该值(初始值是0), 然后个位取余数，十分位取整数位。
+            // 当计算1 * 9的时候，i + j + 1即是取的strList[1],
+            const sumTotal = num1[i] * num2[j] + strList[i + j + 1];
+
+            const tensPlace = Math.floor(sumTotal / 10);
+            const onesPlace = sumTotal % 10;
+
+            strList[i + j] = tensPlace + strList[i + j];
+            strList[i + j + 1] = onesPlace;
+        }
+    }
+    /** 判断首位是否有溢出 */
+    if (strList[0] === 0) {
+        strList.shift();
+    }
+    return strList.join('');
+};
+console.log(multiply('123456789', '987654321'));
+
+/** 盛最多水的容器
+ * 给定一个长度为 n 的整数数组 height 。有 n 条垂线，第 i 条线的两个端点是 (i, 0) 和 (i, height[i])
+ * 找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水
+ * 返回容器可以储存的最大水量
+ *
+ * 输入：[1,8,6,2,5,4,8,3,7]
+ * 输出：49
+ * @param {number[]} height
+ * @return {number}
+ */
+var maxArea = function (height) {
+    // const areaList = []; // 用数组反而浪费空间
+    let maxArea = 0;
+    const heightLen = height.length;
+    let maxHeight = height[0];
+    let maxIndex = 0;
+    for (let i = 1; i < heightLen; i++) {
+        const heightIdx = Math.min(height[i], maxHeight);
+        const heightCalculate = heightIdx * (i - maxIndex);
+        // areaList.push(heightCalculate);
+        maxArea = Math.max(maxArea, heightCalculate);
+        if (height[i] > maxHeight) {
+            maxHeight = height[i];
+            maxIndex = i;
+        }
+    }
+    return maxArea;
+};
+console.log(maxArea([1, 2, 1]));
+
 /** 删除排序数组中的重复项
  *
  * 给你一个 升序排列 的数组 nums ，请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度
@@ -9,7 +81,7 @@
  * @param {number[]} nums  1 <= nums.length <= 3 * 104
  * @return {number}
  */
- var removeDuplicates = function (nums) {
+var removeDuplicates = function (nums) {
     const len = nums.length;
     let left = 0;
     let right = 1;
@@ -17,13 +89,10 @@
         while (nums[right] === nums[left]) {
             right++;
         }
-        if (nums[right]) {
-            let nextVal = nums[right];
-            nums[++left] = nextVal;
-            right++;
-        } else {
-            return left + 1;
+        if (nums[right] !== undefined) {
+            nums[++left] = nums[right];
         }
+        right++;
     }
     return left + 1;
 };
