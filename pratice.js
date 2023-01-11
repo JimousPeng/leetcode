@@ -1,6 +1,145 @@
+/** 螺旋矩阵
+ * 给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素
+ * @param {number[][]} matrix
+ * @return {number[]}
+ */
+var spiralOrder = function (matrix) {};
+
+/** 存在重复元素
+ * 给你一个整数数组 nums 。如果任一值在数组中出现 至少两次 ，返回 true ；如果数组中每个元素互不相同，返回 false
+ *
+ * 输入：nums = [1,2,3,1] 输出：true
+ * @param {number[]} nums
+ * @return {boolean}
+ */
+var containsDuplicate = function (nums) {
+    // const numMap = {};
+    // for (let i = 0; i < nums.length; i++) {
+    //     if (numMap[nums[i]]) {
+    //         return true;
+    //     }
+    //     numMap[nums[i]] = nums[i] + ''; // 可能存在nums[i]=0，为保证上面if处理，转换为字符
+    // }
+    // return false;
+
+    // 用set数据存储，效率貌似更高
+    const numset = new Set();
+    for (let i = 0; i < nums.length; i++) {
+        if (numset.has(nums[i])) {
+            return true;
+        }
+        numset.add(nums[i]); // 可能存在nums[i]=0，为保证上面if处理，转换为字符
+    }
+    return false;
+};
+console.log(containsDuplicate([1, 2, 3, 4]));
+
+/** 除自身以外数组的乘积
+ * 给你一个整数数组 nums，返回 数组 answer ，其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积
+ *
+ * 请不要使用除法，且在 O(n) 时间复杂度内完成此题, 即一次遍历解决
+ *
+ * 主要注意点是时间复杂度
+ *
+ * 输入: nums = [1,2,3,4]
+ * 输出: [24,12,8,6]
+ *
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var productExceptSelf = function (nums) {
+    const numsLen = nums.length;
+    const newlist = new Array(numsLen).fill(1);
+    // for (let i = 0; i < numsLen; i++) {
+    //     // 下面这种算法，会超时，因为Nums等于每个for循环单次遍历内，都又遍历了一次；
+    //     // newlist[i] = nums.reduce((total, item, index) => {
+    //     //     if (index === i) {
+    //     //         return total;
+    //     //     }
+    //     //     total = total * item;
+    //     //     console.log(total);
+    //     //     return total;
+    //     // }, 1);
+
+    //     // 有没有办法把之前遍历的乘积结果缓存下来呢，再处理到对应的循环的时候就是需要的结果
+    //     for (let j = 0; j < newlist.length; j++) {
+    //         newlist
+    //     }
+
+    // }
+
+    /** 左乘积 * 右乘积
+     * 第一次遍历，计算左乘积
+     * 第二次遍历，计算右乘积
+     * 最后遍历计算左乘积*右乘积
+     *
+     * leftlist可以直接用newlist数组存储，可以减少一个空间复杂度
+     *
+     * 执行用时： 96 ms , 在所有 JavaScript 提交中击败了 66.84% 的用户 内存消耗： 54.1 MB , 在所有 JavaScript 提交中击败了 41.78% 的用户
+     *
+     */
+    // const leftlist = new Array(numsLen).fill(1);
+    // const rightlist = new Array(numsLen).fill(1);
+    // for (let i = 1; i < numsLen; i++) {
+    //     leftlist[i] = leftlist[i - 1] * nums[i - 1];
+    // }
+    // for (let j = numsLen - 2; j >= 0; j--) {
+    //     rightlist[j] = rightlist[j + 1] * nums[j + 1];
+    // }
+    // for (let k = 0; k < numsLen; k++) {
+    //     newlist[k] = leftlist[k] * rightlist[k];
+    // }
+    /** 继续优化
+     * 将左乘积直接存入newlist
+     * 执行用时： 92 ms , 在所有 JavaScript 提交中击败了 80.64% 的用户 内存消耗： 54.1 MB , 在所有 JavaScript 提交中击败了 39.66% 的用户
+     */
+    for (let i = 1; i < numsLen; i++) {
+        newlist[i] = newlist[i - 1] * nums[i - 1];
+    }
+    let rnum = 1; // 定义右乘积的当前量
+    for (let j = numsLen - 1; j >= 0; j--) {
+        newlist[j] = newlist[j] * rnum;
+        rnum *= newlist[j];
+    }
+    return newlist;
+};
+
+/** 反转字符串中的单词 III
+ * 给定一个字符串 s ，你需要反转字符串中每个单词的字符顺序，同时仍保留空格和单词的初始顺序
+ *
+ * 输入：s = "Let's take LeetCode contest"
+ * 输出："s'teL ekat edoCteeL tsetnoc"
+ *
+ * @param {string} s
+ * @return {string}
+ */
+var reverseWords = function (s) {
+    function singleReverse(s) {
+        let slist = s.split('');
+        let left = 0;
+        let right = slist.length - 1;
+        while (left < right) {
+            let tempStr = slist[left];
+            slist[left] = slist[right];
+            slist[right] = tempStr;
+            left++;
+            right--;
+        }
+        return slist.join('');
+    }
+    let handleStr = s.split(' ');
+    return handleStr.reduce((total, item) => {
+        let cur = singleReverse(item);
+        total = total + ' ' + cur;
+        return total.trim();
+    }, '');
+};
+
+console.log(reverseWords("Let's take LeetCode contest"));
+
 /** 反转字符串
  * 编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 s 的形式给出
- * 
+ *
  * 直接前后双指针处理
  *
  * 输入：s = ["h","e","l","l","o"]
@@ -8,7 +147,18 @@
  * @param {character[]} s
  * @return {void} Do not return anything, modify s in-place instead.
  */
-var reverseString = function (s) {};
+var reverseString = function (s) {
+    let left = 0;
+    let right = s.length - 1;
+    while (left < right) {
+        let tempStr = s[left];
+        s[left] = s[right];
+        s[right] = tempStr;
+        left++;
+        right--;
+    }
+    return s;
+};
 
 /** 字符串相乘
  * 定两个以字符串形式表示的非负整数 num1 和 num2，返回 num1 和 num2 的乘积，它们的乘积也表示为字符串形式
@@ -54,16 +204,17 @@ var maxArea = function (height) {
     // const areaList = []; // 用数组反而浪费空间
     let maxArea = 0;
     const heightLen = height.length;
-    let maxHeight = height[0];
-    let maxIndex = 0;
-    for (let i = 1; i < heightLen; i++) {
-        const heightIdx = Math.min(height[i], maxHeight);
-        const heightCalculate = heightIdx * (i - maxIndex);
-        // areaList.push(heightCalculate);
-        maxArea = Math.max(maxArea, heightCalculate);
-        if (height[i] > maxHeight) {
-            maxHeight = height[i];
-            maxIndex = i;
+    let left = 0;
+    let right = heightLen - 1;
+    while (left < right) {
+        let res = (right - left) * Math.min(height[right], height[left]);
+        maxArea = Math.max(maxArea, res);
+        // left ++;  这里不能直接left++，这样的话，就定死了后侧只能为最后一个元素，可能存在最后一个元素不是最高，所以右侧指针也需要移动。
+        // 比如 [2,3,4,5,18,17,6]， 会输出16， 预期结果是17，即[18, 17]这一段为最高, 而不是取[4, ..., 6]这一段(4x4 -> 16)
+        if (height[right] < height[left]) {
+            right--;
+        } else {
+            left++;
         }
     }
     return maxArea;

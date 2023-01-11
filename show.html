@@ -33,29 +33,83 @@
         <div><span></span></div>
 
         <script>
-            var multiply = function (num1, num2) {
-                if (num1 === '0' || num2 === '0') return '0';
-                let len1 = num1.length,
-                    len2 = num2.length,
-                    res = new Array(len1 + len2).fill(0);
-                // 结果最多为 m + n 位数
-                for (let i = len1 - 1; i >= 0; i--) {
-                    for (let j = len2 - 1; j >= 0; j--) {
-                        // 从个位数开始，逐步相乘
-                        const mul = num1[i] * num2[j];
-                        // 乘积在结果数组中对应的位置
-                        const p1 = i + j,
-                            p2 = i + j + 1;
-                        // 对结果进行累加
-                        const sum = mul + res[p2];
-                        res[p1] += Math.floor(sum / 10);
-                        res[p2] = sum % 10;
+            var containsDuplicate = function (nums) {
+                const numMap = {};
+                for (let i = 0; i < nums.length; i++) {
+                    if (numMap[nums[i]]) {
+                        return true;
                     }
+                    numMap[nums[i]] = nums[i] + ''; // 可能存在nums[i]=0，为保证上面if处理，转换为字符
                 }
-                if (res[0] === 0) res.shift();
-                return res.join('');
+                return false;
             };
-            console.log(multiply('123456789', '987654321'));
+            console.log(containsDuplicate([1, 2, 3, 4]));
+
+            // var productExceptSelf = function (nums) {
+            //     const numsLen = nums.length;
+            //     const newlist = new Array(numsLen).fill(1);
+            //     for (let i = 1; i < numsLen; i++) {
+            //         newlist[i] = newlist[i - 1] * nums[i - 1];
+            //     }
+            //     let rnum = 1; // 定义右乘积的当前量
+            //     for (let j = numsLen - 1; j >= 0; j--) {
+            //         newlist[j] = newlist[j] * rnum;
+            //         rnum = rnum * nums[j];
+            //     }
+            //     return newlist;
+            // };
+            // console.log(productExceptSelf([1, 2, 3, 4]));
+
+            // var reverseWords = function (s) {
+            //     function singleReverse(s) {
+            //         let slist = s.split('');
+            //         let left = 0;
+            //         let right = slist.length - 1;
+            //         while (left < right) {
+            //             let tempStr = slist[left];
+            //             slist[left] = slist[right];
+            //             slist[right] = tempStr;
+            //             left++;
+            //             right--;
+            //         }
+            //         return slist.join('');
+            //     }
+            //     let handleStr = s.split(' ');
+            //     const newstr = handleStr.reduce((total, item) => {
+            //         let cur = singleReverse(item);
+            //         total = total + ' ' + cur;
+            //         console.log(cur, total);
+            //         return total;
+            //     }, '');
+            //     console.log(newstr);
+            //     return newstr;
+            // };
+
+            // console.log(reverseWords("Let's take LeetCode contest"));
+            // var multiply = function (num1, num2) {
+            //     if (num1 === '0' || num2 === '0') return '0';
+            //     let len1 = num1.length,
+            //         len2 = num2.length,
+            //         res = new Array(len1 + len2).fill(0);
+            //     // 结果最多为 m + n 位数
+            //     for (let i = len1 - 1; i >= 0; i--) {
+            //         for (let j = len2 - 1; j >= 0; j--) {
+            //             // 从个位数开始，逐步相乘
+            //             const mul = num1[i] * num2[j];
+            //             // 乘积在结果数组中对应的位置
+            //             const p1 = i + j,
+            //                 p2 = i + j + 1;
+            //             // 对结果进行累加
+            //             const sum = mul + res[p2];
+            //             res[p1] += Math.floor(sum / 10);
+            //             res[p2] = sum % 10;
+            //         }
+            //     }
+            //     if (res[0] === 0) res.shift();
+            //     return res.join('');
+            // };
+            // console.log(multiply('123456789', '987654321'));
+
             // var maxArea = function (height) {
             //     // const areaList = []; // 用数组反而浪费空间
             //     let maxArea = 0;
@@ -76,6 +130,7 @@
             //     return maxArea;
             // };
             // console.log(maxArea([1, 2, 1]));
+
             // var removeDuplicates = function (nums) {
             //     const len = nums.length;
             //     let left = 0;
