@@ -3,7 +3,50 @@
  * @param {number[][]} matrix
  * @return {number[]}
  */
-var spiralOrder = function (matrix) {};
+var spiralOrder = function (matrix) {
+    const newlist = [];
+    let crosslf = true; // 当前是从左往后遍历
+    let crosstd = true; // 当前是从上往下跳
+    let maxColumn = matrix[0][0]; // 最大列数
+    let maxRow = matrix.length;
+    let row = 0,
+        column = 0;
+    while (matrix[row] && matrix[row][column]) {
+        const curRow = matrix[row];
+        const curColumn = curRow[column];
+        const curlen = curColumn.length;
+        newlist.push(curColumn);
+        if (crosslf) {
+            // 从左往后遍历
+            if (column < curlen - 1) {
+                // 当前不是最后一位
+                column++;
+            } else {
+                // 当前是最后一位,因为当前是左->右，所以row一定是递增
+                crosslf = false;
+                row++;
+                // 边界处理
+                while (matrix[row]) {
+                    newlist.push(matrix[row][column]);
+                    row++;
+                }
+                
+                crosstd = !crosstd; // 变更下一次
+            }
+        } else {
+            // 从右往左遍历
+            if (column > 0) {
+                column--;
+            } else {
+                // 当前是第一位, ,因为当前是 右-> 左，所以row一定是递减
+                crosslf = true;
+                row--;
+                crosstd = !crosstd;
+            }
+        }
+    }
+    return newlist;
+};
 
 /** 存在重复元素
  * 给你一个整数数组 nums 。如果任一值在数组中出现 至少两次 ，返回 true ；如果数组中每个元素互不相同，返回 false
