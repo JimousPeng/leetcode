@@ -3,11 +3,89 @@ function ListNode(val, next) {
     this.next = next === undefined ? null : next;
 }
 
+/** 环形链表 II
+ * 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var detectCycle = function (head) {
+    if (head === null || head.next === null) return null;
+    
+};
+
+/** 环形链表
+ * 给你一个链表的头节点 head ，判断链表中是否有环
+ *
+ * 思路1：
+ * 利用快慢双指针,如果快指针存在===慢指针，那么说明有环
+ * 重点： 怎么定义快指针 -> 转换为怎么控制慢指针的步进。
+ * 引入中间变量，快指针每次移动一位，当快指针制动5位之后，慢指针移动一位
+ * 从相对移动来讲，就是将慢指针移动一位，快指针移动5位，转变为 移动快指针5位，移动慢指针一位。
+ *
+ * 思路2：
+ * hash表，保留每一位node节点，用map或者set结构
+ *
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function (head) {
+    if (head === null || head.next === null) return false;
+    let left = head,
+        right = head.next;
+    let curindex = 1;
+    while (right) {
+        // 因为right是快指针，且步进为1；所以right用来当做while的循环条件
+        if (curindex % 5 === 0) {
+            left = left.next;
+        }
+        right = right.next;
+        curindex++;
+        if (left === right) {
+            return true;
+        }
+    }
+    return false;
+};
+
+/** 旋转链表
+ * 给你一个链表的头节点 head ，旋转链表，将链表每个节点向右移动 k 个位置
+ *
+ * 输入：head = [1,2,3,4,5], k = 2
+ * 输出：[4,5,1,2,3]
+ *
+ * @param {ListNode} head
+ * @param {number} k
+ * @return {ListNode}
+ */
+var rotateRight = function (head, k) {
+    if (head == null || k === 0 || head.next === null) return head;
+    let nodelen = 1,
+        nodehead = head;
+    while (nodehead.next !== null) {
+        nodehead = nodehead.next;
+        nodelen++;
+    }
+    // 对于nodelen的整数倍k，意味着其实没有移动，真正的移动步数，是 k % nodelen的值, 再通过nodelen - k % nodelen, 拿到移动k次后当前链表最后一项的节点值
+    let addstep = nodelen - (k % nodelen);
+    if (addstep === nodelen) return head;
+    // 尾节点指向节点，成环
+    nodehead.next = head;
+    while (addstep) {
+        nodehead = nodehead.next;
+        addstep--;
+    }
+    // whild循环后，此时nodehead为尾节点
+    let last = nodehead.next;
+    // 将环断开，尾节点指向null
+    nodehead.next = null;
+    return last;
+};
+
 /** 合并K个排序链表
  * 给你一个链表数组，每个链表都已经按升序排列
  *
  * 请你将所有链表合并到一个升序链表中，返回合并后的链表
- * 
+ *
  * 思路： 假设新链表为数组的第一项，从第二项开始遍历数组，将每一项的链表内的值都插入到新链表中
  *
  * 输入：lists = [[1,4,5],[1,3,4],[2,6]]   ->   [1->4->5,1->3->4,2->6]
@@ -17,8 +95,25 @@ function ListNode(val, next) {
  * @return {ListNode}
  */
 var mergeKLists = function (lists) {
-    let newlink = lists[0];
-    for (let i = 1; i < lists.length; i++) {}
+    if (lists.length === 0) return ListNode();
+    // 先用栈保存所有的数组，之后将数组转换为链表返回
+    let numlist = [];
+    for (let i = 0; i < lists.length; i++) {
+        let curlink = lists[i];
+        while (curlink) {
+            numlist.push(curlink.val);
+            curlink = curlink.next;
+        }
+    }
+    if (numlist.length === 0) return null;
+    numlist.sort((a, b) => a - b);
+    let newlink = new ListNode(numlist[0]);
+    let linkhead = newlink;
+    for (let i = 1; i < numlist.length; i++) {
+        newlink.next = new ListNode(numlist[i]);
+        newlink = newlink.next;
+    }
+    return linkhead;
 };
 
 /** 合并两个有序链表
