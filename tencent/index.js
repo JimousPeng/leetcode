@@ -5,12 +5,24 @@ function ListNode(val, next) {
 
 /** 环形链表 II
  * 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+ *
+ * 先找到环，然后返回该节点
+ *
  * @param {ListNode} head
  * @return {ListNode}
  */
 var detectCycle = function (head) {
     if (head === null || head.next === null) return null;
-    
+    const nodeset = new Set();
+    while (head !== null) {
+        if (nodeset.has(head)) {
+            console.log(nodeset, head);
+            return head;
+        }
+        nodeset.add(head);
+        head = head.next;
+    }
+    return null;
 };
 
 /** 环形链表
