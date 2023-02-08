@@ -3,6 +3,142 @@ function ListNode(val, next) {
     this.next = next === undefined ? null : next;
 }
 
+/** 2的幂
+ * 给你一个整数 n，请你判断该整数是否是 2 的幂次方。如果是，返回 true ；否则，返回 false
+ * 如果存在一个整数 x 使得 n == 2x ，则认为 n 是 2 的幂次方
+ * @param {number} n
+ * @return {boolean}
+ */
+var isPowerOfTwo = function (n) {
+    if (n === 1) {
+        return true;
+    }
+    if (n < 2) {
+        // 说明没有被整除
+        return false;
+    }
+    return isPowerOfTwo(n / 2);
+};
+
+/** 多数元素
+ * 给定一个大小为 n 的数组 nums ，返回其中的多数元素。多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素
+ * @param {number[]} nums
+ * @return {number}
+ */
+var majorityElement = function (nums) {
+    if (nums.length < 2) return nums[0];
+    const max = Math.ceil(nums.length / 2);
+    let left = 0,
+        right = nums.length - 1;
+    const nummap = {};
+    while (left <= right) {
+        const leftkey = nums[left];
+        const rightkey = nums[right];
+        if (nummap[leftkey]) {
+            nummap[leftkey].count++;
+            if (nummap[leftkey].count >= max) {
+                return leftkey;
+            }
+        } else {
+            nummap[leftkey] = { count: 1 };
+        }
+        if (nummap[rightkey]) {
+            nummap[rightkey].count++;
+            if (nummap[rightkey].count >= max) {
+                return rightkey;
+            }
+        } else {
+            nummap[rightkey] = { count: 1 };
+        }
+        left++;
+        right--;
+    }
+};
+
+/** 回文数
+ * 给你一个整数 x ，如果 x 是一个回文整数，返回 true ；否则，返回 false 。
+ * 回文数是指正序（从左向右）和倒序（从右向左）读都是一样的整数。
+ * @param {number} x
+ * @return {boolean}
+ */
+var isPalindrome = function (x) {
+    if (x < 0 || (x % 10 === 0 && x !== 0)) {
+        return false;
+    }
+    const xstring = x + '';
+    let left = 0,
+        right = xstring.length - 1;
+    while (left < right) {
+        if (xstring[left] !== xstring[right]) {
+            return false;
+        }
+    }
+    return true;
+};
+
+console.log(isPalindrome(-121));
+
+/** 整数反转
+ * 给你一个 32 位的有符号整数 x ，返回将 x 中的数字部分反转后的结果
+ * 如果反转后整数超过 32 位的有符号整数的范围 [−231,  231 − 1] ，就返回 0
+ * @param {number} x
+ * @return {number}
+ */
+var reverse = function (x) {
+    // 边界处理
+    if (x === 0) return x;
+    let flag = false;
+    if (x < 0) {
+        flag = true;
+    }
+    // 正数化处理绝对值，先抛弃符号位
+    x = Math.abs(x) + '';
+    xlist = x.split('');
+    xlist = xlist.reverse();
+    newx = xlist.join('');
+    flag && (newx = '-' + newx);
+    newx = +newx;
+    if ((newx < -(2 ** 31)) | (newx > 2 ** 31 - 1)) {
+        return 0;
+    }
+    return newx;
+};
+
+/**
+ * 删除链表中的节点
+ * 有一个单链表的 head，我们想删除它其中的一个节点 node
+ * 输入：head = [4,5,1,9], node = 1
+ * 输出：[4,5,9]
+ * @param {ListNode} node
+ * @return {void} Do not return anything, modify node in-place instead.
+ */
+var deleteNode = function (node) {
+    node.val = node.next.val;
+    node.next = node.next.next;
+};
+
+/** 相交链表
+ * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。如果两个链表不存在相交节点，返回 null
+ * 题目数据 保证 整个链式结构中不存在环
+ * @param {ListNode} headA
+ * @param {ListNode} headB
+ * @return {ListNode}
+ */
+var getIntersectionNode = function (headA, headB) {
+    const nodeSet = new Set();
+    while (headA) {
+        nodeSet.add(headA);
+        headA = headA.next;
+    }
+    while (headB) {
+        if (nodeSet.has(headB)) {
+            return headB;
+        }
+        headB = headB.next;
+    }
+    return null;
+};
+
 /** 环形链表 II
  * 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
  *
@@ -312,5 +448,5 @@ var longestPalindrome = function (s) {
     return maxPd;
 };
 
-const palindrome = longestPalindrome('babad');
-console.log(palindrome);
+// const palindrome = longestPalindrome('babad');
+// console.log(palindrome);
