@@ -2,6 +2,125 @@ function ListNode(val, next) {
     this.val = val === undefined ? 0 : val;
     this.next = next === undefined ? null : next;
 }
+function TreeNode(val, left, right) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+}
+
+/** 爬楼梯
+ * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶; 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+ */
+
+/** 二叉树中的最大路径和 */
+
+/** 二叉树的最大深度
+ * 给定一个二叉树，找出其最大深度。
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var maxDepth = function (root) {
+    // 要获取最大深度，
+    let depthRecord = [];
+    function crossTree(root, depth = 0) {
+        if (root === null) {
+            // 当遍历到最底部，拿到此时的深度
+            depthRecord.push(depth);
+            return;
+        }
+        crossTree(root.left, depth + 1);
+        crossTree(root.right, depth + 1);
+    }
+    crossTree(root);
+    return Math.max(...depthRecord);
+};
+
+/** 二叉搜索树中第K小的元素
+ * 给定一个二叉搜索树的根节点 root ，和一个整数 k ，请你设计一个算法查找其中第 k 个最小元素（从 1 开始计数）
+ *
+ * 输入：root = [3,1,4,null,2], k = 1
+ * 输出：1
+ * @param {TreeNode} root
+ * @param {number} k
+ * @return {number}
+ */
+var kthSmallest = function (root, k) {
+    // 既然是找到第K小，那么需要找到二叉树上所有的值，然后找到第K小的数
+    let treeList = [];
+    function crossTree(root) {
+        if (root === null) return;
+        treeList.push(root.val);
+        crossTree(root.left);
+        crossTree(root.right);
+    }
+    crossTree(root);
+    treeList.sort((a, b) => a - b);
+    return treeList[k - 1];
+};
+
+/** 搜索旋转排序数组
+ * 整数数组 nums 按升序排列，数组中的值 互不相同
+ * 给你 旋转后 的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1
+ *
+ * 输入：nums = [4,5,6,7,0,1,2], target = 0
+ * 输出：4
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var search = function (nums, target) {
+    /** 最简单就是用indexOf, 然后就是双指针(效率有点慢，O(n) ) */
+    let left = 0,
+        right = nums.length - 1;
+    while (left > right) {
+        if (nums[left] === target) return left;
+        if (nums[right] === target) return right;
+        left++;
+        right--;
+    }
+};
+
+/** 数组中的第K个最大元素
+ * 给定整数数组 nums 和整数 k，请返回数组中第 k 个最大的元素
+ *
+ * 输入: [3,2,1,5,6,4], k = 2
+ * 输出: 5
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+var findKthLargest = function (nums, k) {
+    // 先排序，然后再返回k对应的值
+    nums.sort((a, b) => b - a);
+    return nums[k - 1];
+};
+
+/** 给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表
+ *
+ * 输入：head = [-1,5,3,4,0]
+ * 输出：[-1,0,3,4,5]
+ *
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var sortList = function (head) {
+    /** 要返回排序后的链表，那么就先将链表的值进行排序, 然后根据排序后的数组，构造新链表 */
+    if (head === null) return head;
+    let curhead = head;
+    let nodelist = [];
+    while (curhead) {
+        nodelist.push(curhead.val);
+        curhead = curhead.next;
+    }
+    nodelist.sort((a, b) => a - b);
+    let newhead = new ListNode(nodelist[0]);
+    let flaghead = newhead;
+    for (let i = 1; i < nodelist.length; i++) {
+        newhead.next = new ListNode(nodelist[i]);
+        newhead = newhead.next;
+    }
+    return flaghead;
+};
 
 /** 2的幂
  * 给你一个整数 n，请你判断该整数是否是 2 的幂次方。如果是，返回 true ；否则，返回 false
