@@ -10,9 +10,47 @@ function TreeNode(val, left, right) {
 
 /** 爬楼梯
  * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶; 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+ * @param {number} n
+ * @return {number}
  */
+var climbStairs = function (n) {};
 
-/** 二叉树中的最大路径和 */
+/** 二叉树中的最大路径和
+ * 路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点
+ * 路径和 是路径中各节点值的总和
+ * 输入：root = [1,2,3]
+ * 输出：6
+ * 解释：最优路径是 2 -> 1 -> 3 ，路径和为 2 + 1 + 3 = 6
+ * 
+ * 思路： 生成数据模型 modeMax
+ * 对于单个父节点，它的最大路径就是 modeMax -->  root.val + Math.max(root.left.val, root.right.val);
+ * root.left.val 如果 < 0， 那么应该直接舍弃， root.right.val同理。
+ * 以此类推，root.left也可能是一个根节点，同样适用于modeMax模型
+ * 
+ * 
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var maxPathSum = function (root) {
+    let maxsum = -Infinity;
+    function getMaxPathSum(root, maxsum) {
+        if (root === null) {
+            return 0;
+        }
+        let leftmax = getMaxPathSum(root.left, maxsum);
+        leftmax = leftmax > 0 ? leftmax : 0; // 左侧如果小于0就舍弃
+
+        let rightmax = getMaxPathSum(root.right, maxsum);
+        rightmax = rightmax > 0 ? rightmax : 0; // 右侧同理
+
+        let curmax = leftmax + root.val + rightmax;
+
+        maxsum = curmax > maxsum ? curmax : maxsum;
+        return root.val + Math.max(leftmax, rightmax);
+    }
+    getMaxPathSum(root, maxsum);
+    return maxsum;
+};
 
 /** 二叉树的最大深度
  * 给定一个二叉树，找出其最大深度。
