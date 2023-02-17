@@ -15,19 +15,44 @@ function TreeNode(val, left, right) {
  */
 var climbStairs = function (n) {};
 
+/** 二叉搜索树的最近公共祖先
+ * 
+ * 二叉搜索树（BST）是二叉树的一种特殊表示形式，它满足如下特性
+ * 每个节点中的值必须大于（或等于）存储在其左侧子树中的任何值
+ * 每个节点中的值必须小于（或等于）存储在其右子树中的任何值
+ * 所有左子树和右子树自身必须也是二叉搜索树
+ * 
+ * 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先
+ * 
+ * 所有节点的值都是唯一的
+ * p、q 为不同节点且均存在于给定的二叉搜索树中
+ * 
+ * 既然是找祖先，那就说明要向上查找，同时保证了所有节点的值的唯一性，所以最先查找到的公共值，就是这两个节点的最近公共祖先。
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function (root, p, q) {
+    function crossTree(root) {
+        
+    }
+    
+};
+
 /** 二叉树中的最大路径和
  * 路径 被定义为一条从树中任意节点出发，沿父节点-子节点连接，达到任意节点的序列。同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点
  * 路径和 是路径中各节点值的总和
  * 输入：root = [1,2,3]
  * 输出：6
  * 解释：最优路径是 2 -> 1 -> 3 ，路径和为 2 + 1 + 3 = 6
- * 
+ *
  * 思路： 生成数据模型 modeMax
  * 对于单个父节点，它的最大路径就是 modeMax -->  root.val + Math.max(root.left.val, root.right.val);
  * root.left.val 如果 < 0， 那么应该直接舍弃， root.right.val同理。
  * 以此类推，root.left也可能是一个根节点，同样适用于modeMax模型
- * 
- * 
+ *
+ *
  * @param {TreeNode} root
  * @return {number}
  */

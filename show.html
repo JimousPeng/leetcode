@@ -45,6 +45,15 @@
             };
             console.log(containsDuplicate([1, 2, 3, 4]));
 
+            function a() {
+                console.log(b);
+                var b = 1;
+            }
+
+            a();
+
+            console.log(b);
+
             // var productExceptSelf = function (nums) {
             //     const numsLen = nums.length;
             //     const newlist = new Array(numsLen).fill(1);
