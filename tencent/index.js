@@ -10,34 +10,84 @@ function TreeNode(val, left, right) {
 
 /** 爬楼梯
  * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶; 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+ *
+ * n = 2 v输出：2
+ * 1. 1 阶 + 1 阶
+ * 2. 2 阶
  * @param {number} n
  * @return {number}
  */
-var climbStairs = function (n) {};
+var climbStairs = function (n) {
+    if (n < 2) return 1;
+    return climbStairs(n - 1) + climbStairs(n - 2);
+};
 
-/** 二叉搜索树的最近公共祖先
- * 
- * 二叉搜索树（BST）是二叉树的一种特殊表示形式，它满足如下特性
- * 每个节点中的值必须大于（或等于）存储在其左侧子树中的任何值
- * 每个节点中的值必须小于（或等于）存储在其右子树中的任何值
- * 所有左子树和右子树自身必须也是二叉搜索树
- * 
- * 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先
- * 
- * 所有节点的值都是唯一的
- * p、q 为不同节点且均存在于给定的二叉搜索树中
- * 
- * 既然是找祖先，那就说明要向上查找，同时保证了所有节点的值的唯一性，所以最先查找到的公共值，就是这两个节点的最近公共祖先。
+/** 二叉树的最近公共祖先
+ * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先:
+ * 对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。
  * @param {TreeNode} root
  * @param {TreeNode} p
  * @param {TreeNode} q
  * @return {TreeNode}
  */
 var lowestCommonAncestor = function (root, p, q) {
-    function crossTree(root) {
-        
+    let ans;
+
+    const dfs = (root, p, q) => {
+        if (root === null) return false;
+        const lson = dfs(root.left, p, q);
+        const rson = dfs(root.right, p, q);
+        if ((lson && rson) || ((root.val === p.val || root.val === q.val) && (lson || rson))) {
+            /**
+             * lson && rson : 左子树和右子树均包含  p 节点或  q 节点
+             * 如果左子树包含的是  p 节点，那么右子树只能包含  q 节点，反之亦然
+             * 因为  p 节点和  q 节点都是不同且唯一的节点，因此如果满足这个判断条件即可说明  x 就是我们要找的最近公共祖先
+             *
+             * (root.val === p.val || root.val === q.val) && (lson || rson):
+             *  x 恰好是 p 节点或  q 节点且它的左子树或右子树有一个包含了另一个节点的情况，因此如果满足这个判断条件亦可说明  x 就是我们要找的最近公共祖先
+             *
+             * 因为是自底向上从叶子节点开始更新的，所以在所有满足条件的公共祖先中一定是深度最大的祖先先被访问到
+             */
+            ans = root;
+        }
+        // 利用深度优先搜索，找到匹配的子节点
+        return lson || rson || root.val === p.val || root.val === q.val;
+    };
+    dfs(root, p, q);
+    return ans;
+};
+
+/** 二叉搜索树的最近公共祖先
+ *
+ * 二叉搜索树（BST）是二叉树的一种特殊表示形式，它满足如下特性
+ * 每个节点中的值必须大于（或等于）存储在其左侧子树中的任何值
+ * 每个节点中的值必须小于（或等于）存储在其右子树中的任何值
+ * 所有左子树和右子树自身必须也是二叉搜索树
+ *
+ * 给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先
+ *
+ * 所有节点的值都是唯一的
+ * p、q 为不同节点且均存在于给定的二叉搜索树中
+ *
+ * 既然是找祖先，那就说明要向上查找，同时保证了所有节点的值的唯一性，所以最先查找到的公共值，就是这两个节点的最近公共祖先。
+ *
+ * 暴力求解： 先找到彼此的祖先，然后从祖先里面匹配最近的公共祖先
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function (root, p, q) {
+    if (root === null) return;
+    if (root.val > p.val && root.val > q.val) {
+        // 如果当前节点的值大于  p 和  q 的值，说明  p 和  q 应该在当前节点的左子树，因此将当前节点移动到它的左子节点
+        return lowestCommonAncestor(root.left, p, q);
     }
-    
+    if (root.val < p.val && root.val < q.val) {
+        // 如果当前节点的值大于  p 和  q 的值，说明  p 和  q 应该在当前节点的左子树，因此将当前节点移动到它的左子节点
+        return lowestCommonAncestor(root.right, p, q);
+    }
+    return root;
 };
 
 /** 二叉树中的最大路径和
