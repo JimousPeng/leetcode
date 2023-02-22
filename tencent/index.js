@@ -8,18 +8,193 @@ function TreeNode(val, left, right) {
     this.right = right === undefined ? null : right;
 }
 
+/**
+ * 子集
+ * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）; 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集
+ *
+ * 输入：nums = [1,2,3]
+ * 输出：[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var subsets = function (nums) {};
+
+/** LRU缓存机制
+ * 请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
+ *
+ * 实现 LRUCache 类：
+ * LRUCache(int capacity) 以 正整数 作为容量 capacity 初始化 LRU 缓存
+ * int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1
+ * void put(int key, int value) 如果关键字 key 已经存在，则变更其数据值 value ；如果不存在，则向缓存中插入该组 key-value 。如果插入操作导致关键字数量超过 capacity ，则应该 逐出 最久未使用的关键字
+ * 函数 get 和 put 必须以 O(1) 的平均时间复杂度运行
+ * @param {number} capacity
+ */
+ var LRUCache = function (capacity) {
+    this.max = capacity;
+    this.keylist = [];
+    this.keepcontain = new Map();
+};
+
+/**
+ * @param {number} key
+ * @return {number}
+ */
+LRUCache.prototype.get = function (key) {
+    /** 做两件事：
+     * 1. 返回获取值，如果没有则返回-1；
+     * 2. 更新当前获取的key的权重为0
+     */
+    const getval = this.keepcontain.get(key);
+    if (getval) {
+        const exitindex = this.keylist.findIndex((item) => item === key);
+        this.keylist.splice(exitindex, 1);
+        this.keylist.unshift(key);
+
+        return getval;
+    }
+    return -1;
+};
+
+/**
+ * @param {number} key
+ * @param {number} value
+ * @return {void}
+ */
+LRUCache.prototype.put = function (key, value) {
+    /** 做两件事：
+     * 判断是否超出最大项，如果超出，则移除容量之外的数据，如果没有超出，正常
+     * 更新当前key所在是索引下标
+     */
+    this.keepcontain.set(key, value);
+    if (this.keylist.length >= this.max) {
+        this.keepcontain.forEach((item) => {
+            const exitindex = this.keylist.findIndex((k) => item === k);
+            if (exitindex > 1) {
+                this.keepcontain.delete(item);
+            }
+        });
+    }
+    // 更新下标
+    const exitindex = this.keylist.findIndex((item) => item === key);
+    if (exitindex > -1) {
+        // 说明当前key存在，需要删除
+        this.keylist.splice(exitindex, 1);
+    }
+    this.keylist.unshift(key);
+};
+
+/** 不同路径
+ * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）
+ * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。 问总共有多少条不同的路径
+ * @param {number} m
+ * @param {number} n
+ * @return {number}
+ */
+var uniquePaths = function (m, n) {
+    const f = new Array(m).fill(0).map(() => new Array(n).fill(0));
+    for (let i = 0; i < m; i++) {
+        f[i][0] = 1;
+    }
+    for (let j = 0; j < n; j++) {
+        f[0][j] = 1;
+    }
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            f[i][j] = f[i - 1][j] + f[i][j - 1];
+        }
+    }
+    return f[m - 1][n - 1];
+};
+
+/** 买卖股票的最佳时机 II
+ * 给你一个整数数组 prices ，其中 prices[i] 表示某支股票第 i 天的价格
+ * 在每一天，你可以决定是否购买和/或出售股票。你在任何时候 最多 只能持有 一股 股票。你也可以先购买，然后在 同一天 出售。
+ * 返回 你能获得的 最大 利润
+ *
+ * prices = [7,1,5,3,6,4]
+ * 在第 2 天（股票价格 = 1）的时候买入，
+ * 在第 3 天（股票价格 = 5）的时候卖出, 这笔交易所能获得利润 = 5 - 1 = 4 。
+ * 随后，在第 4 天（股票价格 = 3）的时候买入，在第 5 天（股票价格 = 6）的时候卖出, 这笔交易所能获得利润 = 6 - 3 = 3 。
+ * 总利润为 4 + 3 = 7
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function (prices) {
+    let income = 0;
+    let buyprice = prices[i];
+    for (let i = 1; i < prices.length; i++) {
+        if (prices[i] > prices[i - 1]) {
+            // 如果有收入，就抛出
+            income = Math.max(prices[i] - buyprice, 0) + income;
+            buyprice = prices[i];
+        } else {
+            // 否则就买入
+            buyprice = Math.min(prices[i], buyprice);
+        }
+    }
+    return income;
+};
+
+/** 买卖股票的最佳时机
+ * 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格
+ * 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+ * 返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 
+ * 
+ * 输入：[7,1,5,3,6,4]
+输出：5
+解释：在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。
+     注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格；同时，你不能在买入前卖出股票。
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit = function (prices) {
+    // 动态规划，先找到状态公式：
+    let income = 0;
+    let buyprice = prices[0]; // 买入的价格，假设第一天买入
+    for (let i = 1; i < prices.length; i++) {
+        income = Math.max(prices[i] - buyprice, income); // 这里不好处理，因为存在后续的更大值
+        buyprice = Math.min(prices[i], buyprice); // 如果遇到更低的，就买入
+    }
+    return income;
+};
+
+/** 最大子序和
+ * 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和
+ *
+ * nums = [-2,1,-3,4,-1,2,1,-5,4]  ：连续子数组 [4,-1,2,1] 的和最大，为 6 。
+ *
+ * 输入：nums = [5,4,-1,7,8]  输出：23
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxSubArray = function (nums) {
+    let calculate = nums[0];
+    let max = nums[0];
+    for (let i = 1; i < nums.length; i++) {
+        calculate = Math.max(calculate, 0) + nums[i];
+        max = Math.max(max, calculate);
+    }
+    return max;
+};
+
 /** 爬楼梯
  * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶; 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
  *
  * n = 2 v输出：2
  * 1. 1 阶 + 1 阶
  * 2. 2 阶
+ * f(1) = 1; f(2) = 2; f(3) = f(1) + f(2)
  * @param {number} n
  * @return {number}
  */
 var climbStairs = function (n) {
-    if (n < 2) return 1;
-    return climbStairs(n - 1) + climbStairs(n - 2);
+    function climbStair(n, cur, total) {
+        console.log(n, cur, total);
+        if (n < 2) return total;
+        // 尾递归优化
+        return climbStair(n - 1, total, cur + total);
+    }
+    return climbStair(n, 1, 1);
 };
 
 /** 二叉树的最近公共祖先

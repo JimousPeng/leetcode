@@ -2,7 +2,7 @@
  * @Date: 2022-02-15 10:52:04
  * @LastEditors: Please set LastEditors
  * @Description: 动态规划
- * @LastEditTime: 2022-03-01 12:54:18
+ * @LastEditTime: 2023-02-22 11:12:17
  * @FilePath: \leetcode\src\dynamic.js
  */
 const dynamic = ['1. 确定状态', '  2. 找到转移公式', '  3. 确定初始条件及边界条件', '  4. 计算结果'];
