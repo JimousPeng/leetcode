@@ -7,7 +7,113 @@
  * }
  */
 
+/** 填充每个节点的下一个右侧节点指针 II
+ * 填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL
+ * 初始状态下，所有 next 指针都被设置为 NULL
+ * @param {Node} root
+ * @return {Node}
+ */
+var connect = function (root) {};
 
+/** 填充每个节点的下一个右侧节点指针
+ * 给定一个 完美二叉树 ，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下
+ * 填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL
+ * 初始状态下，所有 next 指针都被设置为 NULL
+ * @param {Node} root
+ * @return {Node}
+ */
+var connect = function (root) {
+    function fillNode(left, right) {
+        if (left === null) return;
+        left.next = right;
+        fillNode(left.left, left.right);
+        fillNode(left.right, left.next ? left.next.left : null);
+    }
+    fillNode(root, null);
+    return root;
+};
+
+/** 从前序与中序遍历序列构造二叉树
+ * 给定两个整数数组 preorder 和 inorder ，其中 preorder 是二叉树的先序遍历， inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点
+ *
+ * preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+ * 输出: [3,9,20,null,null,15,7]
+ *
+ * @param {number[]} preorder
+ * @param {number[]} inorder
+ * @return {TreeNode}
+ */
+var buildTree = function (preorder, inorder) {
+    let rootIdx = 0; // 前序遍历，第一项是根节点
+    let midMap = new Map();
+    inorder.forEach((val, idx) => {
+        midMap.set(val, idx);
+    });
+    function createTree(left, right) {
+        if (left > right) return null;
+        const rootVal = preorder[rootIdx];
+        const root = new TreeNode(rootVal);
+        rootIdx++;
+        const nextIdx = midMap.get(rootVal);
+        root.left = createTree(left, nextIdx - 1);
+        root.right = createTree(nextIdx + 1, right);
+        return root;
+    }
+    return createTree(0, inorder.length - 1);
+};
+
+/** 从中序与后序遍历序列构造二叉树
+ * 给定两个整数数组 inorder 和 postorder ，其中 inorder 是二叉树的中序遍历， postorder 是同一棵树的后序遍历，请你构造并返回这颗 二叉树
+ *
+ * 已知信息：
+ * 后续遍历的最后一个节点是二叉树的根节点,首先获取的是子树的根节点。
+ *
+ * 输入：inorder = [9,3,15,20,7], postorder = [9,15,7,20,3]
+ * 输出：[3,9,20,null,null,15,7]
+ *
+ * @param {number[]} inorder
+ * @param {number[]} postorder
+ * @return {TreeNode}
+ */
+var buildTree = function (inorder, postorder) {
+    let rootIdx = postorder.length - 1; // 定义当前根节点的坐标
+    let midMap = new Map(); // 用一个哈希表记录中序遍历数组的索引
+    inorder.forEach((val, idx) => {
+        midMap.set(val, idx);
+    });
+    function createTree(left, right) {
+        if (left > right) return null;
+        const rootVal = postorder[rootIdx];
+        const root = new TreeNode(rootVal);
+        rootIdx--; // 每次构建完当前子树的根节点后，后序遍历向前递归, 利用后续遍历构建子树的根节点；
+        nextIdx = midMap.get(rootval);
+        // 利用中序遍历，构建子树根节点的左右节点, 左右节点的范围，在中序区间left-right区间内
+        root.right = createTree(nextIdx + 1, right);
+        root.left = createTree(left, nextIdx - 1);
+        return root;
+    }
+    return createTree(0, inorder.length - 1);
+
+    // let rootIdx = postorder.length - 1,
+    //     midMap = new Map();
+    // /** 基于中序遍历建立键值对的哈希表 */
+    // inorder.forEach((val, idx) => {
+    //     midMap.set(val, idx);
+    // });
+    // // initLeft, initRight用来处理下一个子树的边界情况
+    // function treeCreate(initLeft, initRight) {
+    //     if (initLeft > initRight) return null;
+    //     const rootVal = postorder[rootIdx];
+    //     const root = new TreeNode(rootVal);
+    //     rootIdx--;
+    //     const treeIdx = midMap.get(rootVal);
+    //     // inorder和postorder 的左子树要对应上。postorder每次pop末尾的值，构建完右子树刚好pop到了其左子树末尾。 因此不需要再单独找postorder的左子树末尾在哪里,直接treeIdx - 1即可
+    //     root.right = treeCreate(treeIdx + 1, initRight);
+    //     root.left = treeCreate(initLeft, treeIdx - 1);
+    //     return root;
+    // }
+    // return treeCreate(0, inorder.length - 1);
+};
 
 /**
  * 从前序与中序遍历序列构造二叉树

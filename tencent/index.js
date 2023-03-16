@@ -8,6 +8,15 @@ function TreeNode(val, left, right) {
     this.right = right === undefined ? null : right;
 }
 
+/** 括号生成
+ * 数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合
+ *
+ * 输入：n = 3  输出：["((()))","(()())","(())()","()(())","()()()"]
+ * @param {number} n
+ * @return {string[]}
+ */
+var generateParenthesis = function (n) {};
+
 /**
  * 子集
  * 给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）; 解集 不能 包含重复的子集。你可以按 任意顺序 返回解集
@@ -17,7 +26,17 @@ function TreeNode(val, left, right) {
  * @param {number[]} nums
  * @return {number[][]}
  */
-var subsets = function (nums) {};
+var subsets = function (nums) {
+    const sublist = [[]];
+    for (let i = 0; i < nums.length; i++) {
+        const newlist = JSON.parse(JSON.stringify(sublist));
+        newlist.forEach((item) => {
+            item.push(nums[i]);
+        });
+        sublist = sublist.concat(newlist);
+    }
+    return sublist;
+};
 
 /** LRU缓存机制
  * 请你设计并实现一个满足  LRU (最近最少使用) 缓存 约束的数据结构。
@@ -29,7 +48,7 @@ var subsets = function (nums) {};
  * 函数 get 和 put 必须以 O(1) 的平均时间复杂度运行
  * @param {number} capacity
  */
- var LRUCache = function (capacity) {
+var LRUCache = function (capacity) {
     this.max = capacity;
     this.keylist = [];
     this.keepcontain = new Map();
@@ -816,44 +835,47 @@ var reverseList = function (head) {
  * @return {string}
  */
 var longestPalindrome = function (s) {
-    // 怎么确定一个字符串是回文
-    function isPalindrome(s) {
-        let left = 0;
-        let right = s.length - 1;
-        while (left < right) {
-            if (s[left] !== s[right]) {
-                return false;
-            }
-            left++;
-            right--;
-        }
-        return true;
-    }
-    function compareLength(s1, s2) {
-        if (s1.length > s2.length) {
-            return s1;
-        }
-        return s2;
-    }
-    // 遍历字符串，找出所有的排列组合，并找到符合回文字符串的列表
-    const strMap = {};
+    // if (s.length < 2) return s;
+    // function isPalindrome(left, right) {
+    //     let curstr = s.substring(left, right + 1);
+    //     return curstr === curstr.split('').reverse().join('');
+    // }
+    // let maxLen = 1,
+    //     begin = 0;
+    // for (let i = 0; i < s.length - 1; i++) {
+    //     for (let j = i + 1; j < s.length; j++) {
+    //         if (j - i + 1 > maxLen && isPalindrome(i, j)) {
+    //             maxLen = j - i + 1;
+    //             begin = i;
+    //         }
+    //     }
+    // }
+    // return s.substring(begin, begin + maxLen);let max = 0, res = ''
+    if (s.length < 2) return s;
+    let max = 0,
+        res = '';
     for (let i = 0; i < s.length; i++) {
-        if (Object.keys(strMap).length) {
-            for (const key in strMap) {
-                strMap[key] += s[i];
-            }
+        let left = i - 1,
+            count = 1;
+        while (s[i] === s[i + 1] && i < s.length) {
+            i++;
+            count++;
         }
-        strMap[i] = s[i];
+        let right = i + 1;
+        while (s[left] === s[right] && left >= 0 && right < s.length) {
+            count += 2;
+            left--;
+            right++;
+        }
+        if (count > max) {
+            max = count;
+            res = s.slice(left + 1, right);
+        }
     }
-    let maxPd;
-    // 找到最长的那个
-    Object.keys(strMap).forEach((key) => {
-        if (isPalindrome(strMap[key])) {
-            maxPd = compareLength(maxPd, strMap[key]);
-        }
-    });
-    return maxPd;
+    return res;
 };
+
+longestPalindrome('ababad');
 
 // const palindrome = longestPalindrome('babad');
 // console.log(palindrome);

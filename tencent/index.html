@@ -7,6 +7,94 @@
         <title>Document</title>
     </head>
     <body>
-        <script src="./index.js"></script>
+        <!-- <script src="./index.js"></script> -->
+        <script>
+             var subsets = function (nums) {
+                 const t = [];
+                 const ans = [];
+                 const dfs = (cur) => {
+                     if (cur === nums.length) {
+                         ans.push(t.slice());
+                         return;
+                     }
+                     t.push(nums[cur]);
+                     dfs(cur + 1);
+                     t.pop(t.length - 1);
+                     dfs(cur + 1);
+                 };
+                 dfs(0);
+                 return ans;
+             };
+             const list = subsets([1, 2, 3]);
+             console.log('====================================');
+             console.log(list);
+             console.log('====================================');
+
+             Array.prototype.forEach.call('abc', (item) => {
+                 console.log(item);
+             });
+
+             var longestPalindrome = function (s) {
+                if (s.length < 2) return s;
+                 let max = 0, res = '';
+                 for(let i = 0; i < s.length; i++) {
+                     // 计算当前循环内的回文长度
+                    let count = 1;
+                    // 处理前后是否满足回文
+                    let left = i -1
+                    // 处理相等字符
+                    while(s[i] === s[i+1] && i < s.length) {
+                        i++;
+                        count ++
+                    };
+                    let right = i + 1;
+                    while(s[left] === s[right] && left >= 0 && right < s.length) {
+                        count += 2;
+                        left --;
+                        right ++;
+                    }
+                    if(count > max) {
+                        max = count;
+                        // 因为在上一个while里，执行了left--，所以这里的left需要 + 1，同时substring本身不包含right所在的值，因为right已经++了，所以不用管了
+                        res = s.substring(left + 1, right)
+                    }
+                 }
+                 return res
+
+
+
+
+
+
+
+
+
+
+
+            //      let max = 0,
+            //          res = '';
+            //      for (let i = 0; i < s.length; i++) {
+            //          let left = i - 1,
+            //              count = 1;
+            //          while (s[i] === s[i + 1] && i < s.length) {
+            //              i++;
+            //              count++;
+            //          }
+            //          let right = i + 1;
+            //          while (s[left] === s[right] && left >= 0 && right < s.length) {
+            //              count += 2;
+            //              left--;
+            //              right++;
+            //          }
+            //          if (count > max) {
+            //              max = count;
+            //              res = s.slice(left + 1, right);
+            //          }
+            //      }
+            //      return res;
+            //  };
+
+            console.log(longestPalindrome('ababad'))
+        </script>
     </body>
 </html>
