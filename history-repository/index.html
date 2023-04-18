@@ -1,0 +1,86 @@
+<!--
+ * @Date: 2022-01-28 10:10:06
+ * @LastEditors: Please set LastEditors
+ * @Description: 描述文件内容
+ * @LastEditTime: 2022-11-15 14:25:48
+ * @FilePath: \leetcode\index.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <style>
+            body {
+                font-size: 50px;
+            }
+            .father-box {
+                background: yellowgreen;
+            }
+            span {
+                display: inline-block;
+                line-height: 0.64rem;
+                font-size: 0.24rem;
+                padding: 0 0.32rem;
+                border-radius: 0.28rem;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="father-box">
+            <span>span在这里</span>
+        </div>
+
+        <!-- <script src="./src/sort_search.js"></script> -->
+        <!-- <script src="./src/linked-list.js"></script> -->
+        <!-- <script src="./src/dynamic.js"></script> -->
+        <!-- <script src="./src/Array.js"></script> -->
+        <!-- <script src="./src/String.js"></script> -->
+        <!-- <script src="./src/math.js"></script> -->
+        <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+        </ul>
+        <script src="./src/tree.js"></script>
+        <!-- <script src="./src/other.js"></script> -->
+        <script>
+            function calculate(n) {
+                console.log(n);
+                if (n === 1) return n;
+                return calculate(n - 1) + n;
+            }
+            console.log('计算结果', calculate(5));
+
+            let flag = 0;
+            while (flag < 3) {
+                // const liList = document.getElementsByTagName('li');
+                // 如果用var命名，会导致每个打印都是4
+                // for (var i = 0; i < liList.length; i++) {
+                for (let i = 0; i < 15; i++) {
+                    // liList[i].addEventListener('click', () => {
+                    //     console.log(i);
+                    // });
+                    // liList[i].onclick = function (e) {
+                    //     console.log(i);
+                    // };
+                    console.log(i);
+                    flag++;
+                    if (flag > 3) {
+                        break;
+                    }
+                }
+                console.log('这里打印下', flag);
+            }
+
+            let a = 5;
+            while (a < 9) {
+                console.log(a);
+                a++;
+            }
+        </script>
+    </body>
+</html>
