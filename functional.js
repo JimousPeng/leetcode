@@ -1,5 +1,44 @@
 /** 功能性题目，以解决问题为出发点 */
 
+// 35. 搜索插入位置
+/**
+ * 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置
+ * @param {number[]} nums nums 为 无重复元素 的 升序 排列数组
+ * @param {number} target
+ * @return {number}
+ */
+var searchInsert = function (nums, target) {
+    const len = nums.length
+    // if (target < nums[0]) return 0
+    // if (target > nums[len - 1]) return len
+
+    // const getIdx = nums.indexOf(target)
+    // if (getIdx > -1) return getIdx
+    // let len = nums.length
+    // for (let i = 0; i < len; i++) {
+    //     if (nums[i] > target && nums[i - 1] < target) {
+    //         return i
+    //     }
+    // }
+    // if (nums[len - 1] < target) return len
+    // return 0
+
+    // 二分法
+    let left = 0,
+        right = len - 1
+    while (left <= right) {
+        const mid = Math.floor(left + (right - left) / 2)
+        if (nums[mid] > target) {
+            right = mid - 1
+        } else if (nums[mid] < target) {
+            left = mid + 1
+        } else {
+            return mid
+        }
+    }
+    return right + 1
+}
+
 // 27. 移除元素
 /**
  * 给你一个数组 nums 和一个值 val，你需要 原地 移除所有数值等于 val 的元素，并返回移除后数组的新长度
