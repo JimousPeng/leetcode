@@ -6,12 +6,23 @@
  * }
  */
 
-/** 96. 不同的二叉搜索树
- * 给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数
- * @param {number} n
- * @return {number}
+/** 108. 将有序数组转换为二叉搜索树
+ * 给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 高度平衡 二叉搜索树
+ * 高度平衡 二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过 1 」的二叉树
+ * @param {number[]} nums
+ * @return {TreeNode}
  */
-var numTrees = function (n) {}
+var sortedArrayToBST = function (nums) {
+    function createTree(nums, left, right) {
+        if (left > right) return null
+        const mid = left + (right - left) / 2
+        let root = new TreeNode(nums[mid])
+        root.left = createTree(nums, left, mid - 1)
+        root.right = createTree(nums, mid + 1, right)
+        return root
+    }
+    return createTree(nums, 0, nums.length - 1)
+}
 
 /** 面试题 17.12. BiNode
  * 二叉树数据结构TreeNode可用来表示单向链表（其中left置空，right为下一个链表节点）

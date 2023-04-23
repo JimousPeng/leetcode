@@ -1,5 +1,84 @@
 /** 功能性题目，以解决问题为出发点 */
 
+// 69. x 的平方根
+/**给你一个非负整数 x ，计算并返回 x 的 算术平方根
+ * 由于返回类型是整数，结果只保留 整数部分 ，小数部分将被 舍去
+ * 注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5
+ * @param {number} x
+ * @return {number}
+ */
+var mySqrt = function (x) {
+    let res = 0
+    while (x > 2) {
+        x = x / 2
+        res++
+    }
+    return res
+}
+
+// 67. 二进制求和
+/**给你两个二进制字符串 a 和 b ，以二进制字符串的形式返回它们的和
+ * 输入:a = "11", b = "1" 输出："100"
+ * 输入：a = "1010", b = "1011" 输出："10101"
+ * @param {string} a
+ * @param {string} b
+ * @return {string}
+ */
+var addBinary = function (a, b) {
+    const minLen = Math.min(a.length, b.length)
+    let minNum = a.length === minLen ? a : b
+    const maxNum = a.length === minLen ? b : a
+    const targetNum = maxNum.length - minNum.length
+    let tempArray = new Array(targetNum).fill(0)
+    let numArray = minNum.split('')
+    numArray.unshift(...tempArray)
+    minNum = numArray.join('')
+    let last = 0,
+        res = [] // 余数
+    for (let i = maxNum.length - 1; i >= 0; i--) {
+        const num1 = parseInt(maxNum[i]),
+            num2 = parseInt(minNum[i]),
+            count = num1 + num2 + last
+        if (count > 1) {
+            res.unshift(count - 2)
+            last = 1
+        } else {
+            res.unshift(num1 || num2 || last)
+            last = 0
+        }
+    }
+    if (last) res.unshift(last)
+    return res.join('')
+}
+
+// 58. 最后一个单词的长度
+/**
+ * 给你一个字符串 s，由若干单词组成，单词前后用一些空格字符隔开。返回字符串中 最后一个 单词的长度
+ * @param {string} s
+ * @return {number}
+ */
+var lengthOfLastWord = function (s) {
+    // api解决
+    // const strArray = s.trim().split(' ')
+    // return strArray[strArray.length - 1].length
+
+    // 效率最高
+    s = s.trim()
+    if (s.length < 2) return s.length
+    let len = 0
+    for (let i = s.length - 1; i >= 0; i--) {
+        if (s[i] === ' ') {
+            if (!len) {
+                continue
+            } else {
+                return len
+            }
+        }
+        len++
+    }
+    return len
+}
+
 // 35. 搜索插入位置
 /**
  * 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。如果目标值不存在于数组中，返回它将会被按顺序插入的位置
