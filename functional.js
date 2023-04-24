@@ -4,16 +4,28 @@
 /**给你一个非负整数 x ，计算并返回 x 的 算术平方根
  * 由于返回类型是整数，结果只保留 整数部分 ，小数部分将被 舍去
  * 注意：不允许使用任何内置指数函数和算符，例如 pow(x, 0.5) 或者 x ** 0.5
+ * 二分查找的下界为 0 0，上界可以粗略地设定为 x。
+ * 在二分查找的每一步中，我们只需要比较中间元素 mid mid 的平方与 x 的大小关系，并通过比较的结果调整上下界的范围。
+ * 由于我们所有的运算都是整数运算，不会存在误差，因此在得到最终的答案 ans ans 后，也就不需要再去尝试 ans + 1 ans+1 了
  * @param {number} x
  * @return {number}
  */
 var mySqrt = function (x) {
-    let res = 0
-    while (x > 2) {
-        x = x / 2
-        res++
+    // 二分查找
+    if (x < 2) return x
+    let left = 0,
+        right = x
+    while (left < right) {
+        const mid = Math.floor((left + right) / 2)
+        if (mid * mid < x) {
+            left = mid + 1
+        } else if (mid * mid > x) {
+            right = mid
+        } else {
+            return Math.floor(mid)
+        }
     }
-    return res
+    return right - 1
 }
 
 // 67. 二进制求和
