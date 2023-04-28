@@ -12,14 +12,17 @@
  * @return {ListNode}
  */
 var deleteDuplicates = function (head) {
-    const linkMap = new Set([head.val])
-    let newHead = (curHead = head.next)
-    while (curHead) {
-        curHead = curHead.next
-        if (!linkMap.has(curHead.val)) {
-            linkMap.add(curHead.val)
-        }
-        curHead = curHead?.next
+    if (head == null || head.next == null) {
+        return head
     }
-    return newHead
+    let res = head;
+    while (head) {
+        if(head.next === null) break;
+        if(head.val === head.next.val) {
+            head.next = head.next.next
+        } else {
+            head = head.next;
+        }
+    }
+    return res
 }
