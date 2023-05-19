@@ -6,6 +6,27 @@
  * }
  */
 
+/** 111. 二叉树的最小深度
+ * 给定一个二叉树，找出其最小深度
+ */
+var minDepth = function (root) {
+    if (root === null) return 0    
+    function findMin(root, deep) {
+        if (root === null) return deep
+        /** 子树为空需要过滤 */
+        if (root.left === null && root.right !== null) {
+            return findMin(root.right, deep + 1)
+        }
+        if (root.right === null && root.left !== null) {
+            return findMin(root.left, deep + 1)
+        }
+        const leftDeep = findMin(root.left, deep + 1)
+        const rightDeep = findMin(root.right, deep + 1)
+        return Math.min(leftDeep, rightDeep)
+    }
+    return findMin(root, 0)
+}
+
 /** 110. 平衡二叉树
  * 给定一个二叉树，判断它是否是高度平衡的二叉树
  * 一棵高度平衡二叉树定义为 一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1 -> 深度差最大为1
