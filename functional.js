@@ -1,5 +1,53 @@
 /** 功能性题目，以解决问题为出发点 */
 
+// 168. Excel表列名称 - 力扣（LeetCode）
+/**
+ * core: 其实就相当于26进制计算
+ * @param {number} columnNumber
+ * @return {string}
+ * 给你一个整数 columnNumber ，返回它在 Excel 表中相对应的列名称
+ * A -> 1  B -> 2  C -> 3
+ */
+var convertToTitle = function (columnNumber) {
+    const columnMap = {
+        0: 'A',
+        1: 'B',
+        2: 'C',
+        3: 'D',
+        4: 'E',
+        5: 'F',
+        6: 'G',
+        7: 'H',
+        8: 'I',
+        9: 'J',
+        10: 'K',
+        11: 'L',
+        12: 'M',
+        13: 'N',
+        14: 'O',
+        15: 'P',
+        16: 'Q',
+        17: 'R',
+        18: 'S',
+        19: 'T',
+        20: 'U',
+        21: 'V',
+        22: 'W',
+        23: 'X',
+        24: 'Y',
+        25: 'Z',
+        26: 'AA',
+    }
+    const numMap = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 10, K: 11, L: 12, M: 13, N: 14, O: 15, P: 16, Q: 17, R: 18, S: 19, T: 20, U: 21, V: 22, W: 23, X: 24, Y: 25, Z: 26 }
+    if (columnNumber.length === 1) return columnMap[columnNumber]
+    let res = []
+    while (columnNumber > 0) {
+        res.unshift(columnMap[(columnNumber - 1) % 26])
+        columnNumber = Math.floor((columnNumber - 1) / 26)
+    }
+    return res.join('')
+}
+
 // 69. x 的平方根
 /**给你一个非负整数 x ，计算并返回 x 的 算术平方根
  * 由于返回类型是整数，结果只保留 整数部分 ，小数部分将被 舍去
