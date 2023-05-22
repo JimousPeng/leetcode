@@ -1,5 +1,31 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 119. 杨辉三角 II
+ * 给定一个非负索引 rowIndex，返回「杨辉三角」的第 rowIndex 行
+ */
+var getRow = function (rowIndex) {
+    if (rowIndex === 0) return [1]
+    if (rowIndex === 1) return [1, 1]
+    let origin = [1, 1]
+    let result = []
+    rowIndex--
+    while (rowIndex > 0) {
+        result = origin.reduce(
+            (total, item, index) => {
+                if (origin[index + 1]) {
+                    total.push(item + origin[index + 1])
+                }
+                return total
+            },
+            [1]
+        )
+        result.push(1)
+        rowIndex--
+        origin = result
+    }
+    return result
+}
+
 // 168. Excel表列名称 - 力扣（LeetCode）
 /**
  * core: 其实就相当于26进制计算
