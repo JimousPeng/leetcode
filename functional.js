@@ -1,5 +1,29 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 202. 快乐数
+ * 「快乐数」 定义为：
+ * 对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和
+ * 然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1
+ * 如果这个过程 结果为 1，那么这个数就是快乐数
+ */
+var isHappy = function(n) {
+    
+};
+
+/** 171. Excel 表列序号
+ *  给你一个字符串 columnTitle ，表示 Excel 表格中的列名称。返回 该列名称对应的列序号
+ */
+var titleToNumber = function (columnTitle) {
+    const numMap = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 10, K: 11, L: 12, M: 13, N: 14, O: 15, P: 16, Q: 17, R: 18, S: 19, T: 20, U: 21, V: 22, W: 23, X: 24, Y: 25, Z: 26 }
+    if (numMap[columnTitle]) return numMap[columnTitle]
+    const numList = (columnTitle + '').split('').reverse()
+    return numList.reduce((total, item, index) => {
+        const curNum = numMap[item] * Math.pow(26, index)
+        total += curNum
+        return total
+    }, 0)
+}
+
 /** 119. 杨辉三角 II
  * 给定一个非负索引 rowIndex，返回「杨辉三角」的第 rowIndex 行
  */
