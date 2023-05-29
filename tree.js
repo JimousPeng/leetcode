@@ -6,11 +6,41 @@
  * }
  */
 
+/**  572. 另一棵树的子树
+ *   给你两棵二叉树 root 和 subRoot 。
+ *   检验 root 中是否包含和 subRoot 具有相同结构和节点值的子树。如果存在，返回 true ；否则，返回 false
+ *   二叉树 tree 的一棵子树包括 tree 的某个节点和这个节点的所有后代节点。tree 也可以看做它自身的一棵子树
+ * 输入：root = [3,4,5,1,2], subRoot = [4,1,2] 输出：true
+ * 
+ *   思路： 递归遍历两棵树，先假设是子树；如果有不同的部分，则说明非子树，否则是子树
+ */
+let isSub = true
+var isSubtree = function (root, subRoot) {
+
+    function testSub() {
+
+    }
+
+
+
+    if (root === null) {
+        return true
+    }
+    let rootLeft = root.left && root.left.val
+    let subLeft = subRoot.left && subRoot.left.val
+    let subRight = subRoot.right && subRoot.right.val
+    let rootRight = root.right && root.right.val
+    if (root.val !== subRoot.val || rootLeft !== subLeft || rootRight !== subRight) {
+        return false
+    }
+    
+}
+
 /** 111. 二叉树的最小深度
  * 给定一个二叉树，找出其最小深度
  */
 var minDepth = function (root) {
-    if (root === null) return 0    
+    if (root === null) return 0
     function findMin(root, deep) {
         if (root === null) return deep
         /** 子树为空需要过滤 */

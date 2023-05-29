@@ -6,9 +6,26 @@
  * 然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1
  * 如果这个过程 结果为 1，那么这个数就是快乐数
  */
-var isHappy = function(n) {
-    
-};
+var isHappy = function (n) {
+    let numMap = new Set()
+    let curNum = n + ''
+    let happyFlag = false
+    function transformHappy(arg) {
+        const totalNum = arg.reduce((total, item) => {
+            total += Math.pow(item, 2) // 字符会隐式转换为num类型
+            return total
+        }, 0)
+        return totalNum + ''
+    }
+
+    while (!numMap.has(curNum) && !happyFlag) {
+        numMap.add(curNum)
+        curNum = transformHappy(curNum.split(''))
+        if (curNum === '1') happyFlag = true
+    }
+
+    return happyFlag
+}
 
 /** 171. Excel 表列序号
  *  给你一个字符串 columnTitle ，表示 Excel 表格中的列名称。返回 该列名称对应的列序号

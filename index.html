@@ -6,25 +6,51 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
     </head>
+
     <body>
         <script>
-            var mySqrt = function (x) {
-                // 二分查找
-                let left = 0,
-                    right = x,
-                    ans = -1
-                while (left <= right) {
-                    const mid = left + (right - left) / 2
-                    if (mid * mid <= x) {
-                        ans = mid
-                        left = mid + 1
-                    } else {
-                        right = mid - 1
-                    }
+            console.log('hello world')
+            const isHappy = function (n) {
+                let numMap = new Set()
+                let curNum = n + ''
+                let happyFlag = false
+                function transformHappy(arg) {
+                    const totalNum = arg.reduce((total, item) => {
+                        total += Math.pow(item, 2) // 字符会隐式转换为num类型
+                        return total
+                    }, 0)
+                    return totalNum + ''
                 }
-                return ans
+                console.log('111')
+                debugger;
+
+                while (!numMap.has(curNum) && !happyFlag) {
+                    numMap.add(curNum)
+                    curNum = transformHappy(curNum.split(''))
+                    if (curNum === '1') happyFlag = true
+                }
+
+                return happyFlag
             }
-            console.log(mySqrt(8))
+            isHappy(19)
+
+            // var mySqrt = function (x) {
+            //     // 二分查找
+            //     let left = 0,
+            //         right = x,
+            //         ans = -1
+            //     while (left <= right) {
+            //         const mid = left + (right - left) / 2
+            //         if (mid * mid <= x) {
+            //             ans = mid
+            //             left = mid + 1
+            //         } else {
+            //             right = mid - 1
+            //         }
+            //     }
+            //     return ans
+            // }
+            // console.log(mySqrt(8))
         </script>
     </body>
 </html>
