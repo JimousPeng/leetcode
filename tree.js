@@ -11,17 +11,22 @@
  *   检验 root 中是否包含和 subRoot 具有相同结构和节点值的子树。如果存在，返回 true ；否则，返回 false
  *   二叉树 tree 的一棵子树包括 tree 的某个节点和这个节点的所有后代节点。tree 也可以看做它自身的一棵子树
  * 输入：root = [3,4,5,1,2], subRoot = [4,1,2] 输出：true
- * 
+ *
  *   思路： 递归遍历两棵树，先假设是子树；如果有不同的部分，则说明非子树，否则是子树
  */
 let isSub = true
 var isSubtree = function (root, subRoot) {
+    /** 先找到两根数的初始点 */
 
-    function testSub() {
-
+    function crossTree(root) {
+        if (root === null || root.val == subRoot.val) {
+            return
+        }
+        crossTree(root.left)
+        crossTree(root.right)
     }
 
-
+    function testSub() {}
 
     if (root === null) {
         return true
@@ -33,7 +38,6 @@ var isSubtree = function (root, subRoot) {
     if (root.val !== subRoot.val || rootLeft !== subLeft || rootRight !== subRight) {
         return false
     }
-    
 }
 
 /** 111. 二叉树的最小深度
@@ -120,4 +124,92 @@ var convertBiNode = function (root) {
     }
     crossTree(root)
     return headNode.left
+}
+
+/** 145. 二叉树的前序遍历 —— 迭代法
+ *  核心原理：构建调用栈，模拟递归实现
+ */
+var postorderTraversal = function (root) {
+    // if (root === null) return []
+    // let res = []
+    // function crossTree(root) {
+    //     if (root === null) return
+    //     crossTree(root.left)
+    //     crossTree(root.right)
+    //     res.push(root.val)
+    // }
+    // crossTree(root)
+    // return res
+
+    /** 前序遍历 */
+    // if (root === null) return []
+    // let res = []
+    // let stack = []
+    // let node = root
+    // while (stack.length || node !== null) {
+    //     // 当前根节点处理
+    //     if (node !== null) {
+    //         res.push(node.val) // 前序遍历，root节点保存
+    //         stack.push(node)
+    //     }
+    //     // 左子树遍历到null
+    //     while (node !== null && node.left) {
+    //         node = node.left
+    //         res.push(node.val)
+    //         stack.push(node)
+    //     }
+
+    //     // 回退一步
+    //     node = stack.pop()
+    //     node = node.right
+    // }
+    // return res
+
+    /** 中序遍历 */
+    // if (root === null) return []
+    // let res = []
+    // let stack = []
+    // let node = root
+    // while (stack.length || node !== null) {
+    //     // 当前根节点处理
+    //     if (node !== null) {
+    //         stack.push(node)
+    //     }
+    //     // 左子树遍历到null
+    //     while (node !== null && node.left) {
+    //         node = node.left
+    //         stack.push(node)
+    //     }
+    //     // 回退一步
+    //     node = stack.pop()
+    //     res.push(node.val)
+    //     node = node.right
+    // }
+    // return res
+
+    /** 后序遍历 */
+    if (root === null) return []
+    let res = []
+    let stack = []
+    let node = root
+    let prev = null
+    while (stack.length || node !== null) {
+        if (node !== null) stack.push(node)
+        while (node !== null && node.left) {
+            node = node.left
+            stack.push(node)
+        }
+        // 回退一步
+        node = stack.pop()
+        if (node.right == null || node.right === prev) {
+            /** 右节点为空或者为右节点出栈节点 */
+            res.push(node.val)
+            prev = node;
+            node = null; // 重置node节点为空，跳过循环内if,while判断
+        } else {
+            stack.push(node) // 右节点不为空，将当前子节点压回入栈
+            node = node.right
+        }
+    }
+    return res
 }
