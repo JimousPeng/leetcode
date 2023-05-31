@@ -16,28 +16,21 @@
  */
 let isSub = true
 var isSubtree = function (root, subRoot) {
-    /** 先找到两根数的初始点 */
-
-    function crossTree(root) {
-        if (root === null || root.val == subRoot.val) {
-            return
-        }
-        crossTree(root.left)
-        crossTree(root.right)
+    function isSameTrue(root, subRoot) {
+        if (root === null && subRoot === null) return true
+        if (root === null && subRoot !== null) return false
+        if (root !== null && subRoot === null) return false
+        if (root.val !== subRoot.val) return false
+        return isSameTrue(root.left, subRoot.left) && isSameTrue(root.right, subRoot.right)
     }
-
-    function testSub() {}
-
-    if (root === null) {
-        return true
-    }
-    let rootLeft = root.left && root.left.val
-    let subLeft = subRoot.left && subRoot.left.val
-    let subRight = subRoot.right && subRoot.right.val
-    let rootRight = root.right && root.right.val
-    if (root.val !== subRoot.val || rootLeft !== subLeft || rootRight !== subRight) {
-        return false
-    }
+    if (root === null && subRoot === null) return true
+    if (root === null && subRoot !== null) return false
+    /** 一棵树是另一棵树的子树，则满足以下条件之一：
+     *  1. 这两棵树相等；
+     *  2. 这个树是左数的子树；
+     *  3. 这个树是右树的子树；
+     */
+    return isSameTrue(root, subRoot) || isSubtree(root.left, subRoot) || isSubtree(root.right, subRoot)
 }
 
 /** 111. 二叉树的最小深度
@@ -204,8 +197,8 @@ var postorderTraversal = function (root) {
         if (node.right == null || node.right === prev) {
             /** 右节点为空或者为右节点出栈节点 */
             res.push(node.val)
-            prev = node;
-            node = null; // 重置node节点为空，跳过循环内if,while判断
+            prev = node
+            node = null // 重置node节点为空，跳过循环内if,while判断
         } else {
             stack.push(node) // 右节点不为空，将当前子节点压回入栈
             node = node.right
