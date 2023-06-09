@@ -1,5 +1,33 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 704. 二分查找
+ * 给定一个 n (n 将在 [1, 10000]之间) 个元素有序的（升序）整型数组 nums 和一个目标值 target
+ * 写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1
+ */
+var search = function (nums, target) {
+    if (nums.length === 1) { // 感觉这里的代码优化性能不大
+        return nums[0] === target ? 0 : -1
+    }
+    let left = 0,
+        right = nums.length - 1
+    while (left <= right) {
+        // 考虑当nums只有一项时候的匹配
+        if (nums[left] === target) return left
+        if (nums[right] === target) return right
+        const mid = left + Math.floor((right - left) / 2) // 防止left,right大数相加
+        if (nums[mid] === target) {
+            return mid
+        } else if (nums[mid] < target) {
+            left = mid
+            right--
+        } else {
+            right = mid
+            left++
+        }
+    }
+    return -1
+}
+
 /** 202. 快乐数
  * 「快乐数」 定义为：
  * 对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和
