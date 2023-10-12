@@ -6,6 +6,138 @@
  * }
  */
 
+/** 257. 二叉树的所有路径
+ * 给你一个二叉树的根节点 root ，按 任意顺序 ，返回所有从根节点到叶子节点的路径 >  叶子节点 是指没有子节点的节点
+ * @param {TreeNode} root
+ * @return {string[]}
+ */
+var binaryTreePaths = function (root) {
+    while (root.left || root.right) {}
+
+    /** 递归解法，数组透传 */
+    // const pathTotal = []
+    // function crossTree(root, pathArray) {
+    //     if (root === null) return
+    //     pathArray.push(root.val)
+    //     if (root.left === null && root.right === null) {
+    //         pathTotal.push(pathArray)
+    //         // 这里提前return 减少递归次数
+    //         return
+    //     }
+    //     // 左右子树递归，由于每次递归都需要执行 [...pathArray]，无疑增加了耗时和内存的占用
+    //     crossTree(root.left, [...pathArray])
+    //     crossTree(root.right, [...pathArray])
+    // }
+    // crossTree(root, [])
+    // return pathTotal.map((path) => {
+    //     pathString = path.join('->')
+    //     return pathString
+    // })
+
+    /** 递归解法，对象占位法，每次路径向下查找的时候，都对当前路径节点重新赋值，到最底路径时，将数据收集；要注意的时候，可以前一次路径比当前路径更长，所以要对column可用性判断 */
+    // const pathTotal = []
+    // const pathMap = {}
+    // function crossTree(root, column) {
+    //     if (root === null) return
+    //     pathMap[column] = root.val + ''
+    //     if (root.left === null && root.right === null) {
+    //         let total = ''
+    //         const columnList = Object.keys(pathMap)
+    //         /**
+    //          * 遍历二叉树的每一行，取出当前循环终点上每个节点的值
+    //          * for循环效率更高，并且通过break及时跳出循环 */
+    //         for (let i = 0; i < columnList.length; i++) {
+    //             const columnItem = pathMap[columnList[i]]
+    //             /** column可用性判断 */
+    //             if (i > column) break
+    //             total = total ? total + '->' + columnItem : columnItem
+    //         }
+    //         /** 下面这种循环由于无法使用break，多产生无效循环次数 */
+    //         // const curColumn = Object.keys(pathMap).reduce((total, key, index) => {
+    //         //     if(index > column) return;
+    //         //     const columnNum = pathMap[key]
+    //         //     // 直接拼接字符串，减少后续二次遍历循环成本
+    //         //     return total ? total + '->' + columnNum : columnNum
+    //         // }, '')
+    //         pathTotal.push(total)
+    //         // 这里提前return 减少递归次数
+    //         return
+    //     }
+    //     crossTree(root.left, column + 1)
+    //     crossTree(root.right, column + 1)
+    // }
+    // crossTree(root, 0)
+    // return pathTotal
+
+    /** 递归解法，对象占位法升级，在每次递归的时候，构建出对应路径的合并字符串 -> 接近官方最优解法 */
+    // const pathTotal = []
+    // const pathMap = {}
+    // function crossTree(root, column) {
+    //     if (root === null) return
+
+    //     const prevColumn = pathMap[column - 1]
+    //     if (prevColumn) {
+    //         pathMap[column] = prevColumn + '->' + root.val
+    //     } else {
+    //         pathMap[column] = root.val + ''
+    //     }
+
+    //     if (root.left === null && root.right === null) {
+    //         pathTotal.push(pathMap[column])
+    //         // 这里提前return 减少递归次数
+    //         return
+    //     }
+    //     crossTree(root.left, column + 1)
+    //     crossTree(root.right, column + 1)
+    // }
+    // crossTree(root, 0)
+    // return pathTotal
+
+    /** 官方解法，直接传入path */
+    const paths = [];
+    const construct_paths = (root, path) => {
+        if (root) {
+            path += root.val.toString();
+            if (root.left === null && root.right === null) { // 当前节点是叶子节点
+                paths.push(path); // 把路径加入到答案中
+            } else {
+                path += "->"; // 当前节点不是叶子节点，继续递归遍历
+                construct_paths(root.left, path);
+                construct_paths(root.right, path);
+            }
+        }
+    }
+    construct_paths(root, "");
+    return paths;
+}
+
+/** 226. 翻转二叉树
+ * 给你一棵二叉树的根节点 root ，翻转这棵二叉树，并返回其根节点
+ * 输入：root = [4,2,7,1,3,6,9]  输出：[4,7,2,9,6,3,1]
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var invertTree = function (root) {
+    function crossTree(root) {
+        if (root === null) return
+        let newRoot = new TreeNode(root.val)
+        newRoot.left = crossTree(root.right)
+        newRoot.right = crossTree(root.left)
+        return newRoot
+    }
+    return crossTree(root)
+
+    /** 官方题解 */
+    if (root === null) {
+        return null
+    }
+    const left = invertTree(root.left)
+    const right = invertTree(root.right)
+    root.left = right
+    root.right = left
+    return root
+}
+
 /** 617. 合并二叉树
  * 给你两棵二叉树： root1 和 root2; 需要将这两棵树合并成一棵新二叉树。
  * 合并的规则是：如果两个节点重叠，那么将这两个节点的值相加作为合并后节点的新值；否则，不为 null 的节点将直接作为新二叉树的节点
