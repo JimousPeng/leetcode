@@ -6,6 +6,50 @@
  * }
  */
 
+/**
+ * 404. 左叶子之和
+ * 给定二叉树的根节点 root ，返回所有左叶子之和
+ * root = [3,9,20,null,null,15,7]  输出: 24
+ * 在这个二叉树中，有两个左叶子，分别是 9 和 15，所以返回 24
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var sumOfLeftLeaves = function (root) {
+    /** 递归解题思路
+     *  找到所有左叶子，当前节点没有子节点，并且当前节点是左节点
+     */
+    // let nums = 0
+    // function crossTree(root, isLeft) {
+    //     if (root === null) return
+    //     crossTree(root.left, true)
+    //     // 判断当前节点是叶子节点，怎么在这个基础上找到左叶子呢, 做法是传入一个表示，只有左子树遍历的时候才带上标识
+    //     if (root.left === null && root.right === null && isLeft) {
+    //         nums += root.val
+    //     }
+    //     crossTree(root.right, false)
+    // }
+    // crossTree(root, false)
+    // return nums
+
+    // 迭代解题思路，运用堆栈处理数据
+    let nums = 0
+    let nodeQueue = [root]
+    while (nodeQueue.length) {
+        const node = nodeQueue.shift()
+        const leftNode = node.left
+        if (leftNode !== null && leftNode.left === null && leftNode.right === null) {
+            nums += leftNode.val
+        }
+        if (leftNode !== null) {
+            nodeQueue.push(leftNode)
+        }
+        if (node.right !== null) {
+            nodeQueue.push(node.right)
+        }
+    }
+    return nums
+}
+
 /** 257. 二叉树的所有路径
  * 给你一个二叉树的根节点 root ，按 任意顺序 ，返回所有从根节点到叶子节点的路径 >  叶子节点 是指没有子节点的节点
  * @param {TreeNode} root
@@ -94,21 +138,22 @@ var binaryTreePaths = function (root) {
     // return pathTotal
 
     /** 官方解法，直接传入path */
-    const paths = [];
+    const paths = []
     const construct_paths = (root, path) => {
         if (root) {
-            path += root.val.toString();
-            if (root.left === null && root.right === null) { // 当前节点是叶子节点
-                paths.push(path); // 把路径加入到答案中
+            path += root.val.toString()
+            if (root.left === null && root.right === null) {
+                // 当前节点是叶子节点
+                paths.push(path) // 把路径加入到答案中
             } else {
-                path += "->"; // 当前节点不是叶子节点，继续递归遍历
-                construct_paths(root.left, path);
-                construct_paths(root.right, path);
+                path += '->' // 当前节点不是叶子节点，继续递归遍历
+                construct_paths(root.left, path)
+                construct_paths(root.right, path)
             }
         }
     }
-    construct_paths(root, "");
-    return paths;
+    construct_paths(root, '')
+    return paths
 }
 
 /** 226. 翻转二叉树
