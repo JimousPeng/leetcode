@@ -6,6 +6,182 @@
  * }
  */
 
+//     2
+//   3   null
+// 1
+
+/**
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var preorderTraversal = function (root) {
+    let node = root
+    let stack = []
+    const nums = []
+    while (stack.length || node !== null) {
+        if (node !== null) {
+            stack.push(node)
+        }
+        while (node !== null && node.left) {
+            node = node.left
+            stack.push(node)
+        }
+        node = stack.pop()
+        while (node !== null && node.left) {
+            node = node.left
+            stack.push(node)
+        }
+        node = node.right
+    }
+    return nums
+}
+
+/**
+ * 501. 二叉搜索树中的众数
+ * 给你一个含重复值的二叉搜索树（BST）的根节点 root ，
+ * 找出并返回 BST 中的所有 众数（即，出现频率最高的元素）
+ * 如果树中有不止一个众数，可以按 任意顺序 返回
+ * 输入：root = [1,null,2,2] 输出：[2]
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var findMode = function (root) {
+    // const nodeCount = {}
+    // function crossTree(root) {
+    //     if (root === null) return
+    //     const countKey = root.val
+    //     const curCount = nodeCount[countKey]
+    //     if (curCount) {
+    //         nodeCount[countKey]++
+    //     } else {
+    //         nodeCount[countKey] = 1
+    //     }
+    //     crossTree(root.left)
+    //     crossTree(root.right)
+    // }
+    // crossTree(root)
+    // let maxList = []
+    // let maxNum = -Infinity
+    // Object.keys(nodeCount).forEach((key) => {
+    //     const val = nodeCount[key] // 取到对应num的数量
+    //     if (val > maxNum) {
+    //         maxNum = val
+    //         maxList = [key]
+    //     } else if (val === maxNum) {
+    //         maxList.push(key)
+    //     }
+    // })
+    // return Array.from(new Set(maxList))
+
+    // const rootList = []
+    // function crossTree(root) {
+    //     if (root === null) return
+    //     crossTree(root.left)
+    //     rootList.push(root.val)
+    //     crossTree(root.right)
+    // }
+    // crossTree(root)
+    // // 问题转换为：从一个有序数组中找出所有的众数，并且通过base,count来缓存结果，减少了map对象的开销
+    // let base = rootList[0]
+    // let count = 0
+    // let maxCount = 0
+    // let maxList = [base]
+    // for (let i = 0; i < rootList.length; i++) {
+    //     const val = rootList[i]
+    //     if (val === base) {
+    //         count++
+    //     } else {
+    //         count = 1 // 重置单独某个数的计算初始值
+    //         base = val
+    //     }
+    //     if (count > maxCount) {
+    //         maxList = [base]
+    //         maxCount = count // 更新最大值
+    //     } else if (count === maxCount) {
+    //         maxList.push(base)
+    //     }
+    // }
+    // return maxList
+
+    let base = null
+    let count = 0
+    let maxCount = 0
+    let maxList = []
+    function updateCount(val) {
+        if (val === base) {
+            count++
+        } else {
+            count = 1 // 重置单独某个数的计算初始值
+            base = val
+        }
+        if (count > maxCount) {
+            maxList = [base]
+            maxCount = count // 更新最大值
+        } else if (count === maxCount) {
+            maxList.push(base)
+        }
+    }
+    function crossTree(root) {
+        if (root === null) return
+        crossTree(root.left)
+        updateCount(root.val)
+        crossTree(root.right)
+    }
+    crossTree(root)
+    return maxList
+
+    /** morris 遍历 */
+    let cur = root // 记录当前遍历的节点指针
+    let prev = null // 记录当前节点的左子节点的最右侧根节点
+    while (cur !== null) {
+        if (cur.left === null) {
+            // 到达左子树的根节点，可取值
+            console.log(cur.val)
+            cur = cur.right
+            continue
+        }
+        pre = cur.left
+        while (pre.right !== null && pre.right !== cur) {
+            // 遍历到当前节点的左子树的最右侧节点
+            pre = pre.right
+        }
+        // 处理最右侧节点
+        if (pre.right === null) {
+            // 第一次遍历的时候，右节点肯定是有终点的
+            // 如果为空，则说明是当前节点延伸的最左边节点，且是第一次遍历；将当前节点的左子树的最右侧节点指向当前节点
+            pre.right = cur
+            cur = cur.left // 处理下一个左子节点
+        } else {
+            // 如果最右侧节点不为空，那么这里置空处理，并将指针指向当前节点的右子树
+            pre.right = null
+            console.log(cur.val)
+            cur = cur.right // 这里是当前根节点左子树末位节点，那么将指针指回右节点，再pre.right === null 的逻辑中，cur.right指向的是当前节点的上级根节点
+        }
+    }
+
+    let cur = root,
+        pre = null
+    while (cur !== null) {
+        if (cur.left === null) {
+            update(cur.val)
+            cur = cur.right
+            continue
+        }
+        pre = cur.left
+        while (pre.right !== null && pre.right !== cur) {
+            pre = pre.right
+        }
+        if (pre.right === null) {
+            pre.right = cur
+            cur = cur.left
+        } else {
+            pre.right = null
+            update(cur.val)
+            cur = cur.right
+        }
+    }
+}
+
 /**
  * 404. 左叶子之和
  * 给定二叉树的根节点 root ，返回所有左叶子之和
