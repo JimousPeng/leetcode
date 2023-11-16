@@ -6,34 +6,49 @@
  * }
  */
 
-//     2
-//   3   null
-// 1
-
-/**
+/** 222. 完全二叉树的节点个数
+ * 给你一棵 完全二叉树 的根节点 root ，求出该树的节点个数
+ * 完全二叉树 的定义如下：
+ * 在完全二叉树中，除了最底层节点可能没填满外，其余每层节点数都达到最大值，并且最下面一层的节点都集中在该层最左边的 若干位置（不一定意味左子树是满编）
+ * 若最底层为第 h 层，则该层包含 1~ 2h 个节点
+ *
+ * 进阶：遍历树来统计节点是一种时间复杂度为 O(n) 的简单解决方案。你可以设计一个更快的算法吗？
  * @param {TreeNode} root
- * @return {number[]}
+ * @return {number}
  */
-var preorderTraversal = function (root) {
-    let node = root
-    let stack = []
-    const nums = []
-    while (stack.length || node !== null) {
-        if (node !== null) {
-            stack.push(node)
-        }
-        while (node !== null && node.left) {
+var countNodes = function (root) {
+    // let count = 0
+    // // 其实本质还是求节点数量
+    // function crossTree(root) {
+    //     if (root === null) return
+    //     crossTree(root.left)
+    //     count++
+    //     crossTree(root.right)
+    // }
+    // crossTree(root)
+    // return count
+
+    function count(root) {
+        if (root === null) return 0
+        // 将问题转换为求左右子树的高度，在求左右子树高度的时，判断左右子树是否为满二叉树，如果是满二叉树，则利用二叉树特性，直接用公式计算
+        let leftH = 0,
+            rightH = 0,
+            node = root
+        while (node !== null) {
+            leftH++
             node = node.left
-            stack.push(node)
         }
-        node = stack.pop()
-        while (node !== null && node.left) {
-            node = node.left
-            stack.push(node)
+        while (node !== null) {
+            rightH++
+            node = node.right
         }
-        node = node.right
+        if (leftH === rightH) {
+            // 左右子树相等，说明是满二叉树，-1是为了
+            return Math.pow(2, leftH + 1) - 1
+        }
+        return count(root.left) + count(root.right) + 1
     }
-    return nums
+    return count(root)
 }
 
 /**
