@@ -5,6 +5,55 @@
  *     this.left = this.right = null;
  * }
  */
+/** 530. 二叉搜索树的最小绝对差
+ * 给你一个二叉搜索树的根节点 root ，返回 树中任意两不同节点值之间的最小差值
+ * 差值是一个正数，其数值等于两值之差的绝对值
+ * 输入：root = [4,2,6,1,3]
+ * 输出：1
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var getMinimumDifference = function (root) {
+    // // 既然是二叉搜索树，那么利用二叉搜索树的中序遍历是一个递增的序列
+    // const queueNode = []
+    // function cross(root) {
+    //     if (root === null) return
+    //     cross(root.left)
+    //     queueNode.push(root.val)
+    //     cross(root.right)
+    // }
+    // cross(root)
+    // // 从递增序列 queueNode 中找到最小差值 - 利用滑动窗口
+    // let left = 0
+    // let right = left + 1
+    // let minDis = Infinity
+    // while (left < queueNode.length - 1) {
+    //     let curDis = queueNode[right] - queueNode[left]
+    //     minDis = Math.min(minDis, curDis)
+    //     left++
+    //     right++
+    // }
+    // return Math.abs(minDis)
+
+    // 优化：在中序遍历期间进行比较计算
+    const queueNode = []
+    let pre = undefined
+    let minDis = Infinity
+    function cross(root) {
+        if (root === null) return
+        cross(root.left)
+        if (pre === undefined) {
+            pre = root.val
+        } else {
+            minDis = Math.min(minDis, root.val - pre)
+            pre = root.val
+        }
+        queueNode.push(root.val)
+        cross(root.right)
+    }
+    cross(root)
+    return minDis
+}
 
 /** 222. 完全二叉树的节点个数
  * 给你一棵 完全二叉树 的根节点 root ，求出该树的节点个数
