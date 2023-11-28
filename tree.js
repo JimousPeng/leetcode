@@ -19,12 +19,17 @@
  * @return {number}
  */
 var diameterOfBinaryTree = function (root) {
-    function crossTree(root, count) {
+    let res = 0
+    function crossTree(root) {
         if (root === null) return 0
-        crossTree(root.left, count + 1), crossTree(root.right, count + 1)
-        Math.max()
+        const leftCount = crossTree(root.left) + 1
+        const rightCount = crossTree(root.right) + 1
+        res = Math.max(res, leftCount + rightCount)
+
+        return Math.max(leftCount, rightCount)
     }
-    crossTree(root, 0)
+    crossTree(root)
+    return res
 }
 
 /** 530. 二叉搜索树的最小绝对差
