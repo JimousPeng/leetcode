@@ -6,6 +6,35 @@
  * }
  */
 
+/** 563. 二叉树的坡度
+ * 给你一个二叉树的根节点 root ，计算并返回 整个树 的坡度
+ * 一个树的 节点的坡度 定义即为，【该节点左子树的节点之和和右子树节点之和的 差的绝对值 。】
+ * 如果没有左子树的话，左子树的节点之和为 0 ；没有右子树的话也是一样。空结点的坡度是 0
+ * 整个树 的坡度就是其所有节点的坡度之和
+ *
+ * 输入：root = [4,2,9,3,5,null,7]
+ * 输出：15
+ *
+ * 思路： 前序遍历处理
+ *
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var findTilt = function (root) {
+    let count = 0
+    function Dep(root) {
+        if (root === null) return 0
+        const leftCount = Dep(root.left)
+        const rightCount = Dep(root.right)
+        /** 收集当前节点的坡度 */
+        count += Math.abs(leftCount - rightCount)
+        /** 每个节点返回节点当前值以及左右节点的计算值 */
+        return root.val + leftCount + rightCount
+    }
+    Dep(root)
+    return count
+}
+
 /** 543. 二叉树的直径
  * 给你一棵二叉树的根节点，返回该树的 直径
  * 二叉树的 直径 是指树中任意两个节点之间最长路径的 长度 。这条路径可能经过也可能不经过根节点 root
