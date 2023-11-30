@@ -6,6 +6,66 @@
  * }
  */
 
+/** 606. 根据二叉树创建字符串
+ * 给你二叉树的根节点 root ，请你采用前序遍历的方式，将二叉树转化为一个由括号和整数组成的字符串，返回构造出的字符串
+ * 空节点使用一对空括号对 "()" 表示，转化后需要省略所有不影响字符串与原始二叉树之间的一对一映射关系的空括号对
+ * 输入：root = [1,2,3,4]        输出："1(2(4))(3)"       初步转化后得到 "1(2(4)())(3()())" ，但省略所有不必要的空括号对后，字符串应该是"1(2(4))(3)"
+ * 输入：root = [1,2,3,null,4]   输出："1(2()(4))(3)"     只允许左子树为空时用()代替节点,右子树为空或者左右子树为空就都不处理
+ * root(root.left)(root.right)
+ * @param {TreeNode} root
+ * @return {string}
+ */
+var tree2str = function (root) {
+    /** 迭代法 */
+    let res = ''
+    let stack = [root]
+    let crossNode = new Set()
+    while (stack.length) {
+        const node = stack[stack.length - 1]
+        if (crossNode.has(node)) {
+            /** 通过声明 crossNode, 保存遍历过的节点,在后续遍历中，补上节点的')' */
+            if (node !== root) {
+                /** 这里也需要边界检测，非root节点，不需要补上 ')'  */
+                res += ')'
+            }
+            stack.pop()
+        } else {
+            crossNode.add(node)
+            if (node !== root) {
+                /** 当前不是root根节点,先拼上'(' */
+                res += '('
+            }
+            res += '' + node.val
+            if (!node.left && node.right) {
+                /** 针对有左节点，没有右节点，补上'()' */
+                res += '()'
+            }
+            if (node.right) {
+                stack.push(node.right)
+            }
+            if (node.left) {
+                stack.push(node.left)
+            }
+        }
+    }
+    return res
+
+    /** 递归解法 */
+    // function crossTree(root) {
+    //     if (root === null) return ''
+    //     if (!root.left && !root.right) {
+    //         return '' + root.val
+    //     }
+    //     if (!root.right) {
+    //         return root.val + '(' + tree2str(root.left) + ')'
+    //     }
+    //     const leftNode = tree2str(root.left)
+    //     const rightNode = tree2str(root.right)
+    //     return root.val + '(' + leftNode + ')(' + rightNode + ')'
+    // }
+    // return crossTree(root)
+}
+
 /** 563. 二叉树的坡度
  * 给你一个二叉树的根节点 root ，计算并返回 整个树 的坡度
  * 一个树的 节点的坡度 定义即为，【该节点左子树的节点之和和右子树节点之和的 差的绝对值 。】
