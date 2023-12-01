@@ -6,6 +6,63 @@
  * }
  */
 
+/** 637. 二叉树的层平均值
+ *  给定一个非空二叉树的根节点 root , 以数组的形式返回每一层节点的平均值。与实际答案相差 10-5 以内的答案可以被接受
+ *
+ * 输入：root = [3,9,20,null,null,15,7]
+ * 输出：[3.00000,14.50000,11.00000]
+ * 解释：第 0 层的平均值为 3,第 1 层的平均值为 14.5 ( 9+20  / 2), 第 2 层的平均值为 11 ( 15+7  / 2)。因此返回 [3, 14.5, 11]
+ *
+ *  @param {TreeNode} root
+ *  @return {number[]}
+ */
+var averageOfLevels = function (root) {
+    // 解法1：构建 resCount对象，数据格式为：{ '0': [ 3 ], '1': [ 9, 20 ], '2': [ 15, 7 ] }
+    let resCount = {}
+    function crossTree(root, dep) {
+        if (root === null) return
+        if (resCount[dep]) {
+            resCount[dep].push(root.val)
+        } else {
+            resCount[dep] = [root.val]
+        }
+        crossTree(root.left, dep + 1)
+        crossTree(root.right, dep + 1)
+    }
+    crossTree(root, 0)
+    const depList = Object.keys(resCount) // 拿到层级数组：[ '0', '1', '2' ]
+    // depList.sort((a,b) => a-b)
+    const result = []
+    depList.forEach((dep) => {
+        const depNums = resCount[dep].reduce((total, item) => (total += item), 0)
+        result.push(depNums / resCount[dep].length)
+    })
+    return result
+
+    // 优化一下：构建 resCount对象，数据格式为：{ '0': [ 3 ], '1': [ 9, 20 ], '2': [ 15, 7 ] }
+    // let resCount = {}
+    // function crossTree(root, dep) {
+    //     if(root === null) return
+    //     if(resCount[dep]) {
+    //         const curDep = resCount[dep]
+    //         curDep.val += root.val
+    //         curDep.count++
+    //         curDep.avarage = curDep.val / curDep.count
+    //     } else {
+    //         resCount[dep] = {
+    //             val: root.val,
+    //             count: 1,
+    //             avarage: root.val
+    //         }
+    //     }
+    //     crossTree(root.left, dep+1)
+    //     crossTree(root.right, dep+1)
+    // }
+    // crossTree(root, 0)
+    // console.log(resCount)
+    // return Object.keys(resCount).map(dep => resCount[dep].avarage)
+}
+
 /** 606. 根据二叉树创建字符串
  * 给你二叉树的根节点 root ，请你采用前序遍历的方式，将二叉树转化为一个由括号和整数组成的字符串，返回构造出的字符串
  * 空节点使用一对空括号对 "()" 表示，转化后需要省略所有不影响字符串与原始二叉树之间的一对一映射关系的空括号对
