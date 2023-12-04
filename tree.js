@@ -6,6 +6,53 @@
  * }
  */
 
+/** 653. 两数之和 IV - 输入二叉搜索树
+ *  给定一个二叉搜索树 root 和一个目标结果 k，如果二叉搜索树中存在两个元素且它们的和等于给定的目标结果，则返回 true
+ *  输入: root = [5,3,6,2,4,null,7], k = 9  输出: true
+ * @param {TreeNode} root
+ * @param {number} k
+ * @return {boolean}
+ */
+var findTarget = function (root, k) {
+    // 构建数组解决：二叉搜索树的中序遍历是递增序列
+    if (root === null) return false
+    const numList = []
+    function Dep(root) {
+        if (root === null) return
+        Dep(root.left)
+        numList.push(root.val)
+        Dep(root.right)
+    }
+    Dep(root)
+    let left = 0,
+        right = numList.length - 1
+    while (left < right) {
+        const findVal = k - numList[left]
+        /** 边界处理 */
+        if (numList[right] > findVal) {
+            right--
+        } else if (numList[right] === findVal) {
+            return true
+        } else {
+            left++
+            right = numList.length - 1 // 重置right锚点
+        }
+    }
+    return false
+
+    /** 优化:有什么可能不使用数组，直接遍历的时候查找呢: 利用Map，空间换时间 */
+    const needMap = new Set()
+    function Dep(root) {
+        if (root === null) return false
+        if (needMap.has(root.val)) {
+            return true
+        }
+        needMap.add(k - root.val)
+        return Dep(root.left) || Dep(root.right)
+    }
+    return Dep(root)
+}
+
 /** 637. 二叉树的层平均值
  *  给定一个非空二叉树的根节点 root , 以数组的形式返回每一层节点的平均值。与实际答案相差 10-5 以内的答案可以被接受
  *
