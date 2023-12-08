@@ -6,6 +6,73 @@
  * }
  */
 
+/** 872. 叶子相似的树
+ *  请考虑一棵二叉树上所有的叶子，这些叶子的值按从左到右的顺序排列形成一个 叶值序列
+ *  举个例子，如上图所示，给定一棵叶值序列为 (6, 7, 4, 9, 8) 的树
+ *  如果有两棵二叉树的叶值序列是相同，那么我们就认为它们是 叶相似 的
+ *  如果给定的两个根结点分别为 root1 和 root2 的树是叶相似的，则返回 true；否则返回 false
+ */
+
+/** LCR 194. 二叉树的最近公共祖先
+ *  百度百科中最近公共祖先的定义为：
+ * “对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function (root, p, q) {}
+
+/** 783. 二叉搜索树节点最小距离
+ *  给你一个二叉搜索树的根节点 root ，返回 树中任意两不同节点值之间的最小差值  差值是一个正数，其数值等于两值之差的绝对值。
+ *  输入：root = [4,2,6,1,3] 输出：1
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var minDiffInBST = function (root) {
+    /** 能否利用二叉搜索树特性：对于每一个子树，
+     * node.val <= node.right;
+     * node.val => node.left
+     * 由于是任意两不同节点值之间的最小差值，二叉搜索树的优势在哪里呢: 答案是有序性
+     * 既然是一个递增序列，那么最小的差值，肯定是在递增节点的前后节点中出现 [1,3,5,6,8] -> [5,6]，不存在非相连节点的差值会大于两个相连节点差值
+     */
+    let preVal = undefined
+    let curDiff = Infinity
+    function Dep(root) {
+        if (root === null) return
+        Dep(root.left)
+        if (preVal === undefined) {
+            preVal = root.val
+        } else {
+            const diff = Math.abs(preVal - root.val)
+            curDiff = Math.min(curDiff, diff)
+            preVal = root.val
+        }
+        Dep(root.right)
+    }
+    Dep(root)
+    return curDiff
+
+    /** 暴力解法：将问题转换为找到数组中最小差值 */
+    let nodeList = []
+    function crossTree(root) {
+        if (root == null) return
+        nodeList.push(root.val)
+        crossTree(root.left)
+        crossTree(root.right)
+    }
+    crossTree(root)
+    let min = Infinity
+    for (let i = 0; i < nodeList.length - 1; i++) {
+        let right = i + 1
+        while (right < nodeList.length) {
+            min = Math.min(min, Math.abs(nodeList[right] - nodeList[i]))
+            right++
+        }
+    }
+    return min
+}
+
 /** 671. 二叉树中第二小的节点
  * 给定一个非空特殊的二叉树，每个节点都是正数，并且每个节点的子节点数量只能为 2 或 0。
  * 如果一个节点有两个子节点的话，那么该节点的值等于两个子节点中较小的一个
