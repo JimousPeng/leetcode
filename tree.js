@@ -6,22 +6,59 @@
  * }
  */
 
-/** 872. 叶子相似的树
- *  请考虑一棵二叉树上所有的叶子，这些叶子的值按从左到右的顺序排列形成一个 叶值序列
- *  举个例子，如上图所示，给定一棵叶值序列为 (6, 7, 4, 9, 8) 的树
- *  如果有两棵二叉树的叶值序列是相同，那么我们就认为它们是 叶相似 的
- *  如果给定的两个根结点分别为 root1 和 root2 的树是叶相似的，则返回 true；否则返回 false
+/** 96. 不同的二叉搜索树
+ *  给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数
+ * node.val <= node.right;
+ * node.val => node.left
+ * @param {number} n 1 <= n <= 8
+ * @return {number}
  */
+var numTrees = function (n) {
+    let val = 1
+    while (val < n + 1) {}
+}
 
-/** LCR 194. 二叉树的最近公共祖先
- *  百度百科中最近公共祖先的定义为：
- * “对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+/** 897. 递增顺序搜索树
+ *  给你一棵二叉搜索树的 root ，请你 按中序遍历 将其重新排列为一棵递增顺序搜索树，
+ * 使树中最左边的节点成为树的根节点，并且每个节点没有左子节点，只有一个右子节点
  * @param {TreeNode} root
- * @param {TreeNode} p
- * @param {TreeNode} q
  * @return {TreeNode}
  */
-var lowestCommonAncestor = function (root, p, q) {}
+var increasingBST = function (root) {
+    let newRoot = null
+    let curNode = null
+    function Dep(root) {
+        if (root === null) return
+        Dep(root.left)
+        if (!newRoot) {
+            newRoot = new TreeNode(root.val)
+            curNode = newRoot
+        } else {
+            curNode.right = new TreeNode(root.val)
+            curNode = curNode.right
+        }
+        Dep(root.right)
+    }
+    Dep(root)
+    return newRoot
+
+    // let nodeList = []
+    // function Dep(root) {
+    //     if (root === null) return
+    //     Dep(root.left)
+    //     nodeList.push(root.val)
+    //     Dep(root.right)
+    // }
+    // Dep(root)
+    // let newRoot = new TreeNode(nodeList[0])
+    // let curNode = newRoot
+    // for (let i = 1; i < nodeList.length; i++) {
+    //     curNode.left = null
+    //     curNode.right = new TreeNode(nodeList[i])
+    //     curNode = curNode.right
+    // }
+    // return newRoot
+}
 
 /** 783. 二叉搜索树节点最小距离
  *  给你一个二叉搜索树的根节点 root ，返回 树中任意两不同节点值之间的最小差值  差值是一个正数，其数值等于两值之差的绝对值。
