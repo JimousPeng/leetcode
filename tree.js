@@ -18,6 +18,38 @@ var numTrees = function (n) {
     while (val < n + 1) {}
 }
 
+/** 938. 二叉搜索树的范围和
+ *  给定二叉搜索树的根结点 root，返回值位于范围 [low, high] 之间的所有结点的值的和
+ *  输入：root = [10,5,15,3,7,null,18], low = 7, high = 15
+ *  输出：32
+ * @param {TreeNode} root
+ * @param {number} low
+ * @param {number} high
+ * @return {number}
+ */
+var rangeSumBST = function (root, low, high) {
+    // let res = 0
+    // function Dep(root) {
+    //     if (root === null) return 0
+    //     Dep(root.left)
+    //     if (root.val >= low && root.val <= high) {
+    //         res += root.val
+    //     }
+    //     Dep(root.right)
+    // }
+    // Dep(root)
+    // return res
+
+    // 因为是二叉搜索树，利用其特性
+    function Dep(root) {
+        if (root === null) return 0
+        if (root.val < low) return Dep(root.right)
+        if (root.val > high) return Dep(root.left)
+        return root.val + Dep(root.left) + Dep(root.right)
+    }
+    return Dep(root)
+}
+
 /** 897. 递增顺序搜索树
  *  给你一棵二叉搜索树的 root ，请你 按中序遍历 将其重新排列为一棵递增顺序搜索树，
  * 使树中最左边的节点成为树的根节点，并且每个节点没有左子节点，只有一个右子节点
