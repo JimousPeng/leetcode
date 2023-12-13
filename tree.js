@@ -18,6 +18,24 @@ var numTrees = function (n) {
     while (val < n + 1) {}
 }
 
+/** 965. 单值二叉树
+ *  如果二叉树每个节点都具有相同的值，那么该二叉树就是单值二叉树 只有给定的树是单值二叉树时，才返回 true；否则返回 false
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isUnivalTree = function (root) {
+    const baseVal = root.val
+    let flag = true
+    function Dep(root) {
+        if (root === null) return baseVal
+        flag = flag && baseVal === root.val
+        Dep(root.left)
+        Dep(root.right)
+    }
+    Dep(root)
+    return flag
+}
+
 /** 938. 二叉搜索树的范围和
  *  给定二叉搜索树的根结点 root，返回值位于范围 [low, high] 之间的所有结点的值的和
  *  输入：root = [10,5,15,3,7,null,18], low = 7, high = 15
