@@ -18,6 +18,64 @@ var numTrees = function (n) {
     while (val < n + 1) {}
 }
 
+/** 993. 二叉树的堂兄弟节点
+ *  在二叉树中，根节点位于深度 0 处，每个深度为 k 的节点的子节点位于深度 k+1 处 如果二叉树的两个节点深度相同，但 父节点不同 ，则它们是一对堂兄弟节点
+ *  每个节点的值都是唯一的、范围为 1 到 100 的整数
+ *  只有与值 x 和 y 对应的节点是堂兄弟节点时，才返回 true 。否则，返回 false
+ *
+ * 【深度】计算原则：根节点位于深度 0 处，那么深度就是从root节点开始算
+ * 满足两个条件：1.不同的父节点； 2.相同的节点深度
+ * @param {TreeNode} root
+ * @param {number} x
+ * @param {number} y
+ * @return {boolean}
+ */
+var isCousins = function (root, x, y) {
+    const nodeList = []
+    function Dep(root, dep, father) {
+        if (root === null) return 0
+        if (nodeList.length === 2) return
+        if (root.val === x) {
+            nodeList.push({ node: root, dep, father })
+        } else if (root.val === y) {
+            nodeList.push({ node: root, dep, father })
+        }
+        Dep(root.left, dep + 1, root)
+        Dep(root.right, dep + 1, root)
+    }
+    // 考虑x,y可能为root的情况，所以初始值father参数为root
+    Dep(root, 0, root)
+    const nodeLeft = nodeList[0]
+    const nodeRight = nodeList[1]
+    if (nodeLeft.father.val === nodeRight.father.val || nodeLeft.dep !== nodeRight.dep) return false
+    return true
+
+    /** 错误思路：深度计算规则不对 */
+    // const nodeList = []
+    // function Dep(root, father) {
+    //     if (root === null) return 0
+    //     if (nodeList.length === 2) return
+    //     if (root.val === x) {
+    //         nodeList.push({ node: root, father })
+    //     } else if (root.val === y) {
+    //         nodeList.push({ node: root, father })
+    //     }
+    //     Dep(root.left, root)
+    //     Dep(root.right, root)
+    // }
+    // // 第一步：先拿到两个节点，判断父节点是否相同
+    // Dep(root, null)
+    // if (nodeList[0].father.val === nodeList[1].father.val) return false
+    // // 第二步：计算深度(从下往上算了，应该从上往下算)
+    // function calcDep(root) {
+    //     if (root === null) return 0
+    //     return Math.max(1 + calcDep(root.left), 1 + calcDep(root.right))
+    // }
+    // const leftDep = calcDep(nodeList[0].node)
+    // const rightDep = calcDep(nodeList[1].node)
+    // return leftDep === rightDep
+}
+
 /** 965. 单值二叉树
  *  如果二叉树每个节点都具有相同的值，那么该二叉树就是单值二叉树 只有给定的树是单值二叉树时，才返回 true；否则返回 false
  * @param {TreeNode} root
