@@ -18,6 +18,54 @@ var numTrees = function (n) {
     while (val < n + 1) {}
 }
 
+/** 1022. 从根到叶的二进制数之和
+ *  给出一棵二叉树，其上每个结点的值都是 0 或 1 。每一条从根到叶的路径都代表一个从最高有效位开始的二进制数
+ *  例如，如果路径为 0 -> 1 -> 1 -> 0 -> 1，那么它表示二进制数 01101，也就是 13
+ *  对树上的每一片叶子，我们都要找出从根到该叶子的路径所表示的数字
+ *  返回这些数字之和。题目数据保证答案是一个 32 位 整数
+ *  输入：root = [1,0,1,0,1,0,1] 输出：22
+ *  解释：(100) + (101) + (110) + (111) = 4 + 5 + 6 + 7 = 22
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var sumRootToLeaf = function (root) {
+    const pathList = []
+    // 1. 先遍历拿到所有的路径组合
+    function Dep(root, path) {
+        if (root === null) {
+            // 可以将对path计算的方法抽成函数，在这里计算，减少后续多一次遍历
+            pathList.push(path)
+            return
+        }
+        path.unshift(root.val)
+        if (root.left === null) {
+            return Dep(root.right, [...path])
+        }
+        if (root.right === null) {
+            return Dep(root.left, [...path])
+        }
+        Dep(root.left, [...path])
+        Dep(root.right, [...path])
+    }
+    Dep(root, [])
+    // 2. 路径组合求和
+    let res = 0
+    for (let i = 0; i < pathList.length; i++) {
+        const curPath = pathList[i]
+        const calcPath = curPath.reduce((total, item, index) => {
+            total += Math.pow(2, index) * item
+            return total
+        }, 0)
+        res += calcPath
+    }
+    return res
+
+    /** 优化，能不能每一步计算拿到结果，然后往下传值呢 => 其实就是每一层的值，乘以 2^(层数-1)
+     *  其实比较难，因为不确定每个路径的深度，所以拿不到层数，倒是可以考虑将层数记录下来，那样处理起来又有另外的麻烦，因为所处层数与当前节点的计算值并不一致。
+     *  比如最底层，层数最大，但是在2进制的计算中，反而要从0开始
+     */
+}
+
 /** 993. 二叉树的堂兄弟节点
  *  在二叉树中，根节点位于深度 0 处，每个深度为 k 的节点的子节点位于深度 k+1 处 如果二叉树的两个节点深度相同，但 父节点不同 ，则它们是一对堂兄弟节点
  *  每个节点的值都是唯一的、范围为 1 到 100 的整数
