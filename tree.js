@@ -18,6 +18,64 @@ var numTrees = function (n) {
     while (val < n + 1) {}
 }
 
+/** 2331. 计算布尔二叉树的值
+ *  叶子节点 要么值为 0 要么值为 1 ，其中 0 表示 False ，1 表示 True；
+ *  非叶子节点 要么值为 2 要么值为 3 ，其中 2 表示逻辑或 OR ，3 表示逻辑与 AND
+ *  如果节点是个叶子节点，那么节点的 值 为它本身，即 True 或者 False，否则，计算 两个孩子的节点值，然后将该节点的运算符对两个孩子值进行 运算
+ *  返回根节点 root 的布尔运算值
+ *  [叶子节点 是没有孩子的节点]
+ *  @param {TreeNode} root
+ *  @return {boolean}
+ */
+var evaluateTree = function (root) {
+    function Dep(root) {
+        if (root == null) return true
+        if (root.val === 2) {
+            return Dep(root.left) || Dep(root.right)
+        } else if (root.val === 3) {
+            return Dep(root.left) && Dep(root.right)
+        }
+        return !!root.val
+    }
+    return Dep(root)
+}
+
+/** 2236. 判断根结点是否等于子结点之和
+ *  给你一个 二叉树 的根结点 root，该二叉树由恰好 3 个结点组成：根结点、左子结点和右子结点
+ *  如果根结点值等于两个子结点值之和，返回 true ，否则返回 false
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var checkTree = function (root) {
+    return root.val === root.left.val + root.right.val
+}
+
+/** 1379. 找出克隆二叉树中的相同节点
+ *  给你两棵二叉树，原始树 original 和克隆树 cloned，以及一个位于原始树 original 中的目标节点 target
+ *  其中，克隆树 cloned 是原始树 original 的一个 副本
+ *  请找出在树 cloned 中，与 target 相同 的节点，并返回对该节点的引用（在 C/C++ 等有指针的语言中返回 节点指针，其他语言返回节点本身）
+ *  注意：你 不能 对两棵二叉树，以及 target 节点进行更改。只能 返回对克隆树 cloned 中已有的节点的引用
+ *  输入: tree = [7,4,3,null,null,6,19], target = 3
+ * @param {TreeNode} original
+ * @param {TreeNode} cloned
+ * @param {TreeNode} target
+ * @return {TreeNode}
+ */
+
+var getTargetCopy = function (original, cloned, target) {
+    let getTarget = null
+    function crossTree(root) {
+        if (root === null || getTarget) return
+        if (root.val === target.val) {
+            getTarget = root
+        }
+        crossTree(root.left)
+        crossTree(root.right)
+    }
+    crossTree(cloned)
+    return getTarget
+}
+
 /** 1022. 从根到叶的二进制数之和
  *  给出一棵二叉树，其上每个结点的值都是 0 或 1 。每一条从根到叶的路径都代表一个从最高有效位开始的二进制数
  *  例如，如果路径为 0 -> 1 -> 1 -> 0 -> 1，那么它表示二进制数 01101，也就是 13
