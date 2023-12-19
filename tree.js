@@ -18,6 +18,38 @@ var numTrees = function (n) {
     while (val < n + 1) {}
 }
 
+/** LCP 44. 开幕式焰火
+ *  输入：root = [1,3,2,1,null,2] 输出：3
+ *  其实就是去重
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var numColor = function (root) {
+    // const colorSet = new Set()
+    // function Dep(root) {
+    //     if (root === null) return
+    //     colorSet.add(root.val)
+    //     Dep(root.left)
+    //     Dep(root.right)
+    // }
+    // Dep(root)
+    // return Array.from(colorSet).length
+
+    const colorMap = {}
+    let count = 0
+    function Dep(root) {
+        if (root === null) return
+        if (!colorMap[root.val]) {
+            count++
+            colorMap[root.val] = true
+        }
+        Dep(root.left)
+        Dep(root.right)
+    }
+    Dep(root)
+    return count
+}
+
 /** 2331. 计算布尔二叉树的值
  *  叶子节点 要么值为 0 要么值为 1 ，其中 0 表示 False ，1 表示 True；
  *  非叶子节点 要么值为 2 要么值为 3 ，其中 2 表示逻辑或 OR ，3 表示逻辑与 AND
