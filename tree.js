@@ -18,6 +18,32 @@ var numTrees = function (n) {
     while (val < n + 1) {}
 }
 
+/** 114. 二叉树展开为链表 ListNode
+ *  给你二叉树的根结点 root ，请你将它展开为一个单链表
+ *  展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null
+ *  展开后的单链表应该与二叉树 先序遍历 顺序相同
+ * @param {TreeNode} root
+ * @return {void} Do not return anything, modify root in-place instead.
+ */
+var flatten = function (root) {
+    if (root === null) return []
+    let nodeList = []
+    function Dep(root) {
+        if (root === null) return
+        nodeList.push(root)
+        Dep(root.left)
+        Dep(root.right)
+    }
+    Dep(root)
+
+    for (let i = 1; i < nodeList.length; i++) {
+        const prev = i - 1
+        nodeList[prev].right = nodeList[i]
+        nodeList[prev].left = null
+    }
+    return nodeList
+}
+
 /** LCR 144. 翻转二叉树
  *  给定一棵二叉树的根节点 root，请左右翻转这棵二叉树，并返回其根节点
  * @param {TreeNode} root
