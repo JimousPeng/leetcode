@@ -18,6 +18,57 @@ var numTrees = function (n) {
     while (val < n + 1) {}
 }
 
+/** LCR 144. 翻转二叉树
+ *  给定一棵二叉树的根节点 root，请左右翻转这棵二叉树，并返回其根节点
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var mirrorTree = function (root) {
+    function Dep(root) {
+        if (root === null) return
+        // 翻转单颗
+        let tempRoot = root.left
+        root.left = root.right
+        root.right = tempRoot
+        Dep(root.left)
+        Dep(root.right)
+    }
+    Dep(root)
+    return root
+
+    // 官方解法：感觉还不如用临时变量交换有效率
+    if (root === null) return root
+    let left = mirrorTree(root.left)
+    let right = mirrorTree(root.right)
+    root.right = left
+    root.left = right
+    return root
+}
+
+/** LCR 052. 递增顺序搜索树
+ *  给你一棵二叉搜索树，请 按中序遍历 将其重新排列为一棵递增顺序搜索树，使树中最左边的节点成为树的根节点，并且每个节点没有左子节点，只有一个右子节点。
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var increasingBST = function (root) {
+    let newRoot = null
+    let curNode = null
+    function Dep(root) {
+        if (root == null) return
+        Dep(root.left)
+        if (!newRoot) {
+            newRoot = new TreeNode(root.val)
+            curNode = newRoot
+        } else {
+            curNode.right = new TreeNode(root.val)
+            curNode = curNode.right
+        }
+        Dep(root.right)
+        return newRoot
+    }
+    return Dep(root)
+}
+
 /** LCP 44. 开幕式焰火
  *  输入：root = [1,3,2,1,null,2] 输出：3
  *  其实就是去重
