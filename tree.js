@@ -44,6 +44,19 @@ var flatten = function (root) {
     return nodeList
 }
 
+/** LCR 175. 计算二叉树的深度
+ *  某公司架构以二叉树形式记录，请返回该公司的层级数
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var calculateDepth = function (root) {
+    function Dep(root) {
+        if (root === null) return 0
+        return 1 + Math.max(Dep(root.left), Dep(root.right))
+    }
+    return Dep(root)
+}
+
 /** LCR 174. 寻找二叉搜索树中的目标节点
  *  某公司组织架构以二叉搜索树形式记录，节点值为处于该职位的员工编号。请返回第 cnt 大的员工编号
  *  root = [7, 3, 9, 1, 5], cnt = 2  输出：7
