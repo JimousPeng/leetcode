@@ -44,6 +44,65 @@ var flatten = function (root) {
     return nodeList
 }
 
+/** LCR 174. 寻找二叉搜索树中的目标节点
+ *  某公司组织架构以二叉搜索树形式记录，节点值为处于该职位的员工编号。请返回第 cnt 大的员工编号
+ *  root = [7, 3, 9, 1, 5], cnt = 2  输出：7
+ * @param {TreeNode} root
+ * @param {number} cnt
+ * @return {number}
+ */
+var findTargetNode = function (root, cnt) {
+    let count = []
+    function Dep(root) {
+        if (root === null) return
+        Dep(root.left)
+        count.push(root.val)
+        Dep(root.right)
+    }
+    Dep(root)
+    // 二叉搜索树的中序遍历是单电递增
+    return count[count.length - cnt]
+}
+
+/** LCR 150. 彩灯装饰记录 II
+ *  一棵圣诞树记作根节点为 root 的二叉树，节点值为该位置装饰彩灯的颜色编号。请按照从左到右的顺序返回每一层彩灯编号，每一层的结果记录于一行
+ * 输入：root = [8,17,21,18,null,null,6]  输出：[[8],[17,21],[18,6]]
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+var decorateRecord = function (root) {
+    const totalCount = []
+    function Dep(root, dep) {
+        if (root === null) return
+        let depCount = totalCount[dep]
+        if (depCount) {
+            depCount.push(root.val)
+        } else {
+            totalCount[dep] = [root.val]
+        }
+        Dep(root.left, dep + 1)
+        Dep(root.right, dep + 1)
+    }
+    Dep(root, 0)
+    return totalCount
+}
+
+/** LCR 145. 判断对称二叉树
+ *  请设计一个函数判断一棵二叉树是否 轴对称
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var checkSymmetricTree = function (root) {
+    if (root === null) return false
+    function checkTree(left, right) {
+        if (left === null && right !== null) return false
+        if (left !== null && right === null) return false
+        if (left === null && right === null) return true
+        return left.val === right.val && checkTree(left.left, right.right) && checkTree(left.right, right.left)
+    }
+    return checkTree(root.left, root.right)
+}
+
 /** LCR 144. 翻转二叉树
  *  给定一棵二叉树的根节点 root，请左右翻转这棵二叉树，并返回其根节点
  * @param {TreeNode} root
