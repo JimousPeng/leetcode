@@ -44,6 +44,109 @@ var flatten = function (root) {
     return nodeList
 }
 
+/** LCR 194. 二叉树的最近公共祖先
+ *  先找到两个节点的祖先
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function (root, p, q) {
+    let res = null
+    function Dep(root) {
+        if (root === null) return false
+        if (res) return // 剪枝一下
+        let leftNode = Dep(root.left)
+        let rightNode = Dep(root.right)
+        /** 后续遍历下，对每个根root节点的处理
+         *  1. 存在左右子树中包含了p或者q
+         *  2. 当前节点包含p或q节点，并且他的左右子树包含了另一个节点
+         */
+        if ((leftNode && rightNode) || ((root.val === p.val || root.val === q.val) && (leftNode || rightNode))) {
+            res = root
+        }
+        /** 每个节点的返回值
+         *  1. 是否包含左子树
+         *  2. 是否包含右子树
+         *  3. 子树中是否包含p节点或者q节点
+         *  如果满足一个条件，那么就继续向上递归
+         *  因为递归的起点是root===null ，所以 leftNode, rightNode起点为false，
+         *  因此：leftNode || rightNode || root.val === p.val || root.val === q.val -> 实际上是找到存在pq节点的子树
+         */
+        return leftNode || rightNode || root.val === p.val || root.val === q.val
+    }
+    Dep(root)
+    return res
+}
+
+/** LCR 193. 二叉搜索树的最近公共祖先
+ *  给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先
+ *  百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）
+ *  所有节点的值都是唯一的。  p、q 为不同节点且均存在于给定的二叉搜索树中。
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function (root, p, q) {
+    // 优化点：二叉搜索树的中序遍历是单调递增特性
+    if (root == null) return
+    if (root.val > p.val && root.val > q.val) {
+        // 当前节点比p,q都要大，说明pq在左子树
+        return lowestCommonAncestor(root.left, p, q)
+    }
+    if (root.val < p.val && root.val < q.val) {
+        // 当前节点比p,q都要小，说明pq在右子树
+        return lowestCommonAncestor(root.right, p, q)
+    }
+    return root
+}
+
+/** LCR 176. 判断是否为平衡二叉树 0 <= 树的结点个数 <= 10000
+ *  输入一棵二叉树的根节点，判断该树是不是平衡二叉树。
+ *  如果某二叉树中任意节点的左右子树的深度相差不超过1，那么它就是一棵平衡二叉树
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isBalanced = function (root) {
+    // 平衡的定义：任意节点 的左右子树的深度相差不超过1，只求左右子树，不是整棵树, 以下为错误解法
+    // if (root === null) return true
+    // let isFlag = true
+    // let minDep = undefined
+    // let maxDep = undefined
+    // function Dep(root, dep) {
+    //     if (!isFlag) return
+    //     if (root === null) {
+    //         if (minDep === undefined) minDep = dep
+    //         if (maxDep === undefined) maxDep = dep
+    //         minDep = Math.min(minDep, dep)
+    //         maxDep = Math.max(maxDep, dep)
+    //         isFlag = isFlag && Math.abs(maxDep - minDep) < 2
+    //         return
+    //     }
+    //     Dep(root.left, dep + 1)
+    //     Dep(root.right, dep + 1)
+    // }
+    // Dep(root, 0)
+    // return isFlag
+
+    if (root === null) return true
+    let isFlag = true
+
+    function Dep(root, dep) {
+        if (!isFlag) return 0
+        if (root === null) return dep
+        let leftCount = Dep(root.left, dep + 1)
+        let rightCount = Dep(root.right, dep + 1)
+        /** 深度的统计是从根节点到叶节点，所以用后续遍历，从上到下，先拿到当前节点的深度，再挨个处理各个节点的深度 */
+        if (Math.abs(leftCount - rightCount) > 1 && isFlag) {
+            isFlag = false
+        }
+        return Math.max(rightCount, leftCount)
+    }
+    return Dep(root, 0) && isFlag
+}
+
 /** LCR 175. 计算二叉树的深度
  *  某公司架构以二叉树形式记录，请返回该公司的层级数
  * @param {TreeNode} root
