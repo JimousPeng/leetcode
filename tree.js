@@ -44,6 +44,40 @@ var flatten = function (root) {
     return nodeList
 }
 
+/** 面试题 04.04. 检查平衡性
+ * 实现一个函数，检查二叉树是否平衡。在这个问题中，平衡树的定义如下：任意一个节点，其两棵子树的高度差不超过 1。
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isBalanced = function (root) {
+    function Dep(root) {
+        if (root === null) return 0
+        // 高度的计算是从root节点向下的
+    }
+    Dep(root)
+}
+
+/** 面试题 04.02. 最小高度树
+ *  给定一个有序整数数组，元素各不相同且按升序排列，编写一个算法，创建一棵高度最小的二叉搜索树
+ *  [-10,-3,0,5,9] 一个符合条件的答案是 [0,-3,9,-10,null,5]
+ *  @param {number[]} nums
+ *  @return {TreeNode}
+ */
+var sortedArrayToBST = function (nums) {
+    // 有序整数数组 元素各不相同且按升序排列 二叉搜索树
+    /** 首先二叉搜索树是中序遍历后单调递增的特性，要保证高度最小，那么就是左右子树尽量一样，先试试取中点做root */
+    if (nums.length === 0) return null
+    function Dep(list, left, right) {
+        if (left > right) return null
+        const mid = Math.ceil((left + right) / 2)
+        const rootNode = new TreeNode(nums[mid])
+        rootNode.left = Dep(list, left, mid - 1)
+        rootNode.right = Dep(list, mid + 1, right)
+        return rootNode
+    }
+    return Dep(nums, 0, nums.length - 1)
+}
+
 /** LCR 194. 二叉树的最近公共祖先
  *  先找到两个节点的祖先
  * @param {TreeNode} root
