@@ -44,17 +44,55 @@ var flatten = function (root) {
     return nodeList
 }
 
+/** 面试题 17.12. BiNode
+ *  二叉树数据结构TreeNode可用来表示单向链表（其中left置空，right为下一个链表节点）
+ *  实现一个方法，把二叉搜索树转换为单向链表，要求依然符合二叉搜索树的性质，转换操作应是原址的，也就是在原始的二叉搜索树上直接修改
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var convertBiNode = function (root) {
+    /** 已知条件：
+     *  1. 二叉搜索树
+     *  2. 转换为单向链表，left -> null, right -> next
+     */
+    let headNode = null
+    let curNode = null
+    function Dep(root) {
+        if (root === null) return
+        Dep(root.left)
+        if (!headNode) {
+            headNode = new TreeNode(root.val)
+            curNode = headNode
+        } else {
+            curNode.right = new TreeNode(root.val)
+            curNode = curNode.right
+        }
+        Dep(root.right)
+    }
+    Dep(root)
+    return headNode
+}
+
 /** 面试题 04.04. 检查平衡性
  * 实现一个函数，检查二叉树是否平衡。在这个问题中，平衡树的定义如下：任意一个节点，其两棵子树的高度差不超过 1。
  * @param {TreeNode} root
  * @return {boolean}
  */
 var isBalanced = function (root) {
-    function Dep(root) {
-        if (root === null) return 0
+    let res = true
+    function Dep(root, deep) {
+        if (!res) return deep
+        if (root === null) return deep
         // 高度的计算是从root节点向下的
+        const leftH = Dep(root.left, deep + 1)
+        const rightH = Dep(root.right, deep + 1)
+        if (Math.abs(leftH - rightH) > 1 && res) {
+            res = false
+        }
+        return Math.max(leftH, rightH)
     }
-    Dep(root)
+    Dep(root, 0)
+    return res
 }
 
 /** 面试题 04.02. 最小高度树
@@ -590,6 +628,32 @@ var increasingBST = function (root) {
     //     curNode = curNode.right
     // }
     // return newRoot
+}
+
+/** 872. 叶子相似的树
+ *  请考虑一棵二叉树上所有的叶子，这些叶子的值按从左到右的顺序排列形成一个 叶值序列
+ * @param {TreeNode} root1
+ * @param {TreeNode} root2
+ * @return {boolean}
+ */
+var leafSimilar = function (root1, root2) {
+    /**
+     * 1. 找到所有的叶子
+     * 2. 对比两个叶子序列
+     */
+    function Dep(root, seq = []) {
+        if (root == null) return
+        if (!root.left && !root.right) {
+            seq.push(root.val)
+        }
+        Dep(root.left, seq)
+        Dep(root.right, seq)
+    }
+    let seq1 = []
+    Dep(root1, seq1)
+    let seq2 = []
+    Dep(root2, seq2)
+    return seq1.toString() === seq2.toString()
 }
 
 /** 783. 二叉搜索树节点最小距离
