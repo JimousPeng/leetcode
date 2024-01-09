@@ -6,6 +6,93 @@
  * }
  */
 
+/** 107. 二叉树的层序遍历 II
+ *  给你二叉树的根节点 root ，返回其节点值 自底向上的层序遍历 。 （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
+ *  输入：root = [3,9,20,null,null,15,7]  输出：[[15,7],[9,20],[3]]
+ * @param {TreeNode} root
+ * @return {number[][]}
+ */
+var levelOrderBottom = function (root) {
+    let res = []
+    function Dep(root, dep) {
+        if (root === null) return
+        if (res[dep]) {
+            res[dep].push(root.val)
+        } else {
+            res[dep] = [root.val]
+        }
+        Dep(root.left, dep + 1)
+        Dep(root.right, dep + 1)
+    }
+    Dep(root, 0)
+    return res.reverse()
+}
+
+/** 99. 恢复二叉搜索树
+ *  给你二叉搜索树的根节点 root ，该树中的 恰好 两个节点的值被错误地交换。请在不改变其结构的情况下，恢复这棵树
+ * @param {TreeNode} root
+ * @return {void} Do not return anything, modify root in-place instead.
+ */
+var recoverTree = function (root) {
+    // 有且仅有两个节点错误，恢复这棵树就是对这两个节点的left，right,及其父节点(如果存在)的left或right 的引用修正
+    let nodeList = []
+    let numList = []
+    function Dep(root, father, isLeft) {
+        if (root === null) return
+        Dep(root.left, root, true)
+        // 中序遍历处理
+        numList.push(root.val)
+        nodeList.push({
+            root,
+            father,
+            isLeft,
+        })
+        Dep(root.right, root, false)
+    }
+    Dep(root, null, false)
+    numList.sort((a, b) => a - b) // 将numList排序
+    let errorList = []
+    for (let i = 0; i < numList.length; i++) {
+        const curVal = numList[i]
+        if (nodeList[i].root.val !== curVal) {
+            errorList.push(nodeList[i])
+        }
+    }
+    // 找到两个节点
+    // console.log(errorList[0].root.val, errorList[1].root.val)
+
+    // const isRoot = (node) => node.val === root.val // 校验是否是root节点
+
+    // const firstNode = errorList[0]
+    // const secondNode = errorList[1]
+
+    resetNode(errorList[0], errorList[1])
+
+    function resetNode(n1, n2) {
+        let n1Left = n1.root.left
+        let n1Right = n1.root.right
+        // 修正父级
+        if (n1.father) {
+            if (n1.isLeft) {
+                n1.father.left = n2.root
+            } else {
+                n1.father.right = n2.root
+            }
+        }
+        if (n2.father) {
+            if (n2.isLeft) {
+                n2.father.left = n1.root
+            } else {
+                n2.father.right = n1.root
+            }
+        }
+        n1.root.left = n2.root.left
+        n1.root.right = n2.root.right
+        n2.root.left = n1Left
+        n2.root.right = n1Right
+    }
+}
+
 /** 96. 不同的二叉搜索树
  *  给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数
  * node.val <= node.right;
@@ -14,8 +101,54 @@
  * @return {number}
  */
 var numTrees = function (n) {
-    let val = 1
-    while (val < n + 1) {}
+    /**
+     * 1. 构建节点数组
+     * 2. 构建二叉搜索树
+     * 思路错啦
+     */
+    // const numList = new Array(n).fill(0).map((_, index) => ++index)
+    // for (let i = 0; i < numList.length; i++) {
+    //     const curNum = numList[i]
+    // }
+    // let root = null
+    // function createTree(list, left, right, mid) {
+    //     if (left > right) return null
+    //     const root = new TreeNode(list[mid])
+    //     // const mid = Math.ceil((left + right) / 2)
+    //     let getMid = mid
+    //     if (!getMid) {
+    //         getMid = Math.ceil((left + right) / 2)
+    //     }
+    //     root.left = createTree(list, 0, getMid)
+    //     root.right = createTree(list, getMid + 1, right)
+    //     return root
+    // }
+
+    /** 动态规划解法：
+     *  假设n个节点存在二叉排序树的个数是G(n)，1为根节点，2为根节点，...，n为根节点，
+     *  当1为根节点时，其左子树节点个数为0，右子树节点个数为n-1，
+     *  同理当2为根节点时，其左子树节点个数为1，右子树节点为n-2，
+     *  所以可得G(n) = G(0)G(n-1)+G(1)(n-2)+...+G(n-1)*G(0)
+     *
+     *  G(n): 长度为 n 的序列能构成的不同二叉搜索树的个数
+     *  对于边界情况，当序列长度为 1（只有根）或为 0（空树）时，只有一种情况，即 G(0)=1, G(1)=1
+     *
+     * 给定一个有序序列 1⋯n
+     * 为了构建出一棵二叉搜索树，我们可以遍历每个数字 iii，将该数字作为树根
+     *  将 1⋯(i−1)序列作为左子树，将 (i+1)⋯n 序列作为右子树。接着我们可以按照同样的方式递归构建左子树和右子树
+     *
+     * 所有的可能性 = 每个节点的可能性之和
+     */
+
+    const G = new Array(n + 1).fill(0)
+    G[0] = 1 // 节点为空，此时没有左右子树，所以只有一种情况
+    G[1] = 1 // 节点为根节点，此时也只有一种情况
+    for (let i = 2; i <= n; ++i) {
+        for (let j = 1; j <= i; ++j) {
+            G[i] = G[j - 1] * G[i - j]
+        }
+    }
+    return G[n]
 }
 
 /** 114. 二叉树展开为链表 ListNode
