@@ -1,11 +1,121 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 17. 电话号码的字母组合
+ *  给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回
+ *
+ *  2: abc  3: def  4: ghi
+ *  5: jkl  6: mno  7: pqrs
+ *  8: tuv  9: wxyz
+ *
+ *  输入：digits = "23" 输出：["ad","ae","af","bd","be","bf","cd","ce","cf"]  <- 有 2-abc 3-def 拼接组成
+ *  0 <= digits.length <= 4
+ * @param {string} digits
+ * @return {string[]}
+ */
+var letterCombinations = function (digits) {
+    if (!digits) return []
+    const numMap = {
+        2: 'abc',
+        3: 'def',
+        4: 'ghi',
+        5: 'jkl',
+        6: 'mno',
+        7: 'pqrs',
+        8: 'tuv',
+        9: 'wxyz',
+    }
+    const strList = digits.split('').map((item) => numMap[item])
+    let res = strList[0].split('')
+    for (let i = 1; i < strList.length; i++) {
+        const curNum = strList[i].split('')
+        const total = []
+        for (let i = 0; i < res.length; i++) {
+            for (let j = 0; j < curNum.length; j++) {
+                const newStr = res[i] + curNum[j]
+                total.push(newStr)
+            }
+        }
+        res = total
+    }
+    return res
+}
+
+/** 6. Z 字形变换 -> 实际上就是排序为 1234321234···
+ 
+ 比如输入字符串为 "PAYPALISHIRING" 行数为 3 时，排列如下
+
+ 1: P   A   H   N
+ 2: A P L S I I G
+ 3: Y   I   R
+
+实际排列规则: 1232123···
+之后，你的输出需要从左往右逐行读取，产生出一个新的字符串，比如："PAHNAPLSIIGYIR"
+
+ * @param {string} s
+ * @param {number} numRows
+ * @return {string}
+ */
+var convert = function (s, numRows) {
+    const strMap = {}
+    let sLen = 0
+    let flag = 1 // 12321
+    let isUp = true
+    while (sLen < s.length) {
+        if (!strMap[flag]) {
+            strMap[flag] = s[sLen]
+        } else {
+            strMap[flag] = strMap[flag] + s[sLen]
+        }
+        sLen++
+
+        isUp && flag++
+        !isUp && flag--
+        if (flag === numRows) {
+            isUp = false
+        } else if (flag === 1) {
+            isUp = true
+        }
+    }
+    // const seq = Object.keys(strMap)
+    // seq.sort((a, b) => a - b)
+    // let res = ''
+    return Object.keys(strMap).reduce((total, key) => {
+        total += strMap[key]
+        return total
+    }, '')
+
+    /** 把问题想复杂了，给每个值打标记就行了 */
+    // const strList = s.split('')
+    // let res = []
+    // let flag = 0
+    // let start = 0
+    // while (start < strList.length) {
+    //     let len = numRows
+    //     let curList = []
+    //     while (len > 0) {
+    //         curList.push(strList[start])
+    //         len--
+    //         start++
+    //     }
+    // }
+    // // 以列为单位构造数组
+    // for (let i = 0; i < strList.length; i++) {
+    //     const curStr = strList[i]
+    //     if (res.length === 0) {
+    //         res[0] = [curStr]
+    //     } else {
+    //         const len = res.length
+    //     }
+    // }
+}
+
 /** 704. 二分查找
  * 给定一个 n (n 将在 [1, 10000]之间) 个元素有序的（升序）整型数组 nums 和一个目标值 target
  * 写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1
  */
 var search = function (nums, target) {
-    if (nums.length === 1) { // 感觉这里的代码优化性能不大
+    if (nums.length === 1) {
+        // 感觉这里的代码优化性能不大
         return nums[0] === target ? 0 : -1
     }
     let left = 0,
@@ -59,7 +169,34 @@ var isHappy = function (n) {
  *  给你一个字符串 columnTitle ，表示 Excel 表格中的列名称。返回 该列名称对应的列序号
  */
 var titleToNumber = function (columnTitle) {
-    const numMap = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 10, K: 11, L: 12, M: 13, N: 14, O: 15, P: 16, Q: 17, R: 18, S: 19, T: 20, U: 21, V: 22, W: 23, X: 24, Y: 25, Z: 26 }
+    const numMap = {
+        A: 1,
+        B: 2,
+        C: 3,
+        D: 4,
+        E: 5,
+        F: 6,
+        G: 7,
+        H: 8,
+        I: 9,
+        J: 10,
+        K: 11,
+        L: 12,
+        M: 13,
+        N: 14,
+        O: 15,
+        P: 16,
+        Q: 17,
+        R: 18,
+        S: 19,
+        T: 20,
+        U: 21,
+        V: 22,
+        W: 23,
+        X: 24,
+        Y: 25,
+        Z: 26,
+    }
     if (numMap[columnTitle]) return numMap[columnTitle]
     const numList = (columnTitle + '').split('').reverse()
     return numList.reduce((total, item, index) => {
@@ -133,7 +270,34 @@ var convertToTitle = function (columnNumber) {
         25: 'Z',
         26: 'AA',
     }
-    const numMap = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 10, K: 11, L: 12, M: 13, N: 14, O: 15, P: 16, Q: 17, R: 18, S: 19, T: 20, U: 21, V: 22, W: 23, X: 24, Y: 25, Z: 26 }
+    const numMap = {
+        A: 1,
+        B: 2,
+        C: 3,
+        D: 4,
+        E: 5,
+        F: 6,
+        G: 7,
+        H: 8,
+        I: 9,
+        J: 10,
+        K: 11,
+        L: 12,
+        M: 13,
+        N: 14,
+        O: 15,
+        P: 16,
+        Q: 17,
+        R: 18,
+        S: 19,
+        T: 20,
+        U: 21,
+        V: 22,
+        W: 23,
+        X: 24,
+        Y: 25,
+        Z: 26,
+    }
     if (columnNumber.length === 1) return columnMap[columnNumber]
     let res = []
     while (columnNumber > 0) {
