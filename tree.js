@@ -18,6 +18,32 @@
  */
 var trimBST = function (root, low, high) {}
 
+/** 199. 二叉树的右视图
+ *  给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值
+ * @param {TreeNode} root
+ * @return {number[]}
+ */
+var rightSideView = function (root) {
+    /** 思路： 既然是右视图，那么只需要取每一层的最右端节点即可, 实际就是层序遍历问题 */
+    const deepMap = {}
+    function Dep(root, deep) {
+        if (root === null) return
+        if (!deepMap[deep]) {
+            deepMap[deep] = [root.val]
+        } else {
+            deepMap[deep].push(root.val)
+        }
+        Dep(root.left, deep + 1)
+        Dep(root.right, deep + 1)
+    }
+    Dep(root, 0)
+    return Object.keys(deepMap).map((deep) => {
+        const deepList = deepMap[deep]
+        const len = deepList.length
+        return deepList[len - 1]
+    })
+}
+
 /** 107. 二叉树的层序遍历 II
  *  给你二叉树的根节点 root ，返回其节点值 自底向上的层序遍历 。 （即按从叶子节点所在层到根节点所在的层，逐层从左向右遍历）
  *  输入：root = [3,9,20,null,null,15,7]  输出：[[15,7],[9,20],[3]]
