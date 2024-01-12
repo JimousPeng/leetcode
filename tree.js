@@ -18,6 +18,31 @@
  */
 var trimBST = function (root, low, high) {}
 
+/** 129. 求根节点到叶节点数字之和
+ *   给你一个二叉树的根节点 root ，树中每个节点都存放有一个 0 到 9 之间的数字。
+ *  例如，从根节点到叶节点的路径 1 -> 2 -> 3 表示数字 123 。
+ *  计算从根节点到叶节点生成的 所有数字之和
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var sumNumbers = function (root) {
+    // 可以结合 每个节点都对应一个数字，等于其父节点对应的数字乘以 10 再加上该节点的值 
+    // 比如 1 -> 2 -> 3 ， 当节点遍历到2时，2节点对应为 1*10 +2 = 12, 遍历到节点3时， 12 * 10 + 3 = 123
+    let count = 0
+    function Dep(root, base) {
+        if (root === null) return
+        if (!root.left && !root.right) {
+            const total = base + root.val
+            count += Number(total)
+        }
+        Dep(root.left, base + root.val)
+        Dep(root.right, base + root.val)
+        return
+    }
+    Dep(root, '')
+    return count
+}
+
 /** 199. 二叉树的右视图
  *  给定一个二叉树的 根节点 root，想象自己站在它的右侧，按照从顶部到底部的顺序，返回从右侧所能看到的节点值
  * @param {TreeNode} root
