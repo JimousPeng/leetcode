@@ -1,5 +1,34 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 22. 括号生成
+ *  数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
+ *  n = 3 输出：["((()))","(()())","(())()","()(())","()()()"]
+ * @param {number} n
+ * @return {string[]}
+ */
+var generateParenthesis = function (n) {
+    // '(' 和 ')' 的对数
+    const res = []
+    function Dfs(left, right, str) {
+        if (left === 0 && right === 0) {
+            res.push(str)
+            return
+        }
+        if (left === right) {
+            //剩余左右括号数相等，下一个只能用左括号
+            Dfs(left - 1, right, str + '(')
+        } else {
+            //剩余左括号小于右括号，下一个可以用左括号也可以用右括号
+            if (left > 0) {
+                Dfs(left - 1, right, str + '(')
+            }
+            Dfs(left, right - 1, str + ')')
+        }
+    }
+    Dfs(n, n, '')
+    return res
+}
+
 /** 17. 电话号码的字母组合
  *  给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回
  *
