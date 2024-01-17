@@ -1,5 +1,163 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 258. 各位相加
+ *  给定一个非负整数 num，反复将各个位上的数字相加，直到结果为一位数。返回这个结果
+ *  输入: num = 38  输出: 2
+ *  38 --> 3 + 8 --> 11  11 --> 1 + 1 --> 2  由于 2 是一位数，所以返回 2
+/**
+ * @param {number} num
+ * @return {number}
+ */
+var addDigits = function (num) {
+    if (num < 10) return num
+
+    // 解法1：
+    // while (num >= 10) {
+    //     let sum = 0;
+    //     while (num > 0) {
+    //         sum += num % 10;
+    //         num = Math.floor(num / 10);
+    //     }
+    //     num = sum;
+    // }
+    // return num;
+
+    // 解法2：
+    // let toNum = num
+    // while (toNum > 9) {
+    //     let str = (toNum + '').split('')
+    //     toNum = str.reduce((total, item) => {
+    //         total = Number(item) + total
+    //         return total
+    //     }, 0)
+    // }
+    // return toNum
+
+    // 解法3：
+    // 简化公式 =   return (num - 1) % 9 + 1;
+    if (num === 0) return 0
+    if (num % 9 === 0) return 9
+    return num % 9
+}
+
+/** 228. 汇总区间
+ *  给定一个  无重复元素 的 有序 整数数组 nums 。
+ *  返回 恰好覆盖数组中所有数字 的 最小有序 区间范围列表 。也就是说，nums 的每个元素都恰好被某个区间范围所覆盖，并且不存在属于某个范围但不属于 nums 的数字 x
+ *  输入：nums = [0,1,2,4,5,7] 输出：["0->2","4->5","7"]
+ * @param {number[]} nums
+ * @return {string[]}
+ */
+var summaryRanges = function (nums) {
+    if (nums.length === 0) return []
+    if (nums.length === 1) return [nums[0] + '']
+
+    let left = 0
+    let right = 1
+    const len = nums.length
+    const res = []
+
+    while (right < len) {
+        if (nums[right - 1] + 1 !== nums[right]) {
+            if (right - 1 === left) {
+                // 前后项, 单项入栈
+                res.push(nums[left] + '')
+            } else {
+                res.push(nums[left] + '->' + nums[right - 1])
+            }
+            if (right === len - 1) {
+                // 边界处理
+                res.push(nums[right] + '')
+            }
+            left = right
+        } else {
+            if (right === len - 1) {
+                // 边界处理
+                res.push(nums[left] + '->' + nums[right])
+            }
+        }
+        right++
+    }
+
+    return res
+
+    // 下面这个算法比较低效
+
+    // const res = []
+    // let str = nums[0] + ''
+    // let prev = nums[0]
+    // const len = nums.length
+    // for (let i = 1; i < len; i++) {
+    //     const cur = nums[i]
+    //     if (cur === prev + 1) {
+    //         if (i == len - 1) {
+    //             // 最后一个数
+    //             str = str + '->' + cur
+    //         }
+    //         prev = cur
+    //         continue
+    //     } else {
+    //         // str == prev 判断单个数 如 [1,2,3, 6, 8, 9] 中的 6
+    //         str = str == prev ? str : str + '->' + prev
+    //         res.push(str)
+    //         str = '' + cur
+    //     }
+    //     prev = cur
+    // }
+    // if (str) res.push(str)
+    // return res
+}
+
+/** 225. 用队列实现栈
+ *  请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通栈的全部四种操作（push、top、pop 和 empty）
+ *  实现 MyStack 类：
+ *  void push(int x) 将元素 x 压入栈顶。
+ *  int pop() 移除并返回栈顶元素。
+ *  int top() 返回栈顶元素。
+ *  boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
+ */
+
+var MyStack = function () {
+    this.stack = []
+}
+
+/**
+ * @param {number} x
+ * @return {void}
+ */
+MyStack.prototype.push = function (x) {
+    return this.stack.unshift(x)
+}
+
+/**
+ * @return {number}
+ */
+MyStack.prototype.pop = function () {
+    return this.stack.shift()
+}
+
+/**
+ * @return {number}
+ */
+MyStack.prototype.top = function () {
+    return this.stack[0]
+}
+
+/**
+ * @return {boolean}
+ */
+MyStack.prototype.empty = function () {
+    return this.stack.length === 0
+}
+
+/**
+ * Your MyStack object will be instantiated and called as such:
+ * var obj = new MyStack()
+ * obj.push(x)
+ * var param_2 = obj.pop()
+ * var param_3 = obj.top()
+ * var param_4 = obj.empty()
+ */
+
 /** 22. 括号生成
  *  数字 n 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 有效的 括号组合。
  *  n = 3 输出：["((()))","(()())","(())()","()(())","()()()"]
