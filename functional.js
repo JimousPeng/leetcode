@@ -1,5 +1,254 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 389. 找不同
+ *  给定两个字符串 s 和 t ，它们只包含小写字母。 字符串 t 由字符串 s 随机重排，然后在随机位置添加一个字母。
+ *  请找出在 t 中被添加的字母。
+ *  输入：s = "abcd", t = "abcde" 输出："e"
+ *  输入：s = "", t = "y" 输出："y"
+ * 输入：s = "a", t = "aa" 输出："a"
+ * @param {string} s
+ * @param {string} t
+ * @return {character}
+ */
+var findTheDifference = function (s, t) {
+    // 思路跟 题目383 是一样，都是用hash
+    if (s === '') return t
+    const strMap = {}
+    for (let i = 0; i < s.length; i++) {
+        const key = s[i]
+        if (!strMap[key]) {
+            strMap[key] = 1
+        } else {
+            strMap[key]++
+        }
+    }
+    for (let i = 0; i < t.length; i++) {
+        const key = t[i]
+        if (!strMap[key]) {
+            return key
+        } else {
+            strMap[key]--
+        }
+    }
+    return Object.keys(strMap).find((item) => item > 0)
+}
+
+/** 383. 赎金信
+ * 给你两个字符串：ransomNote 和 magazine ，判断 ransomNote 能不能由 magazine 里面的字符构成
+ *  输入：ransomNote = "a", magazine = "b"  输出：false
+ *  输入：ransomNote = "aa", magazine = "aab"  输出：true
+ * @param {string} ransomNote
+ * @param {string} magazine
+ * @return {boolean}
+ */
+var canConstruct = function (ransomNote, magazine) {
+    // 允许被打乱
+    // const reg = new RegExp(ransomNote)
+    // return magazine.match(reg).length >= 0
+
+    // 1. 构建资源
+    const strMap = {}
+    for (let i = 0; i < magazine.length; i++) {
+        const key = magazine[i]
+        if (!strMap[key]) {
+            strMap[key] = 1
+        } else {
+            strMap[key]++
+        }
+    }
+    // 2. 消费资源
+    for (let i = 0; i < ransomNote.length; i++) {
+        const useKey = ransomNote[i]
+        if (!strMap[useKey] || strMap[useKey] === 0) {
+            return false
+        } else {
+            strMap[useKey]--
+        }
+    }
+    return true
+}
+
+/**
+ * 374. 猜数字大小
+ * 你可以通过调用一个预先定义好的接口 int guess(int num) 来获取猜测结果，返回值一共有 3 种可能的情况（-1，1 或 0）：
+ * -1：我选出的数字比你猜的数字小 pick < num
+ * 1：我选出的数字比你猜的数字大 pick > num
+ * 0：我选出的数字和你猜的数字一样。恭喜！你猜对了！pick == num
+ *
+ * 输入：n = 10, pick = 6 输出：6
+ * 输入：n = 2, pick = 1 输出：1
+ *
+ * @param {number} n  1 <= n <= 2^31 - 1
+ * @return {number}
+ */
+var guessNumber = function (n) {
+    /** 这种写法面对大数处理会超出时间限制，且效率及其底下 */
+    // while (guess(n) === -1) {
+    //     n--
+    // }
+    // while (guess(n) === 1) {
+    //     n++
+    // }
+    // if (guess(n) === 0) return n
+
+    // 用二分法吧
+
+    function Dep(left, right) {
+        n = Math.ceil((right - left) / 2) + left
+        if (guess(n) === 0) return n
+        if (guess(n) === -1) {
+            // 选出的数字比你猜的数字小
+            return Dep(0, n)
+        } else {
+            // 选出的数字比你猜的数字大
+            return Dep(n, right)
+        }
+    }
+
+    return Dep(0, n)
+
+    /** while循环要比递归性能还要好一点 */
+    let left = 0,
+        right = n
+    while (left <= right) {
+        const n = Math.ceil((right - left) / 2) + left
+        if (guess(n) === 0) return n
+        if (guess(n) === -1) {
+            // 选出的数字比你猜的数字小
+            right = n + 1
+        }
+        if (guess(n) === 1) {
+            // 选出的数字比你猜的数字大
+            left = n - 1
+        }
+    }
+}
+
+/** 367. 有效的完全平方数
+ *  给你一个正整数 num 。如果 num 是一个完全平方数，则返回 true ，否则返回 false
+ *  完全平方数 是一个可以写成某个整数的平方的整数。换句话说，它可以写成某个整数和自身的乘积。
+ * @param {number} num
+ * @return {boolean}
+ */
+var isPerfectSquare = function (num) {
+    // 1 <= num <= 231 - 1
+    // if (num === 1) return true
+    // let start = Math.floor(num / 2)
+    // while (start > 0) {
+    //     if (start * start === num) {
+    //         return start
+    //     }
+    //     start--
+    // }
+    // return false
+
+    // 二分法
+    if (num === 1) return true
+    let left = 0
+    right = num
+
+    while (left <= right) {
+        const mid = Math.floor((right - left) / 2) + left
+        const res = mid * mid
+        if (res > num) {
+            right = mid - 1
+        } else if (res < num) {
+            left = mid + 1
+        } else {
+            return true
+        }
+    }
+    return false
+}
+
+/** 303. 区域和检索 - 数组不可变
+ * @param {number[]} nums
+ */
+var NumArray = function (nums) {
+    // 记录前缀和
+    for (let i = 1; i < nums.length; i++) {
+        nums[i] += nums[i - 1]
+    }
+    this.nums = nums
+}
+
+/**
+ * @param {number} left
+ * @param {number} right
+ * @return {number}
+ */
+NumArray.prototype.sumRange = function (left, right) {
+    // let res = 0
+    // for (let i = left; i <= right; i++) {
+    //     res += this.nums[i]
+    // }
+    // return res
+    return i === 0 ? this.nums[right] : this.nums[right] - this.nums[left - 1] // left-1，因为要保留left
+}
+
+/** 290. 单词规律
+ *  给定一种规律 pattern 和一个字符串 s ，判断 s 是否遵循相同的规律
+ *  这里的 遵循 指完全匹配，例如， pattern 里的每个字母和字符串 s 中的每个非空单词之间存在着双向连接的对应规律。
+ *  输入: pattern = "abba", s = "dog cat cat dog" 输出: true
+ *  输入: pattern = "aaaa", s = "dog cat cat dog" 输出: false
+ *  pattern = "abba" s = "dog dog dog dog" false
+ * @param {string} pattern
+ * @param {string} s
+ * @return {boolean}
+ */
+var wordPattern = function (pattern, s) {
+    /** 思路：
+     *  1. 匹配长度是否一致，不一致直接返回false;
+     *  2. 遍历 pattern , 建立 pattern <-> str 的映射关系
+     *     当第一次命中 pattern 时，记录映射关系；
+     *     当 pattern 遍历过程中发现已有隐射关系，查找映射关系中的 str 是否与当前 s 的对应字符一致
+     *     为了保证 pattern 与 str 映射关系的一致性，还需要一个数组记录使用过的 str ，如果遍历中出现新的 pattern ，但是此时对应的 s 已经被使用，那么也返回false
+     */
+    const len = pattern.length
+    const strList = s.split(' ')
+    if (len !== strList.length) return false
+    const strMap = {}
+    const useStr = []
+    let flag = true
+    for (let i = 0; i < len; i++) {
+        const key = pattern[i]
+        if (!strMap[key]) {
+            if (useStr.includes(strList[i])) {
+                // pattern不一致，但是str已被使用，false
+                return false
+            }
+            strMap[key] = strList[i]
+        } else {
+            /** 这里存在不一致的情况需要处理 */
+            flag = strMap[key] === strList[i]
+            if (!flag) {
+                return false
+            }
+        }
+        useStr.push(strList[i])
+    }
+    return flag
+}
+
+/** 263. 丑数
+ *  丑数 就是只包含质因数 2、3 和 5 的正整数  给你一个整数 n ，请你判断 n 是否为 丑数 。如果是，返回 true ；否则，返回 false
+ * @param {number} n
+ * @return {boolean}
+ */
+var isUgly = function (n) {
+    if (n <= 0) return false // 根据丑数的定义，0 和负整数一定不是丑数
+    if (n === 1) return n
+    while (n % 5 === 0) {
+        n = n / 5
+    }
+    while (n % 3 === 0) {
+        n = n / 3
+    }
+    while (n % 2 === 0) {
+        n = n / 2
+    }
+    return n == 1
+}
 /** 258. 各位相加
  *  给定一个非负整数 num，反复将各个位上的数字相加，直到结果为一位数。返回这个结果
  *  输入: num = 38  输出: 2
