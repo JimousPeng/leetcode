@@ -1,5 +1,250 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 455. 分发饼干
+ *  对每个孩子 i，都有一个胃口值 g[i]，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 j，都有一个尺寸 s[j] 。
+ *  如果 s[j] >= g[i]，我们可以将这个饼干 j 分配给孩子 i ，这个孩子会得到满足。你的目标是尽可能满足越多数量的孩子，并输出这个最大数值
+ *  输入: g = [1,2,3], s = [1,1] 输出: 1
+ *  输入: g = [1,2], s = [1,2,3] 输出: 2
+ * @param {number[]} g 1 <= g.length <= 3 * 10^4
+ * @param {number[]} s 0 <= s.length <= 3 * 10^4
+ * @return {number}
+ */
+var findContentChildren = function (g, s) {
+    if (s.length == 0) return 0
+    // 找到满足 s[j] > g[i] 的最大数值
+    g.sort((a, b) => a - b)
+    s.sort((a, b) => a - b)
+    let left = 0
+    let right = 0
+    let gLen = g.length
+    let sLen = s.length
+
+    let res = 0
+    // 从最小的开始分配能保证数值最大吗
+    while (left < gLen && right < sLen) {
+        // while的循环条件要用 && 
+        if (g[left] <= s[right]) {
+            // 可以满足
+            res++
+            left++
+        }
+        // 每次循环，食物都是要变动的
+        right++
+    }
+    return res
+}
+
+/** 448. 找到所有数组中消失的数字
+ *  给你一个含 n 个整数的数组 nums ，其中 nums[i] 在区间 [1, n] 内。请你找出所有在 [1, n] 范围内但没有出现在 nums 中的数字，并以数组的形式返回结果
+ *  输入：nums = [4,3,2,7,8,2,3,1] 输出：[5,6]
+ *  输入：nums = [1,1] 输出：[2]
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var findDisappearedNumbers = function (nums) {
+    // 区间范围为 [1, n]
+    nums.sort((a, b) => a - b)
+    let left = 1, // 1-n 的下标
+        right = 0
+    const res = []
+    // 补中间遗漏
+    while (right < nums.length) {
+        if (nums[right] === left) {
+            left++
+        } else if (nums[right] > left) {
+            res.push(left)
+            left++
+            continue
+        }
+        right++
+    }
+    // 补尾数不够
+    const len = nums.length
+    while (len - left >= 0) {
+        res.push(left)
+        left++
+    }
+    return res
+}
+
+/** 441. 排列硬币
+ *  你总共有 n 枚硬币，并计划将它们按阶梯状排列。对于一个由 k 行组成的阶梯，其第 i 行必须正好有 i 枚硬币。阶梯的最后一行 可能 是不完整的
+ *  给你一个数字 n ，计算并返回可形成 完整阶梯行 的总行数
+ *  1 <= n <= 231 - 1
+ * @param {number} n
+ * @return {number}
+ */
+var arrangeCoins = function (n) {
+    if (n === 1) return 1
+    let row = 1
+    n--
+    while (n > row) {
+        const curNeed = row + 1
+        const rest = n - curNeed
+        if (rest >= 0) {
+            row++
+        }
+        n = rest
+    }
+    return row
+}
+
+/** 434. 字符串中的单词数
+ *  统计字符串中的单词个数，这里的单词指的是连续的不是空格的字符
+ *  请注意，你可以假定字符串里不包括任何不可打印的字符
+ *  输入: "Hello, my name is John" 输出: 5
+ *  解释: 这里的单词是指连续的不是空格的字符，所以 "Hello," 算作 1 个单词。
+ * @param {string} s
+ * @return {number}
+ */
+var countSegments = function (s) {
+    if (s === '') return 0
+    let left = 0
+    let count = 0
+    let flag = false
+    const sLen = s.length
+    while (left < sLen) {
+        if (s[left] !== ' ') {
+            flag = true
+        } else {
+            if (flag) {
+                count++
+                flag = false
+            }
+        }
+        left++
+    }
+    return flag ? count + 1 : count
+}
+
+/** 415. 字符串相加
+ *   给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和并同样以字符串形式返回
+ *  你不能使用任何內建的用于处理大整数的库（比如 BigInteger）， 也不能直接将输入的字符串转换为整数形式。
+ *  输入：num1 = "11", num2 = "123"  输出："134"
+ *
+ * @param {string} num1
+ * @param {string} num2
+ * @return {string}
+ */
+var addStrings = function (num1, num2) {
+    // 使用了 BigInt api
+    return BigInt(num1) + BigInt(num2) + ''
+
+    // 如何相加，就是遍历记录位数 比如 '11' + '12' => 1 + 2 算出当前个位， 1 + 1 算出十位
+    let left = num1.length - 1
+    let right = num2.length - 1
+    /** 之前考虑将res用数组标识，将每次的值存入，之后将res.reverse()反转之后join('')，发现太麻烦了，性能不好，不如直接用字符处理 */
+    let res = ''
+    let increme = 0 // 进位标识
+    while (left >= 0 || right >= 0) {
+        let curCount = Number(num1[left] || 0) + Number(num2[right] || 0) + increme
+        increme = 0 // Increme 用完即回收
+        if (curCount > 9) {
+            increme = 1
+            curCount = curCount - 10
+        }
+        res = curCount + res
+        left--
+        right--
+    }
+    return increme ? increme + res : res
+}
+
+/** 414. 第三大的数
+ *  给你一个非空数组，返回此数组中 第三大的数 。如果不存在，则返回数组中最大的数
+ *  输入：[3, 2, 1] 输出：1
+ *  输入：[1, 2]    输出：2 第三大的数不存在, 所以返回最大的数 2
+ * @param {number[]} nums
+ * @return {number}
+ */
+var thirdMax = function (nums) {
+    // api取巧
+    const newNum = Array.from(new Set(nums))
+    newNum.sort((a, b) => b - a)
+    return newNum[2] !== undefined ? newNum[2] : newNum[0]
+
+    // 这个效率要更高
+    nums.sort((a, b) => b - a)
+    for (let i = 1, diff = 1; i < nums.length; ++i) {
+        if (nums[i] !== nums[i - 1] && ++diff === 3) {
+            // 此时 nums[i] 就是第三大的数
+            return nums[i]
+        }
+    }
+    return nums[0]
+}
+
+/** 409. 最长回文串
+ *  给定一个包含大写字母和小写字母的字符串 s ，返回 通过这些字母构造成的 最长的回文串 。
+ *  输入:s = "abccccdd" 输出:7 我们可以构造的最长的回文串是"dccaccd", 它的长度是 7
+ * @param {string} s
+ * @return {number}
+ */
+var longestPalindrome = function (s) {
+    // 只需要求回文串的长度，那么只需要找到复数的回文串即可
+    if (s.length < 2) return s
+    let res = 0
+    let strMap = new Map()
+    for (let i = 0; i < s.length; i++) {
+        const str = s[i]
+        if (strMap.get(str) === 1) {
+            res++
+            strMap.set(str, 0)
+        } else {
+            strMap.set(str, 1)
+        }
+    }
+    return res * 2 === s.length ? res * 2 : res * 2 + 1
+}
+
+/** 392. 判断子序列
+ *  给定字符串 s 和 t ，判断 s 是否为 t 的子序列
+ *  字符串的一个子序列是原始字符串删除一些（也可以不删除）字符而不改变剩余字符相对位置形成的新字符串。
+ *  （例如，"ace"是"abcde"的一个子序列，而"aec"不是）
+ *  输入：s = "abc", t = "ahbgdc"  输出：true
+ *  输入：s = "axc", t = "ahbgdc"  输出：false
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ */
+var isSubsequence = function (s, t) {
+    // 双指针, left从字符s往后移，right从字符t往后移
+    if (s === '') return true
+    if (t === '') return false
+    let left = 0
+    let right = 0
+    let hasFlag = false
+    while (left < s.length && right < t.length) {
+        if (s[left] === t[right]) {
+            hasFlag = true // 确保left只有一个节点的时候有匹配到
+            left++
+        }
+        right++
+    }
+    return hasFlag && left === s.length // 因为left最后一个节点匹配之后还是执行一次left++，所以直接用left 跟 s.length 匹配即可。
+
+    // 暴力解法
+    if (s === '') return true
+    if (t === '') return false
+    // 子序列问题
+    let tLen = t.length
+    let startIdx = undefined
+
+    for (let i = 0; i < tLen; i++) {
+        if (startIdx === undefined) {
+            if (t[i] === s[0]) {
+                startIdx = 0
+            }
+        } else {
+            if (t[i] === s[startIdx + 1]) {
+                startIdx++
+            }
+        }
+    }
+
+    return startIdx !== undefined && startIdx === s.length - 1
+}
+
 /** 389. 找不同
  *  给定两个字符串 s 和 t ，它们只包含小写字母。 字符串 t 由字符串 s 随机重排，然后在随机位置添加一个字母。
  *  请找出在 t 中被添加的字母。
