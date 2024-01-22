@@ -22,7 +22,7 @@
                     return totalNum + ''
                 }
                 console.log('111')
-                debugger;
+                // debugger
 
                 while (!numMap.has(curNum) && !happyFlag) {
                     numMap.add(curNum)
@@ -51,6 +51,50 @@
             //     return ans
             // }
             // console.log(mySqrt(8))
+        </script>
+        <script>
+            var licenseKeyFormatting = function (s, k) {
+                s = s.toUpperCase()
+                if (s.length === 1) return s.replace(/-/g, '')
+                let getFirst = s.replace(/-/g, '')
+                const firstLen = getFirst.length % k || k
+                const str = s.split('')
+                const strLen = str.length
+                let flowStr = '' // 上一节处理溢出的字符
+                let res = ''
+                for (let i = 0; i < strLen; i++) {
+                    if (str[i] === '-') continue
+                    const item = flowStr + str[i]
+                    let count = item
+
+                    // 第一行特殊处理-或者说第一段数据
+                    if (i === 0 || res === '') {
+                        if (item.length < firstLen) {
+                            flowStr = count
+                            continue
+                        } else {
+                            count = item.slice(0, firstLen)
+                            flowStr = item.slice(firstLen, item.length)
+                        }
+                    } else if (item.length > k) {
+                        count = item.slice(0, k)
+                        flowStr = item.slice(k, item.length)
+                    } else if (item.length < k) {
+                        // 小于k ，更新溢出的字符
+                        flowStr = item
+                        continue
+                    } else {
+                        flowStr = ''
+                    }
+                    if (res === '') {
+                        res += count
+                    } else {
+                        res = res + '-' + count
+                    }
+                }
+                return flowStr ? res + '-' + flowStr : res
+            }
+            console.log(licenseKeyFormatting('5F3Z-2e-9-w', 4))
         </script>
     </body>
 </html>
