@@ -1,5 +1,118 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 500. 键盘行
+ *  给你一个字符串数组 words ，只返回可以使用在 美式键盘 同一行的字母打印出来的单词
+ *  第一行由字符 "qwertyuiop" 组成
+ *  第二行由字符 "asdfghjkl" 组成
+ *  第三行由字符 "zxcvbnm" 组成
+ *
+ *  hash对象
+/**
+ * @param {string[]} words
+ * @return {string[]}
+ */
+var findWords = function (words) {
+    const strMap = {}
+
+    const lineOne = 'qwertyuiop'.split('')
+    lineOne.forEach((item) => (strMap[item] = 1))
+
+    const lineTwo = 'asdfghjkl'.split('')
+    lineTwo.forEach((item) => (strMap[item] = 2))
+
+    const lineThree = 'zxcvbnm'.split('')
+    lineThree.forEach((item) => (strMap[item] = 3))
+
+    let res = []
+    const wordsLen = words.length
+    for (let i = 0; i < wordsLen; i++) {
+        const useWord = words[i].toLowerCase()
+        const key = useWord[0]
+        let flag = strMap[key]
+        let useFlag = true
+        for (let i = 1; i < useWord.length; i++) {
+            let curKey = useWord[i]
+            if (strMap[curKey] !== flag) {
+                useFlag = false
+                break
+            }
+        }
+        if (useFlag) {
+            res.push(words[i])
+        }
+    }
+    return res
+}
+
+/** 495. 提莫攻击
+ *  输入：timeSeries = [1,4], duration = 2  输出：4
+ *
+ *  输入：timeSeries = [1,2], duration = 2  输出：3
+ *  - 第 1 秒，提莫攻击艾希并使其立即中毒。中毒状态会维持 2 秒，即第 1 秒和第 2 秒。
+ *  - 第 2 秒，提莫再次攻击艾希，并重置中毒计时器，艾希中毒状态需要持续 2 秒，即第 2 秒和第 3 秒
+ *  艾希在第 1、2、3 秒处于中毒状态，所以总中毒秒数是 3
+ * @param {number[]} timeSeries
+ * @param {number} duration
+ * @return {number}
+ */
+var findPoisonedDuration = function (timeSeries, duration) {
+    /** 攻击间隔时间 - 持续时间duration = 当前攻击有效时间
+     *  攻击持续时间计算：前一次攻击开始算，后一次攻击不算，属于前闭合
+     */
+    const len = timeSeries.length
+    let res = 0
+    for (let i = 1; i < len; i++) {
+        const timeDiff = timeSeries[i] - timeSeries[i - 1]
+        // 前后diff的时间差来计算重置中毒计时器累加的有效时间
+        const usefulTime = timeDiff > duration ? duration : timeDiff
+        res += usefulTime
+    }
+    // 最后一次加上 duration
+    return res + duration
+}
+
+/** 492. 构造矩形
+ *  你的任务是设计一个长度为 L 和宽度为 W 且满足以下要求的矩形的页面：
+ *  1. 设计的矩形页面必须等于给定的目标面积
+ *  2. 宽度 W 不应大于长度 L ，换言之，要求 L >= W
+ *  3. 长度 L 和宽度 W 之间的差距应当尽可能小
+ *  返回一个 数组 [L, W]，其中 L 和 W 是你按照顺序设计的网页的长度和宽度
+ *
+ *  输入: area = 37  输出: [37,1]
+ * @param {number} area
+ * @return {number[]}
+ */
+var constructRectangle = function (area) {
+    // 乘积问题, 从中点往上找，找到第一个符合的整除数
+
+    // 官方解法：% 取值
+
+    /** 因为w是短边，所以初始值向下取整 */
+    let w = Math.floor(Math.sqrt(area))
+    while (area % w !== 0) {
+        --w
+    }
+    return [Math.floor(area / w), w]
+
+    // 双指针遍历
+    let mid = Math.ceil(Math.sqrt(area))
+
+    if (mid * mid === area) return [mid, mid]
+
+    let left = (right = mid)
+
+    while (left <= right) {
+        if (left * right === area) {
+            return [right, left]
+        } else if (left * right < area) {
+            right++
+        } else {
+            left--
+        }
+    }
+    return [right, left]
+}
+
 /** 485. 最大连续 1 的个数
  * 给定一个二进制数组 nums ， 计算其中最大连续 1 的个数
  * 输入：nums = [1,1,0,1,1,1] 输出：3
