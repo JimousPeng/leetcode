@@ -1,5 +1,41 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/**
+ * 507. 完美数 对于一个 正整数，如果它和除了它自身以外的所有 正因子 之和相等，我们称它为 「完美数」
+ *
+ * 正因数，或称为正约数，指的是一个整数中大于0的因数。如：12的正因数有1，2，3，4，6，12。因数必须是整数，所以任何整数的最小正因数都是1
+ *
+ * 给定一个 整数 n， 如果是完美数，返回 true；否则返回 false。
+ * 输入：num = 28  输出：true  解释：28 = 1 + 2 + 4 + 7 + 14   1, 2, 4, 7, 和 14 是 28 的所有正因子（2*14， 4*7）。
+ * @param {number} num
+ * @return {boolean}
+ */
+var checkPerfectNumber = function (num) {
+    /** 先找到所有正因数，然后判断该整数是否等于所有正因数之和 */
+    if (num === 1) return false
+
+    let left = 2,
+        right = num - 1
+    let res = 0
+    while (left < right) {
+        if (left * right === num) {
+            if (left === right) {
+                res += left
+            } else {
+                res += left + right
+            }
+            left++
+            right--
+        } else if (left * right > num) {
+            right--
+        } else {
+            left++
+        }
+    }
+    console.log(res)
+    return res + 1 === num
+}
+
 /** 506. 相对名次
  *  输入：score = [5,4,3,2,1]
  *  输出：["Gold Medal","Silver Medal","Bronze Medal","4","5"]
