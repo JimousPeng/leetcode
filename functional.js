@@ -1,5 +1,58 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 506. 相对名次
+ *  输入：score = [5,4,3,2,1]
+ *  输出：["Gold Medal","Silver Medal","Bronze Medal","4","5"]
+ *  名次第 1 的运动员获金牌 "Gold Medal"
+ *  名次第 2 的运动员获银牌 "Silver Medal"
+ *  名次第 3 的运动员获铜牌 "Bronze Medal"
+ *  从名次第 4 到第 n 的运动员，只能获得他们的名次编号（即，名次第 x 的运动员获得编号 "x"）
+ *  输入：score = [10,3,8,9,4] 输出：["Gold Medal","5","Bronze Medal","Silver Medal","4"]
+ * @param {number[]} score
+ * @return {string[]}
+ */
+var findRelativeRanks = function (score) {
+    const sortScore = score.slice(0)
+    sortScore.sort((a, b) => b - a)
+    const scoreMap = {
+        0: 'Gold Medal',
+        1: 'Silver Medal',
+        2: 'Bronze Medal',
+    }
+    const scoreUse = {}
+    sortScore.forEach((_item, index) => {
+        if (index <= 2) {
+            scoreUse[_item] = scoreMap[index]
+        } else {
+            scoreUse[_item] = index + 1 + ''
+        }
+    })
+    return score.map((item) => {
+        return scoreUse[item]
+    })
+}
+
+/** 504. 七进制数
+ *  给定一个整数 num，将其转化为 7 进制，并以字符串形式输出
+ *  输入: num = 100  输出: "202" 100 / 7 -> 14 余 2
+ *  输入: num = -7 输出: "-10"
+ * @param {number} num -107 <= num <= 107
+ * @return {string}
+ */
+var convertToBase7 = function (num) {
+    if (num === 0) return '0'
+    let res = ''
+    let useCount = Math.abs(num)
+    while (useCount >= 7) {
+        const curIdx = useCount % 7
+        useCount = Math.floor(useCount / 7)
+        res = curIdx + res
+        console.log(res, useCount)
+    }
+    const absNum = useCount + res
+    return num > 0 ? absNum : '-' + absNum
+}
+
 /** 500. 键盘行
  *  给你一个字符串数组 words ，只返回可以使用在 美式键盘 同一行的字母打印出来的单词
  *  第一行由字符 "qwertyuiop" 组成
