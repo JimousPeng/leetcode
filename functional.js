@@ -1,5 +1,67 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 521. 最长特殊序列 Ⅰ
+ * 「最长特殊序列」 定义如下：该序列为 某字符串独有的最长子序列（即不能是其他字符串的子序列） 。
+ *
+ *  字符串 s 的子序列是在从 s 中删除任意数量的字符后可以获得的字符串
+ *  例如，"abc" 是 "aebdc" 的子序列，因为删除 "aebdc" 中 e d 字符可以得到 "abc" 。 "aebdc" 的子序列还包括 "aebdc" 、 "aeb" 和 "" (空字符串)
+ *
+ *  给你两个字符串 a 和 b，请返回 这两个字符串中 最长的特殊序列  的长度。如果不存在，则返回 -1
+ *  输入: a = "aba", b = "cdc" 输出: 3  解释: 最长特殊序列可为 "aba" (或 "cdc")，两者均为自身的子序列且不是对方的子序列
+ *  输入：a = "aaa", b = "bbb" 输出: 3  解释: 最长特殊序列是 "aaa" 和 "bbb" 。
+ *  输入：a = "aaa", b = "aaa" 输出：-1 解释: 字符串 a 的每个子序列也是字符串 b 的每个子序列。同样，字符串 b 的每个子序列也是字符串 a 的子序列
+ * @param {string} a
+ * @param {string} b
+ * @return {number}
+ */
+var findLUSlength = function (a, b) {
+    /** 可以用消消乐的思维解决 */
+}
+
+/**
+ * 520. 检测大写字母 在以下情况时，单词的大写用法是正确的
+ * 1. 全部字母都是大写，比如 "USA"
+ * 2. 单词中所有字母都不是大写，比如 "leetcode"
+ * 3. 如果单词不只含有一个字母，只有首字母大写， 比如 "Google"
+ *
+ * @param {string} word
+ * @return {boolean}
+ */
+var detectCapitalUse = function (word) {
+    const len = word.length
+    if (len > 1) {
+        const diffWord = word.slice(1, len)
+        // 全部字母大写， 或者 首字母之外所有字母都是小写
+        return word === word.toUpperCase() || diffWord === diffWord.toLowerCase()
+    }
+    return true
+}
+
+/** 509. 斐波那契数
+ *  F(n) = F(n - 1) + F(n - 2)，其中 n > 1
+ *  F(0) = 0，F(1) = 1
+ * @param {number} n
+ * @return {number}
+ */
+var fib = function (n) {
+    if (n < 2) return n
+    return fib(n - 1) + fib(n - 2)
+
+    // 动态规划 - 解决栈堆积问题
+    if (n < 2) {
+        return n
+    }
+    let p = 0,
+        q = 0,
+        r = 1
+    for (let i = 2; i <= n; i++) {
+        p = q
+        q = r
+        r = p + q
+    }
+    return r
+}
+
 /**
  * 507. 完美数 对于一个 正整数，如果它和除了它自身以外的所有 正因子 之和相等，我们称它为 「完美数」
  *

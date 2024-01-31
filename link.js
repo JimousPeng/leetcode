@@ -5,6 +5,34 @@
  * }
  */
 
+/** 24. 两两交换链表中的节点
+ *  给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var swapPairs = function (head) {
+    if (head === null || head.next === null) return head
+    let newHead = head.next
+
+    let changeNode = head
+    let tempNode = null
+    while (changeNode && changeNode.next) {
+        const nextNode = changeNode.next
+        let temp = nextNode.next // 暂存下一次交换的头结点
+        nextNode.next = changeNode
+
+        changeNode.next = temp
+
+        if (tempNode) {
+            tempNode.next = nextNode // 将上一次交换的尾节点与当前头节点建联
+        }
+        tempNode = changeNode
+
+        changeNode = temp
+    }
+    return newHead
+}
+
 /** 203. 移除链表元素
  *  给你一个链表的头节点 head 和一个整数 val ，请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点
  *  输入：head = [1,2,6,3,4,5,6], val = 6  输出：[1,2,3,4,5]
