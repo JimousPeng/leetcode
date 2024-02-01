@@ -1,5 +1,72 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/**
+ * 31. 下一个排列
+ *
+ * 字典序: 对于数字1、2、3......n的排列，不同排列的先后关系是从左到右逐个比较对应的数字的先后来决定的
+ * 例如对于5个数字的排列 12354和12345，排列12345在前，排列12354在后
+ * 5个数字的所有的排列中最前面的是12345，最后面的是 54321
+ *
+ * 显然的做法是先按照第一个字母、以 a、b、c……z 的顺序排列；
+ * 如果第一个字母一样，那么比较第二个、第三个乃至后面的字母。如果比到最后两个单词不一样长（比如，sigh 和 sight），那么把短者排在前
+ *
+ * 所以 对于 1,2,3 依次排序为：1,2,3 -> 1,3,2 -> 2,1,3 -> 2,3,1 -> 3,1,2 -> 3,2,1  (先比较第一位，然后比较第二位，保证下一个排列比上一个大)
+ *
+ * 整数数组的一个 排列  就是将其所有成员以序列或线性顺序排列
+ * 整数数组的 下一个排列 是指其整数的下一个 字典序 更大的排列。
+ * 更正式地，如果数组的所有排列根据其字典顺序从小到大排列在一个容器中，那么数组的 下一个排列 就是在这个有序容器中排在它后面的那个排列。
+ * 如果不存在下一个更大的排列，那么这个数组必须重排为字典序最小的排列（即，其元素按升序排列）
+ *
+ * 给你一个整数数组 nums ，找出 nums 的下一个排列
+ * @param {number[]} nums
+ * @return {void} Do not return anything, modify nums in-place instead.
+ *
+ * 必须 原地 修改，只允许使用额外常数空间
+ */
+var nextPermutation = function (nums) {
+    // 有成员以序列或线性顺序排列
+    const numsLen = nums.length
+    if (numsLen === 1) return nums
+    if (numsLen === 2) return nums.reverse()
+    let left = numsLen - 2
+    let right = numsLen - 1
+
+    while (left >= 0) {
+        if (nums[right] > nums[left]) {
+            if (right === numsLen - 1) {
+                const temp = nums[right]
+                // 正好是最后一个，直接替换
+                nums[right] = nums[left]
+                nums[left] = temp
+                return
+            }
+            // 找到递减序列的插入下标
+            while (nums[right] > nums[left]) {
+                right++
+            }
+
+            right--
+
+            const temp = nums[right]
+            nums[right] = nums[left]
+            nums[left] = temp
+
+            const sortNum = nums.slice(left + 1, numsLen)
+            const sortLen = sortNum.length
+            let index = 0
+            for (let i = left + 1; i < numsLen; i++) {
+                nums[i] = sortNum[sortLen - 1 - index]
+                index++
+            }
+            return
+        }
+        right--
+        left--
+    }
+    /** 当这里说明left是最大的,且当前数组是递减数组，那么直接反转即可 */
+    nums.reverse()
+}
+
 /** 521. 最长特殊序列 Ⅰ
  * 「最长特殊序列」 定义如下：该序列为 某字符串独有的最长子序列（即不能是其他字符串的子序列） 。
  *
@@ -15,7 +82,10 @@
  * @return {number}
  */
 var findLUSlength = function (a, b) {
-    /** 可以用消消乐的思维解决 */
+    if (a === b) return -1
+    const lenA = a.length
+    const lenB = b.length
+    return Math.max(lenA, lenB)
 }
 
 /**
