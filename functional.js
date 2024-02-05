@@ -1,5 +1,110 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/**39. 组合总和
+ * 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，
+ * 找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合
+ * candidates 中的 同一个 数字可以 无限制重复被选取 。如果至少一个数字的被选数量不同，则两种组合是不同的
+ *
+ * 输入：candidates = [2,3,6,7], target = 7  输出：[[2,2,3],[7]]   2 和 3 可以形成一组候选，2 + 2 + 3 = 7 。注意 2 可以使用多次
+ * 输入: candidates = [2,3,5], target = 8    输出: [[2,2,2,2],[2,3,3],[3,5]]
+ * 输入: candidates = [2], target = 1        输出: []
+ * @param {number[]} candidates 1 <= candidates.length <= 30
+ * @param {number} target       1 <= target <= 40
+ * @return {number[][]}
+ */
+var combinationSum = function (candidates, target) {
+    const ans = []
+    const dfs = (target, combine, idx) => {
+        if (idx === candidates.length) {
+            return
+        }
+        if (target === 0) {
+            ans.push(combine)
+            return
+        }
+        // 直接跳过
+        dfs(target, combine, idx + 1)
+        // 选择当前数
+        if (target - candidates[idx] >= 0) {
+            dfs(target - candidates[idx], [...combine, candidates[idx]], idx)
+        }
+    }
+
+    dfs(target, [], 0)
+    return ans
+}
+
+/** 34. 在排序数组中查找元素的第一个和最后一个位置
+ *  给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。请你找出给定目标值在数组中的开始位置和结束位置
+ *  如果数组中不存在目标值 target，返回 [-1, -1]
+ *  输入：nums = [5,7,7,8,8,10], target = 8  输出：[3,4]
+ *  输入：nums = [], target = 0  输出：[-1,-1]
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var searchRange = function (nums, target) {
+    if (nums.length === 0) return [-1, -1]
+    // 1. 非递减顺序 -> 递增
+    // api有点取巧了，这里可以用二分法找到target的初始化位置
+    // const left = nums.findIndex((item) => item === target)
+    // if (left < 0) return [-1, -1]
+    // let right = left + 1
+    // while (nums[right] === target) {
+    //     right++
+    // }
+    // return [left, right - 1]
+
+    // 两次for循环
+    // const res = [-1, -1]
+    // const numLen = nums.length
+    // for (let i = 0; i < numLen; i++) {
+    //     if (nums[i] === target) {
+    //         res[0] = i
+    //         break
+    //     }
+    // }
+    // if (res[0] < 0) return res // 第一次for循环没有找到，直接返回
+    // for (let i = numLen - 1; i >= 0; i--) {
+    //     if (nums[i] === target) {
+    //         res[1] = i
+    //         break
+    //     }
+    // }
+    // return res
+
+    const numLen = nums.length
+    let left = 0,
+        right = numLen - 1,
+        start = undefined
+    while (left <= right) {
+        const mid = parseInt((right + left) / 2)
+        if (nums[mid] === target) {
+            start = mid
+            // right = left - 1
+            break
+            // 找到 mid 时， left <= right 不一定满足，所以需要手动 设置 right < left  或者 直接 break
+        } else if (nums[mid] > target) {
+            right = mid - 1
+        } else {
+            left = mid + 1
+        }
+    }
+    if (start == undefined) return [-1, -1]
+    let lf = start - 1,
+        rh = start + 1
+    while (nums[lf] === target || nums[rh] === target) {
+        if (nums[lf] === target) {
+            lf--
+        }
+        if (nums[rh] === target) {
+            rh++
+        }
+    }
+    return [lf + 1, rh - 1]
+    console.log(mid)
+}
+
 /**
  * 31. 下一个排列
  *

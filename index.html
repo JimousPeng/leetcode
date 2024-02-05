@@ -9,30 +9,79 @@
 
     <body>
         <script>
-            console.log('hello world')
-            const isHappy = function (n) {
-                let numMap = new Set()
-                let curNum = n + ''
-                let happyFlag = false
-                function transformHappy(arg) {
-                    const totalNum = arg.reduce((total, item) => {
-                        total += Math.pow(item, 2) // 字符会隐式转换为num类型
-                        return total
-                    }, 0)
-                    return totalNum + ''
-                }
-                console.log('111')
-                // debugger
+            var combinationSum = function (candidates, target) {
+                // 综上，问题就是从一个集合中，找到能组成和为 target 的数集，且保证集合内无重复元素
+                // 边界处理
+                candidates.sort((a, b) => a - b)
+                if (candidates[0] > target) return []
 
-                while (!numMap.has(curNum) && !happyFlag) {
-                    numMap.add(curNum)
-                    curNum = transformHappy(curNum.split(''))
-                    if (curNum === '1') happyFlag = true
+                const len = candidates.length
+
+                const difMap = {}
+                const res = []
+
+                for (let i = 0; i < len; i++) {
+                    const num = candidates[i]
+
+                    if (target % num === 0) {
+                        const getLen = target / num
+                        const list = new Array(getLen).fill(num)
+                        res.push(list)
+                    } else {
+                        let dif = target - num
+                        const count = [num]
+                        let flag = true
+                        while (dif > 0 && flag) {
+                            if (difMap[dif]) {
+                                const countUse = [...difMap[dif], ...count]
+                                res.push(countUse)
+                                flag = false
+                            } else {
+                                dif -= num
+
+                                if (dif >= 0) {
+                                    count.push(num)
+                                } else {
+                                    count.push(dif)
+                                }
+                                difMap[dif] = [...count]
+                            }
+                        }
+                    }
                 }
 
-                return happyFlag
+                console.log(difMap)
+
+                return res
             }
-            isHappy(19)
+
+            console.log(combinationSum([2, 3, 6, 7], 7))
+        </script>
+        <script>
+            // console.log('hello world')
+            // const isHappy = function (n) {
+            //     let numMap = new Set()
+            //     let curNum = n + ''
+            //     let happyFlag = false
+            //     function transformHappy(arg) {
+            //         const totalNum = arg.reduce((total, item) => {
+            //             total += Math.pow(item, 2) // 字符会隐式转换为num类型
+            //             return total
+            //         }, 0)
+            //         return totalNum + ''
+            //     }
+            //     console.log('111')
+            //     // debugger
+
+            //     while (!numMap.has(curNum) && !happyFlag) {
+            //         numMap.add(curNum)
+            //         curNum = transformHappy(curNum.split(''))
+            //         if (curNum === '1') happyFlag = true
+            //     }
+
+            //     return happyFlag
+            // }
+            // isHappy(19)
 
             // var mySqrt = function (x) {
             //     // 二分查找
@@ -53,48 +102,48 @@
             // console.log(mySqrt(8))
         </script>
         <script>
-            var licenseKeyFormatting = function (s, k) {
-                s = s.toUpperCase()
-                if (s.length === 1) return s.replace(/-/g, '')
-                let getFirst = s.replace(/-/g, '')
-                const firstLen = getFirst.length % k || k
-                const str = s.split('')
-                const strLen = str.length
-                let flowStr = '' // 上一节处理溢出的字符
-                let res = ''
-                for (let i = 0; i < strLen; i++) {
-                    if (str[i] === '-') continue
-                    const item = flowStr + str[i]
-                    let count = item
+            // var licenseKeyFormatting = function (s, k) {
+            //     s = s.toUpperCase()
+            //     if (s.length === 1) return s.replace(/-/g, '')
+            //     let getFirst = s.replace(/-/g, '')
+            //     const firstLen = getFirst.length % k || k
+            //     const str = s.split('')
+            //     const strLen = str.length
+            //     let flowStr = '' // 上一节处理溢出的字符
+            //     let res = ''
+            //     for (let i = 0; i < strLen; i++) {
+            //         if (str[i] === '-') continue
+            //         const item = flowStr + str[i]
+            //         let count = item
 
-                    // 第一行特殊处理-或者说第一段数据
-                    if (i === 0 || res === '') {
-                        if (item.length < firstLen) {
-                            flowStr = count
-                            continue
-                        } else {
-                            count = item.slice(0, firstLen)
-                            flowStr = item.slice(firstLen, item.length)
-                        }
-                    } else if (item.length > k) {
-                        count = item.slice(0, k)
-                        flowStr = item.slice(k, item.length)
-                    } else if (item.length < k) {
-                        // 小于k ，更新溢出的字符
-                        flowStr = item
-                        continue
-                    } else {
-                        flowStr = ''
-                    }
-                    if (res === '') {
-                        res += count
-                    } else {
-                        res = res + '-' + count
-                    }
-                }
-                return flowStr ? res + '-' + flowStr : res
-            }
-            console.log(licenseKeyFormatting('5F3Z-2e-9-w', 4))
+            //         // 第一行特殊处理-或者说第一段数据
+            //         if (i === 0 || res === '') {
+            //             if (item.length < firstLen) {
+            //                 flowStr = count
+            //                 continue
+            //             } else {
+            //                 count = item.slice(0, firstLen)
+            //                 flowStr = item.slice(firstLen, item.length)
+            //             }
+            //         } else if (item.length > k) {
+            //             count = item.slice(0, k)
+            //             flowStr = item.slice(k, item.length)
+            //         } else if (item.length < k) {
+            //             // 小于k ，更新溢出的字符
+            //             flowStr = item
+            //             continue
+            //         } else {
+            //             flowStr = ''
+            //         }
+            //         if (res === '') {
+            //             res += count
+            //         } else {
+            //             res = res + '-' + count
+            //         }
+            //     }
+            //     return flowStr ? res + '-' + flowStr : res
+            // }
+            // console.log(licenseKeyFormatting('5F3Z-2e-9-w', 4))
         </script>
     </body>
 </html>
