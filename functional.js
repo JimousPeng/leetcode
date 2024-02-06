@@ -13,6 +13,145 @@
  * @return {number[][]}
  */
 var combinationSum = function (candidates, target) {
+    // 回溯算法
+    if (candidates[0] > target) return []
+
+    const ans = []
+    const dfs = (target, combine, idx) => {
+        if (idx === candidates.length) {
+            return
+        }
+        if (target === 0) {
+            ans.push(combine)
+            return
+        }
+        // 直接跳过
+        dfs(target, combine, idx + 1)
+        // 选择当前数
+        if (target - candidates[idx] >= 0) {
+            dfs(target - candidates[idx], [...combine, candidates[idx]], idx)
+        }
+    }
+
+    dfs(target, [], 0)
+    return ans
+}
+
+/** 152. 乘积最大子数组
+ * 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积
+ * 子数组 是数组的连续子序列
+ * @param {number[]} nums 1 <= nums.length <= 2 * 104
+ * @return {number} -10 <= nums[i] <= 10
+ */
+var maxProduct = function (nums) {
+    // 先保证是子序列，然后算乘积; 也可以是单个数
+    let max = nums[0]
+    let flag = false
+    for (let i = 1; i < numLen; i++) {
+        // 还要考虑连续子序列 负负得正的情况 子序列某一区间最大的情况
+        if (nums[i] - nums[i - 1] === 1) {
+            // 子序列
+            flag = true
+        } else {
+            flag = false
+        }
+    }
+}
+
+/** 551. 学生出勤记录 I
+ * 给你一个字符串 s 表示一个学生的出勤记录，其中的每个字符用来标记当天的出勤情况
+ * 'A'：Absent，缺勤
+ * 'L'：Late，迟到
+ * 'P'：Present，到场
+ * 如果学生能够 同时 满足下面两个条件，则可以获得出勤奖励
+ * 1. 按 总出勤 计，学生缺勤（'A'）严格 少于两天
+ * 2. 学生 不会 存在 连续 3 天或 连续 3 天以上的迟到（'L'）记录
+ * 如果学生可以获得出勤奖励，返回 true ；否则，返回 false
+ * 输入：s = "PPALLP" 输出：true 学生缺勤次数少于 2 次，且不存在 3 天或以上的连续迟到记录
+ * @param {string} s
+ * @return {boolean}
+ */
+var checkRecord = function (s) {
+    const lateMap = new Map()
+    const sLen = s.length
+    let count = 0
+    for (let i = 0; i < sLen; i++) {
+        const cur = s[i]
+        if (cur === 'A') {
+            if (lateMap.has('A')) {
+                return false
+            }
+            lateMap.set('A', true)
+            count = 0
+        } else if (cur === 'L') {
+            count++
+            if (count === 3) return false
+        } else {
+            count = 0
+        }
+    }
+    return true
+}
+
+/** 541. 反转字符串 II
+ * 给定一个字符串 s 和一个整数 k，从字符串开头算起，每计数至 2k 个字符，就反转这 2k 字符中的前 k 个字符
+ * 如果剩余字符少于 k 个，则将剩余字符全部反转。
+ * 如果剩余字符小于 2k 但大于或等于 k 个，则反转前 k 个字符，其余字符保持原样。
+ * 输入：s = "abcdefg", k = 2  输出："bacdfeg" ab,ef需要反转
+ * @param {string} s 1 <= s.length <= 10^4
+ * @param {number} k 1 <= k <= 10^4
+ * @return {string}
+ */
+var reverseStr = function (s, k) {
+    /**
+     * 每计数至 2k 个字符，就反转这 2k 字符中的前 k 个字符
+     * < 循环周期: 2k； 反转范围: k >
+     * 边界条件：
+     * 0 < (i + 1) % (2 * k) < k
+     * 1. 剩余字符少于 k 个，剩余字符全部反转
+     * 2. 剩余字符小于2k，大于等于k，反转前K个字符
+     */
+    // const strLen = s.length
+    // if (strLen === 1) return s
+    // const strList = s.split('')
+    // if (strLen <= k) return strList.reverse().join('')
+    // let res = []
+    // let handList = []
+    // for (let i = 0; i < strLen; i++) {
+    //     const str = s[i]
+    //     const flag = (i + 1) % (2 * k)
+    //     if (flag <= k && flag > 0) {
+    //         // 这是需要反转的字符区间
+    //         handList.push(str)
+    //     } else {
+    //         handList.reverse()
+    //         res.push(...handList, str)
+    //         handList = []
+    //     }
+    // }
+    // if (handList.length) {
+    //     handList.reverse()
+    //     res.push(...handList)
+    // }
+    // return res.join('')
+
+    /** 不用 reverse */
+    const strLen = s.length
+    if (strLen === 1) return s
+    // const res = Array.from(s)
+    const res = s.split('')
+    for (let i = 0; i < strLen; i += 2 * k) {
+        let left = i,
+            right = Math.min(i + k, strLen) - 1
+        while (left < right) {
+            const temp = res[left]
+            res[left] = res[right]
+            res[right] = temp
+            left++
+            right--
+        }
+    }
+    return res.join('')
 }
 
 /** 34. 在排序数组中查找元素的第一个和最后一个位置
