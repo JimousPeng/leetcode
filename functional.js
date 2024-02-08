@@ -1,5 +1,92 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 152. 乘积最大子数组
+ * 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积
+ * 子数组 是数组的连续子序列
+ * @param {number[]} nums 1 <= nums.length <= 2 * 104
+ * @return {number} -10 <= nums[i] <= 10
+ */
+var maxProduct = function (nums) {
+    // 先保证是子序列，然后算乘积; 也可以是单个数
+    let max = nums[0]
+    let flag = false
+    for (let i = 1; i < numLen; i++) {
+        // 还要考虑连续子序列 负负得正的情况 子序列某一区间最大的情况
+        if (nums[i] - nums[i - 1] === 1) {
+            // 子序列
+            flag = true
+        } else {
+            flag = false
+        }
+    }
+}
+
+/** 40. 组合总和 II
+ * 给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合
+ * candidates 中的每个数字在每个组合中只能使用 一次
+ * 输入: candidates = [10,1,2,7,6,1,5], target = 8
+ * 先排序： [ 1,1,2,5,6,7,10 ]
+ *            8
+ *     1               1 2 5 6 7 10
+ * 1 2 5 6 7 10
+ *
+ * 输出:[[1,1,6],[1,2,5],[1,7],[2,6]]
+ * @param {number[]} candidates
+ * @param {number} target
+ * @return {number[][]}
+ */
+var combinationSum2 = function (candidates, target) {
+    candidates.sort((a, b) => a - b)
+
+    const res = []
+
+    const len = candidates.length
+    function backTracking(target, combine, idx, useFlag) {
+        if (target < 0) return
+        if (target === 0) {
+            res.push(combine)
+            return
+        }
+        for (let i = idx; i < len; i++) {
+            // 处理去重逻辑, 同时要避免 1,1,6 这种组合被影响，所以要判断在第二次重复的时候做去重，即for循环在第二个1开始递归的时候
+            // 如果判断for循环是在第二个1开始，此时第一个1是未使用的, 定义一个数组，用来保存相应下标的使用状态
+            if (i > 0 && candidates[i] === candidates[i - 1] && !useFlag[i - 1]) continue
+            useFlag[i] = true
+            backTracking(target - candidates[i], [...combine, candidates[i]], i + 1, [...useFlag])
+            useFlag[i] = false
+        }
+    }
+
+    backTracking(target, [], 0, [])
+
+    return res
+}
+
+/** 46. 全排列 - 回溯
+ * 给定一个不含重复数字的数组 nums ，返回其 所有可能的全排列 。你可以 按任意顺序 返回答案
+ * 输入：nums = [1,2,3]  输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+ *    1             2                  3
+ *  2   3        1     3            1     2
+ * 3     2      3         1       2          1
+ * @param {number[]} nums 1 <= nums.length <= 6
+ * @return {number[][]}   -10 <= nums[i] <= 10
+ */
+var permute = function (nums) {
+    const res = []
+    function backTracking(arr) {
+        if (arr.length === nums.length) {
+            res.push(arr)
+            return
+        }
+        for (let i = 0; i < nums.length; i++) {
+            if (arr.includes(nums[i])) continue
+            backTracking([...arr, nums[i]])
+        }
+    }
+    backTracking([])
+    return res
+}
+
 /**39. 组合总和
  * 给你一个 无重复元素 的整数数组 candidates 和一个目标整数 target ，
  * 找出 candidates 中可以使数字和为目标数 target 的 所有 不同组合 ，并以列表形式返回。你可以按 任意顺序 返回这些组合
@@ -34,27 +121,6 @@ var combinationSum = function (candidates, target) {
     dfs(target, [], 0)
 
     return ans
-}
-
-/** 152. 乘积最大子数组
- * 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积
- * 子数组 是数组的连续子序列
- * @param {number[]} nums 1 <= nums.length <= 2 * 104
- * @return {number} -10 <= nums[i] <= 10
- */
-var maxProduct = function (nums) {
-    // 先保证是子序列，然后算乘积; 也可以是单个数
-    let max = nums[0]
-    let flag = false
-    for (let i = 1; i < numLen; i++) {
-        // 还要考虑连续子序列 负负得正的情况 子序列某一区间最大的情况
-        if (nums[i] - nums[i - 1] === 1) {
-            // 子序列
-            flag = true
-        } else {
-            flag = false
-        }
-    }
 }
 
 /** 551. 学生出勤记录 I
