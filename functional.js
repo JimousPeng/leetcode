@@ -21,6 +21,91 @@ var maxProduct = function (nums) {
     }
 }
 
+/** 55. 跳跃游戏
+ * 给你一个非负整数数组 nums ，你最初位于数组的 第一个下标 。数组中的每个元素代表你在该位置可以跳跃的最大长度
+ * 判断你是否能够到达最后一个下标，如果可以，返回 true ；否则，返回 false
+ *
+ * 输入：nums = [2,3,1,1,4]  输出：true
+ * 解释：可以先跳 1 步，从下标 0 到达下标 1, 然后再从下标 1 跳 3 步到达最后一个下标。
+ *
+ * 输入：nums = [3,2,1,0,4]  输出：false
+ * 解释：无论怎样，总会到达下标为 3 的位置。但该下标的最大跳跃长度是 0 ， 所以永远不可能到达最后一个下标。
+ * @param {number[]} nums  1 <= nums.length <= 10^4   0 <= nums[i] <= 105
+ * @return {boolean}
+ */
+var canJump = function (nums) {
+    // 能不能递归解决呢，从最后一格往前找答案; 最后用回溯解决了
+    const numLen = nums.length
+    let res = false
+    function backTracking(idx, resetStep) {
+        // resetStep: 剩余可走步数
+        if (idx > nums.length - 1) return
+        if (idx === nums.length - 1) {
+            res = true
+        }
+        const curStep = nums[idx]
+        if (curStep + resetStep === 0) return
+        const canUseStep = Math.max(curStep, resetStep)
+        backTracking(idx + 1, canUseStep - 1)
+    }
+
+    backTracking(0, 0)
+
+    return res
+
+    // 贪心算法，找到能达到的最右位置，并不断更新位置节点，如果位置节点 >= 最后一个节点，那么返回 true, 否则返回flase; 整个思路感觉跟回溯是类似的
+    const numLen = nums.length
+    let rightMost = 0
+    for (let i = 0; i < numLen; i++) {
+        if (i <= rightMost) {
+            rightMost = Math.max(rightMost, i + nums[i])
+            if (rightMost >= numLen - 1) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+/** 49. 字母异位词分组
+ * 给你一个字符串数组，请你将 字母异位词 组合在一起。可以按任意顺序返回结果列表
+ * 字母异位词 是由重新排列源单词的所有字母得到的一个新单词
+ *
+ *
+ *
+ * 输入: strs = ["eat", "tea", "tan", "ate", "nat", "bat"]
+ * 输出: [["bat"],["nat","tan"],["ate","eat","tea"]]
+ *
+ * 输入: strs = [""]  输出: [[""]]
+ *
+ * 输入: strs = ["a"]  输出: [["a"]]
+ * @param {string[]} strs  1 <= strs.length <= 104  strs[i] 仅包含小写字母
+ * @return {string[][]}
+ */
+var groupAnagrams = function (strs) {
+    /** 找出由相同字母组成的单词，并分为一个组 */
+    const strLen = strs.length
+    if (strLen === 1) return [strs]
+
+    const groupMap = {}
+
+    for (let i = 0; i < strLen; i++) {
+        const curStr = strs[i].split('')
+        // 先将字符排序，然后用mapHash 保存排序后的下标，在后续的遍历中，只要排序后的字符一致，那么下标保存到同一个数组中
+        curStr.sort()
+
+        if (groupMap[curStr]) {
+            groupMap[curStr].push(i)
+        } else {
+            groupMap[curStr] = [i]
+        }
+    }
+
+    return Object.keys(groupMap).map((_item) => {
+        return groupMap[_item].map((_index) => strs[_index])
+    })
+}
+
 /** 40. 组合总和 II
  * 给定一个候选人编号的集合 candidates 和一个目标数 target ，找出 candidates 中所有可以使数字和为 target 的组合
  * candidates 中的每个数字在每个组合中只能使用 一次
