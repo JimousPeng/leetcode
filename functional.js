@@ -21,6 +21,125 @@ var maxProduct = function (nums) {
     }
 }
 
+/** 75. 颜色分类
+ * 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+ * 我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色
+ * 必须在不使用库内置的 sort 函数的情况下解决这个问题。
+ *
+ * 排序规则： 红 -> 白 -> 蓝 即 0 -> 1 -> 2
+ *
+ * 输入：nums = [2,0,2,1,1,0]  输出：[0,0,1,1,2,2]
+ * @param {number[]} nums  1 <= nums.length <= 300
+ * @return {void} Do not return anything, modify nums in-place instead.
+ */
+var sortColors = function (nums) {
+    // 排序问题 - 手动实现
+
+    /** 冒泡的遍历次数太多了 */
+    // const numLen = nums.length
+    // if (numLen === 1) return nums
+    // for (let i = 0; i < numLen - 1; i++) {
+    //     for (let j = 0; j < numLen - 1 - i; j++) {
+    //         if (nums[j] > nums[j + 1]) {
+    //             const temp = nums[j]
+    //             nums[j] = nums[j + 1]
+    //             nums[j + 1] = temp
+    //         }
+    //     }
+    // }
+
+    const numLen = nums.length
+    let useIdx = 0
+    for (let i = 0; i < numLen; i++) {
+        // 第一次遍历将0替换到前面
+        if (nums[i] === 0) {
+            const temp = nums[i]
+            nums[i] = nums[useIdx]
+            nums[useIdx] = temp
+            useIdx++
+        }
+    }
+    for (let i = useIdx; i < numLen; i++) {
+        // 第一次遍历将1替换到前面
+        if (nums[i] === 1) {
+            const temp = nums[i]
+            nums[i] = nums[useIdx]
+            nums[useIdx] = temp
+            useIdx++
+        }
+    }
+
+    /** 合并两次遍历，一次性交换0和1 */
+    const numLen = nums.length
+    let p0 = 0,
+        p1 = 0
+    for (let i = 0; i < numLen; i++) {
+        if (nums[i] === 0) {
+            const temp = nums[i]
+            nums[i] = nums[p0]
+            nums[p0] = temp
+            // 由于P1也是从0，开始计数，要交换p0,p1
+            /**
+             * 比如 nums = [2,0,2,1,1,0]
+             * 第1次交换0，遍历到节点0，下标为1       [2,0,2,1,1,0] -> [0,2,2,1,1,0]
+             * 第1次交换1，遍历到节点1，下标为3       [0,2,2,1,1,0] -> [0,1,2,2,1,0]
+             * 第2次交换1，遍历到第二个节点1，下标为4  [0,1,2,2,1,0] -> [0,1,1,2,2,0]
+             * 第2次交换0，遍历到第二个节点0，下标为5  [0,1,1,2,2,0] -> [0,0,1,2,2,1]
+             */
+            if (p0 !== p1) {
+                // 此时p0<p1,在0之前有交换1，导致p0!==p1;此时需要将当前p0,即交换之后的nums[i]，与 nums[p1]交换
+                const temp = nums[i]
+                nums[i] = nums[p1]
+                nums[p1] = temp
+            }
+            // p1也要跟随p0++
+            p0++
+            p1++
+        } else if (nums[i] === 1) {
+            const temp = nums[i]
+            nums[i] = nums[p1]
+            nums[p1] = temp
+            p1++
+        }
+    }
+}
+
+/** 56. 合并区间
+ * 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi]
+ * 请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间
+ *
+ * 输入：intervals = [[1,3],[2,6],[8,10],[15,18]]  输出：[[1,6],[8,10],[15,18]] 解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+ * 输入：intervals = [[1,4],[4,5]]  输出：[[1,5]]  解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
+ *
+ * @param {number[][]} intervals 1 <= intervals.length <= 104  intervals[i].length == 2
+ * @return {number[][]}
+ */
+var merge = function (intervals) {
+    const len = intervals.length
+    if (len === 1) return intervals
+    // 先排序
+    intervals = intervals.sort((a, b) => {
+        return a[0] - b[0]
+    })
+    const res = [intervals[0]]
+    for (let i = 1; i < len; i++) {
+        const cur = intervals[i]
+        const last = res[res.length - 1]
+        if (cur[0] >= last[1] && cur[0] <= last[1]) {
+            // 有交集
+            if (cur[1] > last[1]) {
+                last[1] = cur[1]
+            }
+        } else if (cur[0] >= last[0] && cur[1] <= last[1]) {
+            // 是子集
+            continue
+        } else {
+            res.push(cur)
+        }
+    }
+    return res
+}
+
 /** 55. 跳跃游戏
  * 给你一个非负整数数组 nums ，你最初位于数组的 第一个下标 。数组中的每个元素代表你在该位置可以跳跃的最大长度
  * 判断你是否能够到达最后一个下标，如果可以，返回 true ；否则，返回 false
