@@ -21,6 +21,50 @@ var maxProduct = function (nums) {
     }
 }
 
+/** 64. 最小路径和
+ * 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
+ * 说明：每次只能向下或者向右移动一步。
+ * 1 3 1
+ * 1 5 1
+ * 4 2 1
+ * 输入：grid = [[1,3,1],[1,5,1],[4,2,1]] 输出：7 解释：因为路径 1→3→1→1→1 的总和最小
+ *
+ * 1 2 3
+ * 4 5 6
+ * 输入：grid = [[1,2,3],[4,5,6]]
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var minPathSum = function (grid) {
+    /** 动态规划 | 二维数组 dp[i][j] = Math.min(dp[i-1][j-1], dp[i-1][j]) + grid[i][j] */
+    const rowLen = grid.length
+    const dp = []
+    for (let i = 0; i < rowLen; i++) {
+        const row = grid[i]
+        const columnLen = row.length
+        for (let j = 0; j < columnLen; j++) {
+            /** 找到递推公式 */
+            if (dp[i] === undefined) {
+                dp[i] = []
+            }
+            if (i === 0) {
+                if (j === 0) {
+                    dp[0][0] = grid[0][0]
+                } else {
+                    dp[0][j] = dp[0][j - 1] + grid[0][j]
+                }
+            } else {
+                if (j === 0) {
+                    dp[i][0] = dp[i - 1][0] + grid[i][0]
+                } else {
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j]
+                }
+            }
+        }
+    }
+    return dp[rowLen - 1][grid[0].length - 1]
+}
+
 /** 75. 颜色分类
  * 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
  * 我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色
