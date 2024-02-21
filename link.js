@@ -5,6 +5,50 @@
  * }
  */
 
+/** 143. 重排链表
+ * 给定一个单链表 L 的头节点 head ，单链表 L 表示为：
+ * L0 → L1 → … → Ln - 1 → Ln
+ * 请将其重新排列后变为：
+ * L0 → Ln → L1 → Ln - 1 → L2 → Ln - 2 → …
+ * 不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换
+ *
+ * 输入：head = [1,2,3,4] 输出：[1,4,2,3]
+ * @param {ListNode} head
+ * @return {void} Do not return anything, modify head in-place instead.
+ */
+var reorderList = function (head) {
+    if (head === null) return
+    let slow = head
+    let fast = head
+    // 找到链表中间节点 - slow
+    while (fast.next !== null && fast.next.next !== null) {
+        fast = fast.next.next
+        slow = slow.next
+    }
+    // 反转后半段链表 - pre节点为尾节点
+    let pre = null,
+        cur = slow.next
+
+    slow.next = null // 避免原节点产生环
+
+    while (cur) {
+        const temp = cur.next
+        cur.next = pre
+        pre = cur
+        cur = temp
+    }
+
+    // 将前半段链表与反转后的后半段链表重新组合
+    while (pre) {
+        const tempPre = pre.next
+        const tempHead = head.next
+        head.next = pre
+        head.next.next = tempHead
+        head = tempHead
+        pre = tempPre
+    }
+}
+
 /** 24. 两两交换链表中的节点
  *  给你一个链表，两两交换其中相邻的节点，并返回交换后链表的头节点。你必须在不修改节点内部的值的情况下完成本题
  * @param {ListNode} head
