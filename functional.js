@@ -7,21 +7,46 @@
  * @return {number} -10 <= nums[i] <= 10
  */
 var maxProduct = function (nums) {
-    // 先保证是子序列，然后算乘积; 也可以是单个数
-    let max = nums[0]
-    let flag = false
-    for (let i = 1; i < numLen; i++) {
-        // 还要考虑连续子序列 负负得正的情况 子序列某一区间最大的情况
-        if (nums[i] - nums[i - 1] === 1) {
-            // 子序列
-            flag = true
-        } else {
-            flag = false
+    if (nums.length === 1) return nums[0]
+    const numsLen = nums.length
+    let res = 0
+    let max = 1
+    let min = 1
+    for (let i = 0; i < numsLen; i++) {
+        if (nums[i] < 0) {
+            // 由于存在负数，那么会导致最大的变最小的，最小的变最大的。因此还需要维护当前最小值imin
+            const temp = max
+            max = min
+            min = temp
         }
+        max = Math.max(max * nums[i], nums[i])
+        min = Math.min(min * nums[i], nums[i])
+        res = Math.max(max, res)
     }
+    return res
+    /** 动态规划思路
+     *
+     * 对于每一次遍历的数都有两个选择，一个是累积乘积，一个是以当前数为起点重新乘积
+     *
+     * dp[i][0] = Math.max()
+     * dp[i][1] = dp[i-1][1]
+     *
+     * dp[i][0] 不继续累加
+     * dp[i][1] 乘以当前数的最大乘积
+     */
+    const numsLen = nums.length
+    let p = nums[0]
+    let maxP = nums[0]
+    let minP = nums[0]
+    for (let i = 1; i < numsLen; i++) {
+        // 更新当前节点的最大值和最小值
+        const curMax = maxP
+        maxP = Math.max(maxP * nums[i], nums[i], minP * nums[i])
+        minP = Math.min(curMax * nums[i], nums[i], minP * nums[i])
+        p = Math.max(maxP, p)
+    }
+    return p
 }
-
-
 
 /** 64. 最小路径和
  * 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
