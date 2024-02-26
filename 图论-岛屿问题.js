@@ -45,8 +45,8 @@ var islandPerimeter = function (grid) {
      */
     function dfs(r, c) {
         if (!inArea(r, c)) return 1
-        if (grid[r][c] === 0) return 1
-        if (grid[r][c] === 2) return 0
+        if (grid[r][c] === 0) return 1 // 当前是海洋，那么与该陆地有一个边距
+        if (grid[r][c] === 2) return 0 // 当前是已经遍历过的节点，直接跳过
         grid[r][c] = 2
         // 当前遍历坐标是 (r, c), 递归遍历它的上下左右节点
         return dfs(r - 1, c) + dfs(r + 1, c) + dfs(r, c - 1) + dfs(r, c + 1)
@@ -66,4 +66,56 @@ var islandPerimeter = function (grid) {
         }
     }
     return 0
+}
+
+/** 
+ * 200. 岛屿数量
+ * 给你一个由 '1'（陆地）和 '0'（水）组成的二维网格，请你计算网格中岛屿的数量
+ * 输入：grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+输出：1
+
+输入：grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+输出：3
+ * @param {character[][]} grid
+ * @return {number}
+ */
+var numIslands = function (grid) {
+    const rowLen = grid.length
+    const columnLen = grid[0].length
+    let res = 0
+    for (let r = 0; r < rowLen; r++) {
+        for (let c = 0; c < columnLen; c++) {
+            if (grid[r][c] === '1') {
+                dfs(r, c)
+                res += 1
+            }
+        }
+    }
+    function dfs(r, c) {
+        const inArea = r >= 0 && r < rowLen && c >= 0 && c < columnLen
+        if (!inArea) return 0
+        if (grid[r][c] === '0') return 0
+        if (grid[r][c] === '2') return 0
+        /**
+         * grid[r][c] = 1 陆地
+         * grid[r][c] = 0 海洋
+         * grid[r][c] = 2 已标记
+         */
+        grid[r][c] = '2'
+        dfs(r + 1, c)
+        dfs(r - 1, c)
+        dfs(r, c + 1)
+        dfs(r, c - 1)
+    }
+    return res
 }
