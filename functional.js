@@ -1,5 +1,107 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 面试题 16.17. 连续数列
+ * 给定一个整数数组，找出总和最大的连续数列，并返回总和\
+ * 输入： [-2,1,-3,4,-1,2,1,-5,4]  输出： 6
+ * 解释： 连续子数组 [4,-1,2,1] 的和最大，为 6
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxSubArray = function (nums) {
+    /** 动态规划
+     * dp[i][0] 当前值不累加
+     * dp[i][1] 当前值累加
+     */
+    const numsLen = nums.length
+
+    if (numsLen === 1) return nums[0]
+    if (numsLen === 2) return Math.max(nums[0], nums[1], nums[0] + nums[1])
+
+    let max = -Infinity
+    const dp = []
+
+    for (let i = 0; i < numsLen; i++) {
+        if (dp[i] === undefined) {
+            dp[i] = []
+        }
+        if (i === 0) {
+            dp[i][0] = -Infinity
+            dp[i][1] = nums[i]
+        } else {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1])
+            dp[i][1] = Math.max(dp[i - 1][1] + nums[i], nums[i])
+            max = Math.max(dp[i][0], dp[i][1], max)
+        }
+    }
+    return max
+}
+
+/** 面试题 17.01. 不用加号的加法
+ * 设计一个函数把两个数字相加。不得使用 + 或者其他算术运算符
+ * 输入: a = 1, b = 1  输出: 2
+ * a, b 均可能是负数或 0
+ * @param {number} a
+ * @param {number} b
+ * @return {number}
+ */
+var add = function (a, b) {
+    /**
+     * 求 a + b
+     * a & b 获取进位， << 1 拿到进位后的值
+     * a ^ b 获取
+     */
+    while (b !== 0) {
+        const carry = (a & b) << 1 // 进位结果
+        a = a ^ b // 无进位加法结果 与 进位结果的和
+        b = carry
+    }
+    return a
+}
+
+/** 面试题 17.04. 消失的数字
+ * 数组nums包含从0到n的所有整数，但其中缺了一个。请编写代码找出那个缺失的整数。你有办法在O(n)时间内完成吗？
+ * 输入：[3,0,1]  输出：2
+ * 输入：[9,6,4,2,3,5,7,0,1] 输出：8
+ * @param {number[]} nums
+ * @return {number}
+ */
+var missingNumber = function (nums) {
+    const numsLen = nums.length
+    nums.sort((a, b) => a - b)
+    for (let i = 0; i < numsLen; i++) {
+        if (nums[i] !== i) {
+            return i
+        }
+    }
+    return numsLen // 缺少最后一位
+}
+
+/** 面试题 17.10. 主要元素
+ * 数组中占比超过一半的元素称之为主要元素。给你一个 整数 数组，找出其中的主要元素 若没有，返回 -1
+ * 请设计时间复杂度为 O(N) 、空间复杂度为 O(1) 的解决方案
+ * 输入：[1,2,5,9,5,9,5,5,5] 输出：5
+ * @param {number[]} nums
+ * @return {number}
+ */
+var majorityElement = function (nums) {
+    const numsLen = nums.length
+    if (numsLen === 0) return -1
+    if (numsLen === 1) return nums[0]
+    nums.sort((a, b) => a - b) // 因为有排序，所以其实时间复杂度已经不是 0(n) 了
+    let count = 0
+    let halfFlag = numsLen / 2
+    for (let i = 1; i < numsLen; i++) {
+        if (nums[i] === nums[i - 1]) {
+            count++
+            if (count > halfFlag) return nums[i]
+            // if(count * 2 > numsLen) return nums[i]
+        } else {
+            count = 0
+        }
+    }
+    return -1
+}
+
 /** 152. 乘积最大子数组
  * 给你一个整数数组 nums ，请你找出数组中乘积最大的非空连续子数组（该子数组中至少包含一个数字），并返回该子数组所对应的乘积
  * 子数组 是数组的连续子序列

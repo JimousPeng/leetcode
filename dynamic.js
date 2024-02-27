@@ -1,5 +1,107 @@
 /** 动态规划 */
 
+/** 面试题 16.17. 连续数列
+ * 给定一个整数数组，找出总和最大的连续数列，并返回总和\
+ * 输入： [-2,1,-3,4,-1,2,1,-5,4]  输出： 6
+ * 解释： 连续子数组 [4,-1,2,1] 的和最大，为 6
+ * @param {number[]} nums
+ * @return {number}
+ */
+var maxSubArray = function (nums) {
+    /** 动态规划
+     * dp[i][0] 当前值不累加
+     * dp[i][1] 当前值累加
+     */
+    const numsLen = nums.length
+
+    if (numsLen === 1) return nums[0]
+    if (numsLen === 2) return Math.max(nums[0], nums[1], nums[0] + nums[1])
+
+    let max = -Infinity
+    const dp = []
+
+    for (let i = 0; i < numsLen; i++) {
+        if (dp[i] === undefined) {
+            dp[i] = []
+        }
+        if (i === 0) {
+            dp[i][0] = -Infinity
+            dp[i][1] = nums[i]
+        } else {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1])
+            dp[i][1] = Math.max(dp[i - 1][1] + nums[i], nums[i])
+            max = Math.max(dp[i][0], dp[i][1], max)
+        }
+    }
+    return max
+
+    /** 动态规划优化 */
+    const numsLen = nums.length
+    let dp0 = -Infinity,
+        dp1 = nums[0]
+    for (let i = 1; i < numsLen; i++) {
+        const tempDp0 = Math.max(dp0, dp1)
+        const tempDp1 = Math.max(dp1 + nums[i], nums[i])
+        dp0 = tempDp0
+        dp1 = tempDp1
+    }
+    return Math.max(dp0, dp1)
+}
+
+/** 面试题 17.16. 按摩师
+ * 一个有名的按摩师会收到源源不断的预约请求，每个预约都可以选择接或不接。
+ * 在每次预约服务之间要有休息时间，因此她不能接受相邻的预约。
+ * 给定一个预约请求序列，替按摩师找到最优的预约集合（总预约时间最长），返回总的分钟数。
+ *
+ * 输入： [1,2,3,1]  输出： 4  解释： 选择 1 号预约和 3 号预约，总时长 = 1 + 3 = 4。
+ * 输入： [2,7,9,3,1]  输出： 12  解释： 选择 1 号预约、 3 号预约和 5 号预约，总时长 = 2 + 9 + 1 = 12。
+ * @param {number[]} nums
+ * @return {number}
+ */
+var massage = function (nums) {
+    /**
+     * 动态规划 不能接受相邻的预约
+     * dp[i] 第i次预约的最大时长
+     * dp[i][0] = Math.max(dp[i-1][0], dp[i-1][1]): 第i次不预约的最大时长
+     * dp[i][1] = dp[i-1][0] + nums[i]: 第i次预约的最大时长 = 前一次不预约 + 当前预约时长
+     */
+    if (nums.length === 1) return nums[0]
+    if (nums.length === 2) return Math.max(nums[0], nums[1])
+    const numsLen = nums.length
+    const dp = []
+    let max = 0
+    for (let i = 0; i < numsLen; i++) {
+        if (dp[i] === undefined) {
+            dp[i] = []
+        }
+        if (i === 0) {
+            dp[i][0] = 0
+            dp[i][1] = nums[i]
+        } else {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1])
+            dp[i][1] = dp[i - 1][0] + nums[i]
+            max = Math.max(dp[i][0], dp[i][1])
+        }
+    }
+    return max
+
+    /**
+     * 动态规划优化
+     * 从状态递推公式来看：dp[i][0/1]只跟前一个状态dp[i][0/1]有关，不使用二维数组优化
+     */
+    const numsLen = nums.length
+    if (numsLen === 0) return 0
+    let dp0 = 0
+    let dp1 = nums[0]
+    for (let i = 1; i < numsLen; i++) {
+        const tdp0 = Math.max(dp0, dp1)
+        const tdp1 = dp0 + nums[i]
+        dp0 = tdp0
+        dp1 = tdp1
+    }
+    return Math.max(dp0, dp1)
+}
+
 /** 121. 买卖股票的最佳时机
  * 给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格
  * 你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润
