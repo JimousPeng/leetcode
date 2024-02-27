@@ -1,40 +1,5 @@
 /** 功能性题目，以解决问题为出发点 */
 
-/** 面试题 16.17. 连续数列
- * 给定一个整数数组，找出总和最大的连续数列，并返回总和\
- * 输入： [-2,1,-3,4,-1,2,1,-5,4]  输出： 6
- * 解释： 连续子数组 [4,-1,2,1] 的和最大，为 6
- * @param {number[]} nums
- * @return {number}
- */
-var maxSubArray = function (nums) {
-    /** 动态规划
-     * dp[i][0] 当前值不累加
-     * dp[i][1] 当前值累加
-     */
-    const numsLen = nums.length
-
-    if (numsLen === 1) return nums[0]
-    if (numsLen === 2) return Math.max(nums[0], nums[1], nums[0] + nums[1])
-
-    let max = -Infinity
-    const dp = []
-
-    for (let i = 0; i < numsLen; i++) {
-        if (dp[i] === undefined) {
-            dp[i] = []
-        }
-        if (i === 0) {
-            dp[i][0] = -Infinity
-            dp[i][1] = nums[i]
-        } else {
-            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1])
-            dp[i][1] = Math.max(dp[i - 1][1] + nums[i], nums[i])
-            max = Math.max(dp[i][0], dp[i][1], max)
-        }
-    }
-    return max
-}
 
 /** 面试题 17.01. 不用加号的加法
  * 设计一个函数把两个数字相加。不得使用 + 或者其他算术运算符
