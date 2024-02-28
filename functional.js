@@ -1,5 +1,114 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 面试题 16.07. 最大数值
+ * 编写一个方法，找出两个数字a和b中最大的那一个。不得使用if-else或其他比较运算符
+ * 输入： a = 1, b = 2 输出： 2
+ * @param {number} a
+ * @param {number} b
+ * @return {number}
+ */
+var maximum = function (a, b) {
+    // return Math.max(a, b)
+    return (Math.abs(a - b) + a + b) / 2
+}
+
+/** 面试题 16.11. 跳水板
+ * 你正在使用一堆木板建造跳水板
+ * 有两种类型的木板，其中长度较短的木板长度为shorter，长度较长的木板长度为longer
+ * 你必须正好使用k块木板。编写一个方法，生成跳水板所有可能的长度
+ * 返回的长度需要从小到大排列。
+ *
+ * 输入： shorter = 1 longer = 2   k = 3  输出： [3,4,5,6]
+ *   1           2
+ *  1   2      1    2
+ * 1 2 1 2    1 2  1 2
+ * 解释： 可以使用 3 次 shorter，得到结果 3；使用 2 次 shorter 和 1 次 longer，得到结果 4 。以此类推，得到最终结果
+ * @param {number} shorter 0 < shorter <= longer
+ * @param {number} longer  0 <= k <= 100000 -> 由于length足够大，所以没法用递归
+ * @param {number} k
+ * @return {number[]}
+ */
+var divingBoard = function (shorter, longer, k) {
+    if (k === 0) return []
+    if (shorter === longer) return [shorter * k]
+    const res = []
+    for (let i = 0; i <= k; i++) {
+        // 取长补短
+        res[i] = shorter * [k - i] + longer * i
+    }
+    return res
+
+    // 回溯超时，k的值太大
+    // const canUse = [shorter, longer]
+    // const res = []
+    // function trackingBack(k, count) {
+    //     if (k === 0) {
+    //         if (!res.includes(count)) {
+    //             res.push(count)
+    //         }
+    //         return
+    //     }
+    //     for (let i = 0; i < canUse.length; i++) {
+    //         const use = canUse[i]
+    //         trackingBack(k - 1, count + use)
+    //     }
+    // }
+    // trackingBack(k, 0)
+    // console.log(res)
+    // return res.sort((a, b) => a - b)
+}
+
+/** 面试题 16.15. 珠玑妙算
+ *
+ * 思路： hash表
+ *
+ * 计算机有4个槽，每个槽放一个球，颜色可能是红色（R）、黄色（Y）、绿色（G）或蓝色（B）
+ * 例如，计算机可能有RGGB 4种（槽1为红色，槽2、3为绿色，槽4为蓝色）。
+ * 作为用户，你试图猜出颜色组合。
+ * 打个比方，你可能会猜YRGB。
+ *
+ * 猜对某个槽的颜色，则算一次“猜中”；
+ * 只猜对颜色但槽位猜错了，则算一次“伪猜中”。注意，“猜中”不能算入“伪猜中”。
+ *
+ * 给定一种颜色组合solution和一个猜测guess，编写一个方法，返回猜中和伪猜中的次数answer，其中answer[0]为猜中的次数，answer[1]为伪猜中的次数。
+ *
+ * 输入： solution="RGBY",guess="GGRR"  输出： [1,1]  解释： 猜中1次，伪猜中1次。
+ * @param {string} solution
+ * @param {string} guess
+ * len(solution) = len(guess) = 4
+ * solution和guess仅包含"R","G","B","Y"这4种字符
+ * @return {number[]}
+ */
+var masterMind = function (solution, guess) {
+    const solLen = solution.length
+    const colorlMap = {
+        R: 0,
+        G: 0,
+        B: 0,
+        Y: 0,
+    }
+    const resetGes = []
+    let count = 0
+    let difCount = 0
+    for (let i = 0; i < solLen; i++) {
+        const sol = solution[i]
+        const ges = guess[i]
+        if (sol === ges) {
+            count++
+        } else {
+            colorlMap[sol]++
+            resetGes.push(ges)
+        }
+    }
+    for (let j = 0; j < resetGes.length; j++) {
+        const key = resetGes[j]
+        if (colorlMap[key] > 0) {
+            difCount++
+            colorlMap[key]--
+        }
+    }
+    return [count, difCount]
+}
 
 /** 面试题 17.01. 不用加号的加法
  * 设计一个函数把两个数字相加。不得使用 + 或者其他算术运算符
