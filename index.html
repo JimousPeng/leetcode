@@ -9,6 +9,30 @@
 
     <body>
         <script>
+            var trailingZeroes = function (n) {
+                // 先求出阶乘
+                let count = 1
+                while (n > 0) {
+                    count = count * n
+                    n--
+                }
+                console.log(count, '???')
+
+                // 求出尾0
+                let res = 0
+                const str = count + ''
+                for (let i = str.length - 1; i >= 0; i--) {
+                    if (str[i] === '0') {
+                        res++
+                    } else {
+                        break
+                    }
+                }
+                return res
+            }
+            console.error('---------- aiden --------------', trailingZeroes(5))
+        </script>
+        <script>
             var combinationSum = function (candidates, target) {
                 // 综上，问题就是从一个集合中，找到能组成和为 target 的数集，且保证集合内无重复元素
                 // 边界处理
