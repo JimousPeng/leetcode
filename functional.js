@@ -1,5 +1,72 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 面试题 10.01. 合并排序的数组
+ * 给定两个排序后的数组 A 和 B，其中 A 的末端有足够的缓冲空间容纳 B
+ * 编写一个方法，将 B 合并入 A 并排序。
+ * A = [1,2,3,0,0,0], m = 3
+ * B = [2,5,6],       n = 3
+ * 初始化 A 和 B 的元素数量分别为 m 和 n。
+ * 输出: [1,2,2,3,5,6]
+ * @param {number[]} A A.length == n + m
+ * @param {number} m
+ * @param {number[]} B
+ * @param {number} n
+ * @return {void} Do not return anything, modify A in-place instead.
+ */
+var merge = function (A, m, B, n) {
+    // api
+    A.splice(m, A.length - m, ...B)
+    A.sort((a, b) => a - b)
+
+    // 手动并入
+    const res = []
+    let right = 0
+    for (let left = 0; left < m; left++) {
+        const cur = A[left]
+        // 将B并入并排序
+        while (B[right] < cur && right < n) {
+            res.push(B[right])
+            right++
+        }
+        res.push(cur)
+    }
+    while (right < n) {
+        res.push(B[right])
+        right++
+    }
+    for (let i = 0; i < m; i++) {
+        A[i] = res[i]
+    }
+}
+
+/** 面试题 10.05. 稀疏数组搜索
+ * 稀疏数组搜索。有个排好序的字符串数组，其中散布着一些空字符串，编写一种方法，找出给定字符串的位置。
+ * 输入: words = ["at", "", "", "", "ball", "", "", "car", "", "","dad", "", ""], s = "ta"  输出：-1
+ * @param {string[]} words
+ * @param {string} s
+ * @return {number}
+ */
+var findString = function (words, s) {
+    for (let i = 0; i < words.length; i++) {
+        if (words[i] === s) return i
+    }
+    return -1
+
+    // 前后指针更高效O(N/2)
+    let left = 0,
+        right = words.length
+    while (left <= right) {
+        if (words[left] === s) {
+            return left
+        } else if (words[right] === s) {
+            return right
+        }
+        left++
+        right--
+    }
+    return -1
+}
+
 /** 面试题 16.05. 阶乘尾数
  * 设计一个算法，算出 n 阶乘有多少个尾随零。
  * 输入: 3   输出: 0  解释: 3! = 6, 尾数中没有零。 1 * 2 * 3
