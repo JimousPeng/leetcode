@@ -9,6 +9,34 @@
 
     <body>
         <script>
+            var A = [3, 2, 1],
+                B = [],
+                C = []
+            var hanota = function (A, B, C) {
+                const size = A.length
+                /**
+                 *
+                 * @param {*} size   需要移动的盘子数量
+                 * @param {*} start  当前移动的盘子
+                 * @param {*} use    辅助移动的盘子
+                 * @param {*} target 目标盘子
+                 * @returns
+                 */
+                function dfs(size, a, b, c) {
+                    if (size === 1) {
+                        c.push(a.pop())
+                        return
+                    }
+                    dfs(size - 1, a, c, b) // 将n-1堆叠到B
+                    c.push(a.pop()) // 将最底下最大的移动到C
+                    dfs(size - 1, b, a, c) // 将存放n-1的B移动到C
+                }
+                dfs(size, A, B, C)
+            }
+            hanota(A, B, C)
+            console.log(A, B, C)
+        </script>
+        <script>
             var trailingZeroes = function (n) {
                 // 先求出阶乘
                 let count = 1

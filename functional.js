@@ -1,5 +1,190 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 面试题 01.05. 一次编辑 - 力扣（LeetCode）
+ * 字符串有三种编辑操作:插入一个英文字符、删除一个英文字符或者替换一个英文字符
+ * 给定两个字符串，编写一个函数判定它们是否只需要一次(或者零次)编辑
+ * 输入: first = "pale" second = "ple"  输出: True
+ * @param {string} first
+ * @param {string} second
+ * @return {boolean}
+ */
+var oneEditAway = function (first, second) {
+    /**
+     * 符合要求的编辑
+     * 1次编辑的情况
+     * 一次插入(不等长，但是其他元素都一致)  一次删除  一次替换
+     * 0次编辑的情况
+     * first===second
+     */
+    if (first === second) return true
+    if (Math.abs(first.length - second.length) > 1) return false // 长度超过2位差，肯定不满足1|0次编辑条件
+    if (first.length > second.length) {
+        // 调整长短边，用于遍历
+        ;[second, first] = [first, second]
+    }
+    // 遍历更短的字符
+    for (let i = 0; i < first.length; i++) {
+        if (first[i] !== second[i]) {
+            // first[i + 1] === second[i + 1] 遇到当前i不等，但是后续的值都相等，那么此时只需要一次替换
+            // first[i + 1] === second[i + 1] 遇到当前i不等，但是长的删除之后都相等
+            return first.slice(i + 1) === second.slice(i + 1) || first.slice(i) === second.slice(i + 1)
+        }
+    }
+    return true
+}
+
+/** 化栈为队 */
+var MyQueue = function () {
+    this.inStack = []
+    this.outStack = []
+}
+
+MyQueue.prototype.push = function (x) {
+    this.inStack.push(x)
+}
+
+MyQueue.prototype.pop = function () {
+    if (!this.outStack.length) {
+        this.in2out()
+    }
+    return this.outStack.pop()
+}
+
+MyQueue.prototype.peek = function () {
+    if (!this.outStack.length) {
+        this.in2out()
+    }
+    return this.outStack[this.outStack.length - 1]
+}
+
+MyQueue.prototype.empty = function () {
+    return this.outStack.length === 0 && this.inStack.length === 0
+}
+
+MyQueue.prototype.in2out = function () {
+    while (this.inStack.length) {
+        this.outStack.push(this.inStack.pop())
+    }
+}
+
+/** 面试题 08.01. 三步问题
+ * 三步问题。有个小孩正在上楼梯，楼梯有n阶台阶，小孩一次可以上1阶、2阶或3阶
+ * 实现一种方法，计算小孩有多少种上楼梯的方式。结果可能很大，你需要对结果模1000000007。
+ * @param {number} n
+ * @return {number}
+ */
+var waysToStep = function (n) {
+    if (n == 1) return 1
+    if (n === 2) return 2
+    if (n === 3) return 4 // f(1) + f(2) + 1 = 4
+    const dp = []
+    dp[0] = 1
+    dp[1] = 1
+    dp[2] = 2
+    for (let i = 3; i <= n; i++) {
+        dp[i] = (((dp[i - 1] + dp[i - 2]) % 1000000007) + dp[i - 3]) % 1000000007
+    }
+    return dp[n]
+}
+
+/** 面试题 08.03. 魔术索引
+ * 满足条件A[i] = i。给定一个有序整数数组，编写一种方法找出魔术索引，若有的话，在数组A中找出一个魔术索引，如果没有，则返回-1。
+ * 若有多个魔术索引，返回索引值最小的一个
+ * 输入：nums = [0, 2, 3, 4, 5] 输出：0
+ * 输入：nums = [1, 1, 1] 输出：1
+ * @param {number[]} nums nums长度在[1, 1000000]之间
+ * @return {number}
+ */
+var findMagicIndex = function (nums) {
+    const len = nums.length
+    let left = 0,
+        right = len - 1
+    let idxMap = {}
+    while (left <= right) {
+        if (nums[left] === left) {
+            idxMap[left] = true
+        } else if (nums[right] === right) {
+            idxMap[right] = true
+        }
+        left++
+        right--
+    }
+    const ids = Object.keys(idxMap)
+    if (ids.length === 0) return -1
+    ids.sort((a, b) => a - b)
+    return ids[0]
+
+    // 优化
+    const len = nums.length
+    let left = 0,
+        right = len - 1
+    let res = -1
+    function updateRes(idx) {
+        if (res === -1) {
+            res = idx
+        } else {
+            res = Math.min(idx, res)
+        }
+    }
+    while (left <= right) {
+        if (nums[left] === left) {
+            updateRes(left)
+        } else if (nums[right] === right) {
+            updateRes(right)
+        }
+        left++
+        right--
+    }
+    return res
+}
+
+/** 面试题 08.06. 汉诺塔问题
+ * 在经典汉诺塔问题中，有 3 根柱子及 N 个不同大小的穿孔圆盘，盘子可以滑入任意一根柱子
+ * 一开始，所有盘子自上而下按升序依次套在第一根柱子上(即每一个盘子只能放在更大的盘子上面)
+ * 移动圆盘时受到以下限制:
+ * (1) 每次只能移动一个盘子;
+ * (2) 盘子只能从柱子顶端滑出移到下一根柱子;
+ * (3) 盘子只能叠在比它大的盘子上。
+ * 请编写程序，用栈将所有盘子从第一根柱子移到最后一根柱子。
+ *
+ * 输入：A = [2, 1, 0], B = [], C = [] 输出：C = [2, 1, 0]   [2] [0] [1]   [2,0] [1][]     [2] [1, 0] []  [][1,0][2]  [1][0][2]  [][0][2,1]  [][][2,1,0]
+ * 输入：A = [4, 3, 2, 1, 0], B = [], C = [] 输出：C = [4, 3, 2, 1, 0]
+ * 43210
+ * 4321 0
+ * 432 0 1
+ * 432   10
+ * 一层汉诺塔 [1][][]    -> [][][1]
+ * 两层汉诺塔 [2,1][][]  -> [][][2,1]
+ * 输入：A = [1, 0], B = [], C = []  输出：C = [1, 0]
+ *
+ * @param {number[]} A A中盘子的数目不大于14个。
+ * @param {number[]} B
+ * @param {number[]} C
+ * @return {void} Do not return anything, modify C in-place instead.
+ */
+var hanota = function (A, B, C) {
+    const size = A.length
+    /**
+     *
+     * @param {*} size   需要移动的盘子数量
+     * @param {*} start  当前移动的盘子
+     * @param {*} use    辅助移动的盘子
+     * @param {*} target 目标盘子
+     * @returns
+     */
+    function dfs(size, a, b, c) {
+        if (size === 1) {
+            // 只剩一个盘子，直接移到目标盘子
+            c.push(a.pop())
+            return
+        }
+        dfs(size - 1, a, c, b) // 将n-1从A移动到B
+        c.push(a.pop()) // n-1移走了，还剩最后一个最大的底盘，移动到C
+        dfs(size - 1, b, a, c) // 将n-1从B移动到C，这里移动的是，借助了C作为辅助盘，因为C经过上面的操作，C是最大的底盘，所以可以继续当辅助盘用
+    }
+    dfs(size, A, B, C)
+}
+
 /** 面试题 10.01. 合并排序的数组
  * 给定两个排序后的数组 A 和 B，其中 A 的末端有足够的缓冲空间容纳 B
  * 编写一个方法，将 B 合并入 A 并排序。
