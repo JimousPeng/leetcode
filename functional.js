@@ -1,5 +1,93 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 15. 三数之和
+ * 给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]]
+ * 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0
+ * 返回所有和为 0 且不重复的三元组
+ * 输入：nums = [-1,0,1,2,-1,-4] 输出：[[-1,-1,2],[-1,0,1]]
+
+ * @param {number[]} nums
+ * @return {number[][]}
+ */
+var threeSum = function (nums) {
+    nums.sort((a, b) => a - b)
+    const res = []
+    const numLen = nums.length
+    for (let i = 0; i < numLen - 2; i++) {
+        if (nums[i] > 0) break // 这里要结束循环
+        if (i > 0 && nums[i] === nums[i - 1]) continue
+        let left = i + 1,
+            right = numLen - 1
+        while (left < right) {
+            const count = nums[left] + nums[right] + nums[i]
+            if (count > 0) {
+                // 整个和>0,right移动
+                right--
+            } else if (count < 0) {
+                left++
+            } else {
+                // 符合条件， nums[left] + nums[right] + nums[i] === 0
+                res.push([nums[left], nums[right], nums[i]])
+                while (left < right && nums[left] === nums[left + 1]) {
+                    left++
+                }
+                while (left < right && nums[right] === nums[right - 1]) {
+                    right--
+                }
+                left++
+                right--
+            }
+        }
+    }
+    return res
+
+    /** 用hashmap很难解决去重问题，所以建议用双指针 */
+    // const numLen = nums.length
+    // const targetSet = new Set()
+    // // 因为目标是不重复的三元组，所以遍历的时候需要先排序，跳过相同的初始值
+    // nums.sort((a, b) => a - b)
+    // for (let i = 0; i < numLen; i++) {
+    //     // 跳过相同的初始值
+    //     if (nums[i] == nums[i - 1]) continue
+    //     const sumMap = {}
+    //     for (let j = i + 1; j < numLen; j++) {
+    //         if (j > i +1 && nums[j] === nums[j - 1]) break
+    //         const cur = nums[j]
+    //         const dif = 0 - nums[i] - cur
+    //         // 满足 i!==j  i!==k  j!==k
+    //         if (sumMap[cur] !== undefined) {
+    //             targetSet.add([nums[i], cur, nums[sumMap[cur]]])
+    //             break;
+    //         } else {
+    //             sumMap[dif] = j
+    //         }
+    //     }
+    // }
+    // return Array.from(targetSet)
+}
+
+/** 两数之和
+ * 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target  的那 两个 整数，并返回它们的数组下标
+ *
+ * 输入：nums = [2,7,11,15], target = 9  输出：[0,1]  解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+    const sumMap = {}
+    const numLen = nums.length
+    for (let i = 0; i < numLen; i++) {
+        const curNum = nums[i]
+        if (sumMap[curNum] !== undefined) {
+            return [sumMap[curNum], i]
+        } else {
+            const dif = target - curNum
+            sumMap[dif] = i
+        }
+    }
+}
+
 /** 面试题 01.05. 一次编辑 - 力扣（LeetCode）
  * 字符串有三种编辑操作:插入一个英文字符、删除一个英文字符或者替换一个英文字符
  * 给定两个字符串，编写一个函数判定它们是否只需要一次(或者零次)编辑

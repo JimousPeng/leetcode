@@ -9,6 +9,32 @@
 
     <body>
         <script>
+            var threeSum = function (nums) {
+                const numLen = nums.length
+                const targetSet = new Set()
+                // 因为目标是不重复的三元组，所以遍历的时候需要先排序，跳过相同的初始值
+                nums.sort((a, b) => a - b)
+                for (let i = 0; i < numLen; i++) {
+                    // 跳过相同的初始值
+                    if (nums[i] == nums[i - 1]) continue
+                    const sumMap = {}
+                    for (let j = i + 1; j < numLen; j++) {
+                        const cur = nums[j]
+                        const dif = 0 - nums[i] - cur
+                        // 满足 i!==j  i!==k  j!==k
+                        if (sumMap[cur] !== undefined) {
+                            targetSet.add([nums[i], cur, nums[sumMap[cur]]])
+                            break
+                        } else {
+                            sumMap[dif] = j
+                        }
+                    }
+                }
+                return Array.from(targetSet)
+            }
+            threeSum([0, 0, 0, 0])
+        </script>
+        <script>
             var A = [3, 2, 1],
                 B = [],
                 C = []
