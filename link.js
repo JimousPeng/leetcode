@@ -5,6 +5,40 @@
  * }
  */
 
+/** 面试题 02.07. 链表相交
+ * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。
+ * 如果两个链表没有交点，返回 null
+ * 题目数据 保证 整个链式结构中不存在环
+ * @param {ListNode} headA
+ * @param {ListNode} headB
+ * @return {ListNode}
+ */
+var getIntersectionNode = function (headA, headB) {
+    // let head1 = headA
+    // let nodeMap = new Set()
+    // while (head1) {
+    //     nodeMap.add(head1)
+    //     head1 = head1.next
+    // }
+    // let head2 = headB
+    // while (head2) {
+    //     if (nodeMap.has(head2)) {
+    //         return head2
+    //     }
+    //     head2 = head2.next
+    // }
+    // return null
+
+    // 双指针 数学原理：若相较于c点，则前进距离 a+c+b = b+c+a  若不相交，a+b -> null  b+a -> null ，返回null
+    let left = headA,
+        right = headB
+    while (left !== right) {
+        left = left === null ? headB : left.next
+        right = right === null ? headA : right.next
+    }
+    return left
+}
+
 /** 143. 重排链表
  * 给定一个单链表 L 的头节点 head ，单链表 L 表示为：
  * L0 → L1 → … → Ln - 1 → Ln
