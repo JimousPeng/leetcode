@@ -5,6 +5,55 @@
  * }
  */
 
+/** 面试题 02.03. 删除中间节点
+ * 若链表中的某个节点，既不是链表头节点，也不是链表尾节点，则称其为该链表的「中间节点」
+ * 假定已知链表的某一个中间节点，请实现一种算法，将该节点从链表中删除
+ * 例如，传入节点 c（位于单向链表 a->b->c->d->e->f 中），将其删除后，剩余链表为 a->b->d->e->f
+ * 输入：节点 5 （位于单向链表 4->5->1->9 中）
+ * 输出：不返回任何数据，从链表中删除传入的节点 5，使链表变为 4->1->9
+ * @param {ListNode} node
+ * @return {void} Do not return anything, modify node in-place instead.
+ */
+var deleteNode = function (node) {
+    if (node.next === null) {
+        // 因为是中间节点，所以这个判断其实是多余的
+        node.val == null
+        return
+    } else {
+        const temp = node.next
+        node.val = temp.val
+        node.next = temp.next
+    }
+}
+
+/** 面试题 02.06. 回文链表
+ * 编写一个函数，检查输入的链表是否是回文的
+ * 输入： 1->2->2->1   输出： true
+ * 输入： 1->2         输出： false
+ *
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var isPalindrome = function (head) {
+    let node = head
+    const res = []
+    while (node) {
+        res.push(node.val)
+        node = node.next
+    }
+
+    let left = 0,
+        right = res.length - 1
+    while (left < right) {
+        if (res[left] !== res[right]) {
+            return false
+        }
+        left++
+        right--
+    }
+    return true
+}
+
 /** 面试题 02.07. 链表相交
  * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。
  * 如果两个链表没有交点，返回 null
