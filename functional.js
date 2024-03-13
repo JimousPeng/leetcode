@@ -1,5 +1,63 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 面试题 01.06. 字符串压缩
+ * 利用字符重复出现的次数，编写一种方法，实现基本的字符串压缩功能。
+ * 比如，字符串aabcccccaaa会变为a2b1c5a3。
+ * 若“压缩”后的字符串没有变短，则返回原先的字符串。
+ * 你可以假设字符串中只包含大小写英文字母（a至z）
+ * 输入："aabcccccaaa"  输出："a2b1c5a3"
+ * 输入："abbccd"输出："abbccd"解释："abbccd"压缩后为"a1b2c2d1"，比原字符串长度更长。
+ * @param {string} S
+ * @return {string}
+ */
+var compressString = function (S) {
+    if (S.length < 2) return S
+    const strLen = S.length
+    let res = S[0]
+    let temp = S[0]
+    let count = 1
+    for (let i = 1; i < strLen; i++) {
+        const str = S[i]
+        if (str === temp) {
+            count++
+            if (i === strLen - 1) {
+                // 最后一个元素
+                res += count
+            }
+        } else {
+            res += count
+            res += str
+            temp = str
+            count = 1
+            if (i === strLen - 1) {
+                // 最后一个元素
+                res += 1
+            }
+        }
+    }
+
+    return res.length < strLen ? res : S
+
+    // 思路不对，只合并相邻的重复字符
+    // const strSort = []
+    // const strMap = {}
+    // const strLen = S.length
+    // for (let i = 0; i < strLen; i++) {
+    //     const str = S[i]
+    //     if (strMap[str]) {
+    //         strMap[str]++
+    //     } else {
+    //         strMap[str] = 1
+    //         strSort.push(str)
+    //     }
+    // }
+    // let res = ''
+    // strSort.forEach((str) => {
+    //     const count = str + strMap[str]
+    //     res += count
+    // })
+    // return res.length < strLen ? res : S
+}
 
 /** 15. 三数之和
  * 给你一个整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]]

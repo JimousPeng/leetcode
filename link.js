@@ -5,6 +5,60 @@
  * }
  */
 
+/** 面试题 02.01. 移除重复节点
+ * 编写代码，移除未排序链表中的重复节点。保留最开始出现的节点
+ * 输入：[1, 2, 3, 3, 2, 1]  输出：[1, 2, 3]
+ * 输入：[1, 1, 1, 1, 2]     输出：[1, 2]
+ * @param {ListNode} head  链表长度在[0, 20000]范围内
+ * @return {ListNode}
+ */
+var removeDuplicateNodes = function (head) {
+    if (head === null || head.next === null) return head
+    const nodeMap = {}
+    nodeMap[head.val] = true
+    let node = head
+    let useHead = node
+
+    let temp = head.next
+    while (temp) {
+        if (nodeMap[temp.val] === undefined) {
+            node.next = temp
+            node = node.next
+        }
+        nodeMap[temp.val] = true
+
+        temp = temp.next
+    }
+    // 要终止末端节点的.next指针
+    node.next = null
+    return useHead
+}
+
+/** 面试题 02.02. 返回倒数第 k 个节点
+ * 实现一种算法，找出单向链表中倒数第 k 个节点。返回该节点的值
+ * 输入： 1->2->3->4->5 和 k = 2  输出： 4
+ * @param {ListNode} head
+ * @param {number} k  给定的 k 保证是有效的
+ * @return {number}
+ */
+var kthToLast = function (head, k) {
+    if (head.next === null) return head.val
+    // 双指针
+    let fast = head,
+        slow = head
+    while (k > 0 && fast.next) {
+        fast = fast.next
+        k--
+    }
+    /** 如果已经到末尾了还是没有结束k，那么返回头节点 */
+    if (k > 0) return head.val
+    while (fast.next) {
+        fast = fast.next
+        slow = slow.next
+    }
+    return slow.next.val
+}
+
 /** 面试题 02.03. 删除中间节点
  * 若链表中的某个节点，既不是链表头节点，也不是链表尾节点，则称其为该链表的「中间节点」
  * 假定已知链表的某一个中间节点，请实现一种算法，将该节点从链表中删除
