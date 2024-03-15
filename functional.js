@@ -1,5 +1,100 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 面试题 01.01. 判定字符是否唯一
+ * 实现一个算法，确定一个字符串 s 的所有字符是否全都不同。
+ * 输入: s = "leetcode"  输出: false
+ * 输入: s = "abc"  输出: true
+ * @param {string} astr
+ * @return {boolean}
+ */
+var isUnique = function (astr) {
+    const strMap = {}
+    const strLen = astr.length
+    for (let i = 0; i < strLen; i++) {
+        const str = astr[i]
+        if (strMap[str]) {
+            return false
+        } else {
+            strMap[str] = true
+        }
+    }
+    return true
+}
+
+/** 面试题 01.02. 判定是否互为字符重排
+ * 给定两个由小写字母组成的字符串 s1 和 s2，请编写一个程序，确定其中一个字符串的字符重新排列后，能否变成另一个字符串
+ * @param {string} s1
+ * @param {string} s2
+ * @return {boolean}
+ */
+var CheckPermutation = function (s1, s2) {
+    if (s1.length !== s2.length) return false
+    const strMap = {}
+    for (let i = 0; i < s1.length; i++) {
+        const key = s1[i]
+        if (strMap[key]) {
+            strMap[key]++
+        } else {
+            strMap[key] = 1
+        }
+    }
+    for (let i = 0; i < s2.length; i++) {
+        const key = s2[i]
+        if (strMap[key]) {
+            strMap[key]--
+            /** 遍历优化 */
+            if (strMap[key] < 0) return false
+        } else {
+            return false
+        }
+    }
+    const countStr = Object.keys(strMap)
+    return !!countStr.find((count) => count !== 0)
+
+    // API大法
+    // return s1.length == s2.length && [...s1].sort().join('') === [...s2].sort().join('')
+}
+
+/** 面试题 01.03. URL化
+ * URL化。编写一种方法，将字符串中的空格全部替换为%20。假定该字符串尾部有足够的空间存放新增字符，并且知道字符串的“真实”长度
+ * 输入："Mr John Smith    ", 13  输出："Mr%20John%20Smith"
+ * @param {string} S
+ * @param {number} length
+ * @return {string}
+ */
+var replaceSpaces = function (S, length) {
+    // 139 ms 击败 21.43% 使用 JavaScript 的用户   81.58 MB 击败 25.39% 使用 JavaScript 的用户
+    // let res = ''
+    // for (let i = 0; i < length; i++) {
+    //     if (S[i] === ' ') {
+    //         res += '%20'
+    //     } else {
+    //         res += S[i]
+    //     }
+    // }
+    // return res
+
+    // 数组置换 - 好像没有快多少，反而更费事
+    const strList = []
+    let left = 0,
+        right = length - 1
+    while (left <= right) {
+        if (S[left] === ' ') {
+            strList[left] = '%20'
+        } else {
+            strList[left] = S[left]
+        }
+        if (S[right] === ' ') {
+            strList[right] = '%20'
+        } else {
+            strList[right] = S[right]
+        }
+        left++
+        right--
+    }
+    return strList.join('')
+}
+
 /** 面试题 01.04. 回文排列
  * 给定一个字符串，编写一个函数判定其是否为某个回文串的排列之一。
  * 回文串是指正反两个方向都一样的单词或短语。排列是指字母的重新排列
