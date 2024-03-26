@@ -1,5 +1,19 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** LCR 187. 破冰游戏
+ * 社团共有 num 位成员参与破冰游戏，编号为 0 ~ num-1。成员们按照编号顺序围绕圆桌而坐
+ * 社长抽取一个数字 target，从 0 号成员起开始计数，排在第 target 位的成员离开圆桌，且成员离开后从下一个成员开始计数
+ * 请返回游戏结束时最后一位成员的编号
+ * 输入：num = 7, target = 4    输出：1
+ * 输入：num = 12, target = 5   输出：0
+ * @param {number} num
+ * @param {number} target
+ * @return {number}
+ */
+var iceBreakingGame = function(num, target) {
+
+};
+
 /** LCS 01. 下载插件
  * 小扣打算给自己的 VS code 安装使用插件，初始状态下带宽每分钟可以完成 1 个插件的下载。
  * 假定每分钟选择以下两种策略之一:
