@@ -1,18 +1,113 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** LCR 186. 文物朝代判断
+ * 展览馆展出来自 13 个朝代的文物，每排展柜展出 5 个文物
+ * 某排文物的摆放情况记录于数组 places，其中 places[i] 表示处于第 i 位文物的所属朝代编号，其中，编号为 0 的朝代表示未知朝代。
+ * 请判断并返回这排文物的所属朝代编号是否连续（如遇未知朝代可算作连续情况）
+ * 输入: places = [0, 6, 9, 0, 7] 输出: True
+ * 输入: places = [7, 8, 9, 10, 11] 输出: True
+ * @param {number[]} places
+ * @return {boolean}
+ */
+var checkDynasty = function (places) {
+    // 这排文物的所属朝代编号是否连续 - 默认是乱序， 0 可以代替任何数
+    places.sort((a, b) => a - b)
+    const len = places.length
+    let pre = places[0]
+    let canFill = 0
+    for (let i = 0; i < len; i++) {
+        if (places[i] === 0) {
+            canFill++
+            continue
+        }
+        if (i > 0 && pre !== 0) {
+            let diff = places[i] - pre - 1
+            if (diff > 0) {
+                canFill -= diff
+            }
+            if (diff < 0 || canFill < 0) {
+                return false
+            }
+        }
+        pre = places[i]
+    }
+    return true
+}
+
 /** LCR 187. 破冰游戏
  * 社团共有 num 位成员参与破冰游戏，编号为 0 ~ num-1。成员们按照编号顺序围绕圆桌而坐
  * 社长抽取一个数字 target，从 0 号成员起开始计数，排在第 target 位的成员离开圆桌，且成员离开后从下一个成员开始计数
  * 请返回游戏结束时最后一位成员的编号
  * 输入：num = 7, target = 4    输出：1
  * 输入：num = 12, target = 5   输出：0
- * @param {number} num
- * @param {number} target
+ * @param {number} num    1 <= num <= 10^5
+ * @param {number} target 1 <= target <= 10^6
  * @return {number}
  */
-var iceBreakingGame = function(num, target) {
+var iceBreakingGame = function (num, target) {
+    // 数学 + 递归
 
-};
+    function lastDelete(num, target) {
+        // 当只有一位数时，一定返回0
+        if (num === 1) return 0
+        let x = dfs(num - 1, target)
+        // x 为新一轮的开始下标，每次删除的数默认都是 target % num
+        // 由于要接着上一次删除的数往下删，所以需要 target + x
+        return (target + x) % num
+    }
+
+    return lastDelete(num, target)
+
+    /** 迭代 */
+    let res = 0
+    for (let i = 2; i !== num + 1; ++i) {
+        // res表示第i个数的开始计数下标
+        res = (target + res) % i
+    }
+    return res
+
+    /** 链表能解，但是会超时 */
+    function LinkNode(val) {
+        this.val = val
+        this.next = undefined
+    }
+    let start = 0
+    let head = new LinkNode(0)
+    let curNode = head
+    while (start < num - 1) {
+        curNode.next = new LinkNode(++start)
+        curNode = curNode.next
+    }
+    // 成环
+    curNode.next = head
+
+    /** 环形链表遍历 */
+
+    // head -> 0  1
+    //      5       2
+    //         4  3
+
+    if (target == 1) return curNode.val // 如果target=1,直接return最后一位即可
+    let step = 1
+    let node = head
+    let prev
+    //    0          0
+    //  3   1            1
+    //    2          2
+    while (node.next && node.next.val !== node.val) {
+        if (step === target) {
+            prev.next = node.next
+            node = node.next
+            // 重置step
+            step = 1
+        }
+        prev = node
+        node = node.next
+        step++
+    }
+    // console.log('最终', node)
+    return node.val
+}
 
 /** LCS 01. 下载插件
  * 小扣打算给自己的 VS code 安装使用插件，初始状态下带宽每分钟可以完成 1 个插件的下载。
