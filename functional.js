@@ -1,5 +1,74 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 2706. 购买两块巧克力
+ * 给你一个整数数组 prices ，它表示一个商店里若干巧克力的价格。同时给你一个整数 money ，表示你一开始拥有的钱数
+ * 你必须购买 恰好 两块巧克力，而且剩余的钱数必须是 非负数 。同时你想最小化购买两块巧克力的总花费
+ * 请你返回在购买两块巧克力后，最多能剩下多少钱
+ * 输入：prices = [1,2,2], money = 3    输出：0
+ * 输入：prices = [3,2,3], money = 3    输出：3
+ * @param {number[]} prices  2 <= prices.length <= 50
+ * @param {number} money     1 <= prices[i] <= 100
+ * @return {number}
+ */
+var buyChoco = function (prices, money) {
+    /** 排序由于底层设计，所以遍历次数大于1次，未必是最优解 */
+    prices.sort((a, b) => a - b)
+    const cost = prices[0] + prices[1]
+    if (cost > money) return money
+    return money - cost
+
+    let len = prices.length
+    let price1 = prices[0],
+        price2 = prices[1]
+    let minUse = Math.min(price1, price2)
+    let maxUse = Math.max(price1, price2)
+    for (let i = 2; i < len; i++) {
+        const cost = prices[i]
+        if (cost >= maxUse) {
+            continue
+        } else {
+            if (cost <= minUse) {
+                maxUse = minUse
+                minUse = cost
+            } else {
+                maxUse = cost
+            }
+        }
+    }
+    const totalCost = minUse + maxUse
+    return totalCost > money ? money : money - totalCost
+}
+
+/** LCR 181. 字符串中的单词反转
+ * 输入字符串 message 中可能会存在前导空格、尾随空格或者单词间的多个空格。
+ * 返回的结果字符串中，单词间应当仅用单个空格分隔，且不包含任何额外的空格
+ * @param {string} message
+ * @return {string}
+ */
+var reverseMessage = function (message) {
+    let msgList = message.split(' ')
+    msgList.reverse()
+    // 过滤点空字符
+    msgList = msgList.filter((item) => item)
+    return msgList.join(' ').trim()
+}
+
+/** LCR 182. 动态口令
+ * 某公司门禁密码使用动态口令技术。初始密码为字符串 password，密码更新均遵循以下步骤：
+ * 设定一个正整数目标值 target
+ * 将 password 前 target 个字符按原顺序移动至字符串末尾
+ * 请返回更新后的密码字符串
+ * @param {string} password
+ * @param {number} target
+ * @return {string}
+ */
+var dynamicPassword = function (password, target) {
+    let strPre = password.slice(0, target)
+    let strEnd = password.slice(target, password.length)
+
+    return strEnd + strPre
+}
+
 /** LCR 186. 文物朝代判断
  * 展览馆展出来自 13 个朝代的文物，每排展柜展出 5 个文物
  * 某排文物的摆放情况记录于数组 places，其中 places[i] 表示处于第 i 位文物的所属朝代编号，其中，编号为 0 的朝代表示未知朝代。
