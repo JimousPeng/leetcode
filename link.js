@@ -14,6 +14,41 @@
  */
 var deleteDuplicates = function (head) {}
 
+/** 876. 链表的中间结点
+ * 给你单链表的头结点 head ，请你找出并返回链表的中间结点
+ * head = [1,2,3,4,5]   输出：[3,4,5]
+ * 输入：head = [1,2,3,4,5,6]   输出：[4,5,6] 解释：该链表有两个中间结点，值分别为 3 和 4 ，返回第二个结点。
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var middleNode = function (head) {
+    // let nodeList = []
+    // let node = head
+    // while (node.next) {
+    //     nodeList.push(node)
+    //     node = node.next
+    // }
+    // nodeList.push(node)
+    // const getMid = Math.floor(nodeList.length / 2)
+    // return nodeList[getMid]
+
+    // 空间优化
+    let n = 0
+    let node = head
+    while (node !== null) {
+        n++
+        node = node.next
+    }
+    let k = 1
+    let cur = head
+    const getMid = Math.floor(n / 2)
+    while (k <= getMid) {
+        cur = cur.next
+        k++
+    }
+    return cur
+}
+
 /** 面试题 02.01. 移除重复节点
  * 编写代码，移除未排序链表中的重复节点。保留最开始出现的节点
  * 输入：[1, 2, 3, 3, 2, 1]  输出：[1, 2, 3]
