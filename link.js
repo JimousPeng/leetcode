@@ -5,14 +5,79 @@
  * }
  */
 
+/** LCR 023. 相交链表
+ * 给定两个单链表的头节点 headA 和 headB ，请找出并返回两个单链表相交的起始节点。
+ * 如果两个链表没有交点，返回 null
+ * @param {ListNode} headA
+ * @param {ListNode} headB
+ * @return {ListNode}
+ */
+var getIntersectionNode = function (headA, headB) {}
+
 /** 82. 删除排序链表中的重复元素 II
  * 给定一个已排序的链表的头 head ， 删除原始链表中所有重复数字的节点，只留下不同的数字 。
  * 返回 已排序的链表
  * 输入：head = [1,2,3,3,4,4,5]  输出：[1,2,5]
+ * [1,2,2] -> [1]
+ * [1,2,3,3,4,4,5] -> [1,2,5]
  * @param {ListNode} head
  * @return {ListNode}
  */
-var deleteDuplicates = function (head) {}
+var deleteDuplicates = function (head) {
+    /** 官方题解 */
+
+    if (!head) {
+        return head
+    }
+
+    // 在head节点基础上增加一个哑节点0，用户处理后续的.next判断 0 -> head -> ···
+    const dummy = new ListNode(0, head)
+
+    let cur = dummy
+    while (cur.next && cur.next.next) {
+        if (cur.next.val === cur.next.next.val) {
+            const x = cur.next.val
+            while (cur.next && cur.next.val === x) {
+                cur.next = cur.next.next
+            }
+        } else {
+            cur = cur.next
+        }
+    }
+    return dummy.next
+
+    /**
+     * 1. 链表已排序
+     * 2. 删除重复数字节点
+     * 3. 边界处理：头结点重复，尾节点重复
+     */
+    let newHead = null
+    function dfs(cur, node) {
+        if (cur === null) return
+        /** 过滤掉重复项 */
+        if (cur.next && cur.next.val === cur.val) {
+            while (cur.next && cur.next.val === cur.val) {
+                cur = cur.next
+            }
+            cur = cur.next
+            return dfs(cur, node)
+        }
+
+        if (newHead === null) {
+            newHead = new ListNode(cur.val)
+            node = newHead
+        } else {
+            node.next = new ListNode(cur.val)
+            node = node.next
+        }
+
+        return dfs(cur.next, node)
+    }
+
+    dfs(head, newHead)
+
+    return newHead
+}
 
 /** 876. 链表的中间结点
  * 给你单链表的头结点 head ，请你找出并返回链表的中间结点
