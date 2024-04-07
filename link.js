@@ -5,6 +5,78 @@
  * }
  */
 
+/** LCR 136. 删除链表的节点
+ * 给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点
+ * 返回删除后的链表的头节点。
+ * 题目保证链表中节点的值互不相同
+ * 输入: head = [4,5,1,9], val = 5  输出: [4,1,9]
+ * @param {ListNode} head
+ * @param {number} val
+ * @return {ListNode}
+ */
+var deleteNode = function (head, val) {
+    let cur = head
+    let prev = null
+    while (cur) {
+        if (cur.val === val) {
+            if (prev === null) {
+                return cur.next
+            }
+            prev.next = cur.next
+            return head
+        }
+        prev = cur
+        cur = cur.next
+    }
+}
+
+/** LCR 123. 图书整理 I
+ * 书店店员有一张链表形式的书单，每个节点代表一本书，节点中的值表示书的编号
+ * 为更方便整理书架，店员需要将书单倒过来排列，就可以从最后一本书开始整理，逐一将书放回到书架上
+ * 请倒序返回这个书单链表
+ * 输入：head = [3,6,4,1] 输出：[1,4,6,3]
+ * 反转链表的变种
+ * @param {ListNode} head  0 <= 链表长度 <= 10000
+ * @return {number[]}
+ */
+var reverseBookList = function (head) {
+    /** 误区：需要返回的是值的数组集合，而不是新的链表结构 */
+    if (head === null) return []
+    const stack = []
+    while (head) {
+        stack.push(head.val)
+        head = head.next
+    }
+    return stack.reverse()
+}
+
+/** LCR 027. 回文链表
+ * 给定一个链表的 头节点 head ，请判断其是否为回文链表
+ * 如果一个链表是回文，那么链表节点序列从前往后看和从后往前看是相同的
+ * 输入: head = [1,2,3,3,2,1]  输出: true
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var isPalindrome = function (head) {
+    let node = head
+    const valStack = []
+    while (node !== null) {
+        valStack.push(node.val)
+        node = node.next
+    }
+    const nodeLen = valStack.length
+    let left = 0,
+        right = nodeLen - 1
+    while (left <= right) {
+        if (valStack[left] !== valStack[right]) {
+            return false
+        }
+        left++
+        right--
+    }
+    return true
+}
+
 /** LCR 023. 相交链表
  * 给定两个单链表的头节点 headA 和 headB ，请找出并返回两个单链表相交的起始节点。
  * 如果两个链表没有交点，返回 null
@@ -12,7 +84,26 @@
  * @param {ListNode} headB
  * @return {ListNode}
  */
-var getIntersectionNode = function (headA, headB) {}
+var getIntersectionNode = function (headA, headB) {
+    let nodeSet = new Set()
+
+    let nodeA = headA
+
+    while (nodeA) {
+        nodeSet.add(nodeA)
+        nodeA = nodeA.next
+    }
+
+    let nodeB = headB
+    while (nodeB) {
+        if (nodeSet.has(nodeB)) {
+            return nodeB
+        }
+        nodeB = nodeB.next
+    }
+
+    return null
+}
 
 /** 82. 删除排序链表中的重复元素 II
  * 给定一个已排序的链表的头 head ， 删除原始链表中所有重复数字的节点，只留下不同的数字 。
