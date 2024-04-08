@@ -5,6 +5,28 @@
  * }
  */
 
+/** LCR 140. 训练计划 II
+ * 给定一个头节点为 head 的链表用于记录一系列核心肌群训练项目编号，请查找并返回倒数第 cnt 个训练项目编号
+ * @param {ListNode} head  1 <= head.length <= 100
+ * @param {number} cnt  1 <= cnt <= head.length
+ * @return {ListNode}
+ */
+var trainingPlan = function (head, cnt) {
+    let cur = head
+    let count = 0
+    while (cur !== null) {
+        cur = cur.next
+        count++
+    }
+    let k = count - cnt
+    let fast = head
+    while (k >= 1) {
+        fast = fast.next
+        k--
+    }
+    return fast
+}
+
 /** LCR 136. 删除链表的节点
  * 给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点
  * 返回删除后的链表的头节点。
