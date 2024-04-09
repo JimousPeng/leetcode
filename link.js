@@ -5,6 +5,114 @@
  * }
  */
 
+/**
+ * LCR 171. 训练计划 V
+ * 某教练同时带教两位学员，分别以链表 l1、l2 记录了两套核心肌群训练计划，节点值为训练项目编号
+ * 两套计划仅有前半部分热身项目不同，后续正式训练项目相同
+ * 请设计一个程序找出并返回第一个正式训练项目编号。如果两个链表不存在相交节点，返回 null
+ * @param {ListNode} headA
+ * @param {ListNode} headB
+ * @return {ListNode}
+ */
+var getIntersectionNode = function (headA, headB) {
+    if (headA === null || headB === null) {
+        return null
+    }
+    // 相交链表找出交点 1. hasMap  2. 数学方法
+    let left = headA
+    let right = headB
+    while (left !== right) {
+        left = left === null ? headB : left.next
+        right = right === null ? headA : right.next
+    }
+
+    return left
+}
+
+/**
+ * LCR 142. 训练计划 IV
+ * 给定两个以 有序链表 形式记录的训练计划 l1、l2,分别记录了两套核心肌群训练项目编号
+ * 请合并这两个训练计划，按训练项目编号 升序 记录于链表并返回
+ * 输入：l1 = [1,2,4], l2 = [1,3,4]  输出：[1,1,2,3,4,4]
+ * 输入：l1 = [], l2 = []  输出：[]
+ * 输入：l1 = [], l2 = [0] 输出：[0]
+ * 合并有序列表
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+var trainningPlan = function (l1, l2) {
+    // if (l1 === null) return l2
+    // if (l2 === null) return l1
+    // const res = []
+    // while (l1 !== null) {
+    //     res.push(l1)
+    //     l1 = l1.next
+    // }
+    // while (l2 !== null) {
+    //     res.push(l2)
+    //     l2 = l2.next
+    // }
+    // res.sort((a, b) => a.val - b.val)
+    // let head = cur = res[0]
+    // for (let i = 1; i < res.length; i++) {
+    //     head.next = res[i]
+    //     head = head.next
+    // }
+    // head.next = null
+    // return cur
+
+    if (l1 === null) return l2
+    if (l2 === null) return l1
+    let preHead = new ListNode(-1)
+    let cur = preHead
+    while (l1 !== null && l2 !== null) {
+        if (l1.val < l2.val) {
+            cur.next = l1
+            l1 = l1.next
+        } else {
+            cur.next = l2
+            l2 = l2.next
+        }
+        cur = cur.next
+    }
+    cur.next = l1 === null ? l2 : l1
+    return preHead.next
+}
+
+/**
+ * LCR 141. 训练计划 III
+ * 给定一个头节点为 head 的单链表用于记录一系列核心肌群训练编号，请将该系列训练编号 倒序 记录于链表并返回
+ * 输入：head = [1,2,3,4,5]
+ * 输出：[5,4,3,2,1]
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var trainningPlan = function (head) {
+    /** 要记录于链表，所以只是值的替换 */
+    let stack = []
+    let node = head
+    while (node !== null) {
+        stack.unshift(node.val)
+        node = node.next
+    }
+    let cur = head
+    for (let i = 0; i < stack.length; i++) {
+        cur.val = stack[i]
+        cur = cur.next
+    }
+    return head
+
+    // 递归
+    if (head == null || head.next == null) {
+        return head
+    }
+    const newHead = trainningPlan(head.next)
+    head.next.next = head
+    head.next = null
+    return newHead
+}
+
 /** LCR 140. 训练计划 II
  * 给定一个头节点为 head 的链表用于记录一系列核心肌群训练项目编号，请查找并返回倒数第 cnt 个训练项目编号
  * @param {ListNode} head  1 <= head.length <= 100
