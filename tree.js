@@ -6,6 +6,92 @@
  * }
  */
 
+/** 面试题 04.12. 求和路径
+ * 给定一棵二叉树，其中每个节点都含有一个整数数值(该值或正或负)
+ * 设计一个算法，打印节点数值总和等于某个给定值的所有路径的数量
+ * 注意，路径不一定非得从二叉树的根节点或叶节点开始或结束，但是其方向必须向下(只能从父节点指向子节点方向)。
+ * 给定如下二叉树，以及目标和 sum = 22，
+ * 
+ *            5
+             / \
+            4   8             --> [[5,4], [4]]
+           /   / \
+          11  13  4
+         /  \    / \
+        7    2  5   1
+
+ * 解释：和为 22 的路径有：[5,4,11,2], [5,8,4,5], [4,11,7]
+
+ * @param {TreeNode} root 节点总数 <= 10000
+ * @param {number} sum
+ * @return {number}
+ */
+var pathSum = function (root, sum) {
+    let count = 0
+
+    /**
+     * 维护 pathList - 路径表 值为 [ [path], [path], ... ]
+     * 维护 sumCount - 路径和
+     *
+     */
+    // function dfs(node, pathList, sumCount) {
+    //     if (node === null) return
+    //     if (pathList.length) {
+    //         for (let i = 0; i < pathList.length; i++) {
+    //             sumCount[i] = sumCount[i] + node.val
+    //             pathList[i].push(node.val)
+    //             if (sumCount[i] === sum) {
+    //                 count++
+    //                 // pathCount.add(pathList[i].join(''))
+    //             }
+    //         }
+    //     }
+
+    //     if (node.val === sum) {
+    //         // 当前节点满足条件
+    //         count++
+    //     }
+
+    //     pathList.push([node.val])
+    //     sumCount.push(node.val)
+
+    //     console.log(pathList, sumCount)
+
+    //     dfs(node.left, [...pathList], [...sumCount])
+    //     dfs(node.right, [...pathList], [...sumCount])
+    // }
+
+    // dfs(root, [], [])
+
+    // 路径维护优化
+
+    function dfs(node, sumCount) {
+        if (node === null) return
+        if (sumCount.length) {
+            for (let i = 0; i < sumCount.length; i++) {
+                sumCount[i] = sumCount[i] + node.val
+                if (sumCount[i] === sum) {
+                    count++
+                }
+            }
+        }
+
+        if (node.val === sum) {
+            // 当前节点满足条件
+            count++
+        }
+
+        sumCount.push(node.val)
+
+        dfs(node.left, [...sumCount])
+        dfs(node.right, [...sumCount])
+    }
+
+    dfs(root, [])
+
+    return count
+}
+
 /** 669. 修剪二叉搜索树
  *  给你二叉搜索树的根节点 root ，同时给定最小边界low 和最大边界 high。通过修剪二叉搜索树，使得所有节点的值在[low, high]中
  *  修剪树 不应该 改变保留在树中的元素的相对结构 (即，如果没有被移除，原有的父代子代关系都应当保留)
@@ -26,7 +112,7 @@ var trimBST = function (root, low, high) {}
  * @return {number}
  */
 var sumNumbers = function (root) {
-    // 可以结合 每个节点都对应一个数字，等于其父节点对应的数字乘以 10 再加上该节点的值 
+    // 可以结合 每个节点都对应一个数字，等于其父节点对应的数字乘以 10 再加上该节点的值
     // 比如 1 -> 2 -> 3 ， 当节点遍历到2时，2节点对应为 1*10 +2 = 12, 遍历到节点3时， 12 * 10 + 3 = 123
     let count = 0
     function Dep(root, base) {
