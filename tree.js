@@ -6,6 +6,51 @@
  * }
  */
 
+/** 面试题 04.08. 首个共同祖先
+ * 设计并实现一个算法，找出二叉树中某两个节点的第一个共同祖先
+ * 不得将其他的节点存储在另外的数据结构中 注意：这不一定是二叉搜索树
+ * 输入: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1  输出: 3
+ *     3
+      / \
+     5   1
+    / \ / \
+   6  2 0  8
+     / \
+    7   4
+ * 解释: 节点 5 和节点 1 的最近公共祖先是节点 3
+ * 输入: root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 4  输出: 5
+ * 解释: 节点 5 和节点 4 的最近公共祖先是节点 5。因为根据定义最近公共祖先节点可以为节点本身。
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function (root, p, q) {
+    let res
+
+    function dfs(root) {
+        if (root === null) return false
+
+        let leftNode = dfs(root.left)
+        let rightNode = dfs(root.right)
+
+        /** 走后序遍历，找到两个节点 */
+
+        const exsitInSubTree = leftNode && rightNode
+        const fromSide = leftNode || rightNode
+        const curIsRoot = fromSide && (root.val === p.val || root.val === q.val)
+
+        if (exsitInSubTree || curIsRoot) {
+            res = root
+        }
+
+        return fromSide || root.val === p.val || root.val === q.val
+    }
+    dfs(root)
+
+    return res
+}
+
 /** 面试题 04.10. 检查子树
  * 检查子树。你有两棵非常大的二叉树：T1，有几万个节点；T2，有几万个节点。
  * 设计一个算法，判断 T2 是否为 T1 的子树
@@ -23,7 +68,7 @@ var checkSubTree = function (t1, t2) {
     let flag = false
 
     function dfs(root) {
-        if(root === null) return
+        if (root === null) return
         if (flag) return
         flag = isSameTree(root, t2)
         dfs(root.left)
