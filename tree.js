@@ -6,6 +6,78 @@
  * }
  */
 
+/** 面试题 04.06. 后继者
+ * 设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。 
+ * 如果指定节点没有对应的“下一个”节点，则返回null
+ * 输入: root = [2,1,3], p = 1  输出: 2
+   2
+ / \
+1   3
+ * 
+ * 输入: root = [5,3,6,2,4,null,null,1], p = 6 输出: null
+       5
+     / \
+    3   6
+   / \
+  2   4
+ /   
+1
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @return {TreeNode}
+ */
+var inorderSuccessor = function (root, p) {
+    // let res = []
+    // function dfs(root) {
+    //     if (root == null) return
+    //     dfs(root.left)
+    //     res.push(root)
+    //     dfs(root.right)
+    // }
+    // dfs(root)
+    // const idx = res.findIndex((item) => item.val === p)
+    // if (idx > -1) {
+    //     return res[idx + 1] || null
+    // }
+    // return null
+
+    /** 优化：一次遍历 */
+    // let res = null
+    // let flag = false
+    // function dfs(root) {
+    //     if (root == null) return
+    //     dfs(root.left)
+    //     if (flag && res === null) {
+    //         res = root
+    //     }
+    //     if (root.val === p.val) {
+    //         flag = true
+    //     }
+    //     dfs(root.right)
+    // }
+    // dfs(root)
+    // return res
+
+    /** 二叉搜索树: 利用二叉搜索树中序遍历是递增序列做剪枝操作 */
+    let res = null
+    let flag = false
+    function dfs(root) {
+        if (root == null || res) return
+        // 下面这行代码直接执行用时拉满：击败 100.00% 使用 JavaScript 的用户
+        if (root.val < p.val) return dfs(root.right)
+        dfs(root.left)
+        if (flag && res === null) {
+            res = root
+        }
+        if (root.val === p.val) {
+            flag = true
+        }
+        dfs(root.right)
+    }
+    dfs(root)
+    return res
+}
+
 /** 面试题 04.08. 首个共同祖先
  * 设计并实现一个算法，找出二叉树中某两个节点的第一个共同祖先
  * 不得将其他的节点存储在另外的数据结构中 注意：这不一定是二叉搜索树
