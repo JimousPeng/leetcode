@@ -4,7 +4,60 @@
  *     this.val = val;
  *     this.left = this.right = null;
  * }
+ * 
+ * 
+       5
+     / \
+    3   6
+   / \
+  2   4
+ /   
+1
+ \
+  4
+ /
+8
  */
+
+/** 面试题 04.05. 合法二叉搜索树
+ * 实现一个函数，检查一棵二叉树是否为二叉搜索树
+ *
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isValidBST = function (root) {
+    /** 利用中序遍历是单调递增序列 */
+
+    // let res = []
+    // function dfs(root) {
+    //     if (root === null) return
+    //     dfs(root.left)
+    //     res.push(root.val)
+    //     dfs(root.right)
+    // }
+    // dfs(root)
+
+    // for (let i = 1; i < res.length; i++) {
+    //     if (res[i] <= res[i - 1]) {
+    //         return false
+    //     }
+    // }
+    // return true
+
+    let prev
+    let flag = true
+    function dfs(root) {
+        if (root === null || !flag) return
+        dfs(root.left)
+        if (prev !== undefined && prev >= root.val) {
+            flag = false
+        }
+        prev = root.val
+        dfs(root.right)
+    }
+    dfs(root)
+    return flag
+}
 
 /** 面试题 04.06. 后继者
  * 设计一个算法，找出二叉搜索树中指定节点的“下一个”节点（也即中序后继）。 
