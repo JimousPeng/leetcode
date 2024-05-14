@@ -19,6 +19,72 @@
 8
  */
 
+/** LCR 045. 找树左下角的值
+ * 给定一个二叉树的 根节点 root，请找出该二叉树的 最底层 最左边 节点的值
+ * 假设二叉树中至少有一个节点。
+ * 输入: root = [2,1,3]   输出: 1
+ *
+ * 输入: [1,2,3,4,null,5,6,null,null,7]
+ *          1
+ *    2           3
+ * 4           5     6
+ *           7
+ * 输出: 7
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var findBottomLeftValue = function (root) {
+    let curHeight = 0
+    let curVal
+    function dfs(root, height) {
+        if (root === null) return
+        height++
+        dfs(root.left, height)
+        dfs(root.right, height)
+        if (height > curHeight) {
+            curHeight = height
+            curVal = root.val
+        }
+    }
+    dfs(root, 0)
+    return curVal
+
+    /** 要满足两个条件 1. 最底层； 2. 最左边 */
+    // 因为要找最左边，可以考虑 中序遍历
+    // const res = []
+    // function dfs(root, floor) {
+    //     // floor处理层数
+    //     if (root === null) return
+    //     dfs(root.left, floor + 1)
+    //     if (res[floor] === undefined) {
+    //         res[floor] = root.val
+    //     }
+    //     dfs(root.right, floor + 1)
+    // }
+    // dfs(root, 0)
+    // console.log(res)
+    // const len = res.length
+    // return res[len - 1]
+
+    /** 官方 题解 dfs */
+    // const dfs = (root, height) => {
+    //     if (!root) {
+    //         return
+    //     }
+    //     height++
+    //     dfs(root.left, height)
+    //     dfs(root.right, height)
+    //     if (height > curHeight) {
+    //         curHeight = height
+    //         curVal = root.val
+    //     }
+    // }
+
+    // let curHeight = 0
+    // dfs(root, 0)
+    // return curVal
+}
+
 /** 面试题 04.03. 特定深度节点链表
  * 给定一棵二叉树，设计一个算法，创建含有某一深度上所有节点的链表（比如，若一棵树的深度为 D，则会创建出 D 个链表）
  * 返回一个包含所有深度的链表的数组
@@ -54,7 +120,7 @@ var listOfDepth = function (tree) {
         dfs(root.right, floor + 1)
     }
     dfs(tree, 0)
-    return res.map(item => item[0])
+    return res.map((item) => item[0])
 }
 
 /** 面试题 04.05. 合法二叉搜索树
