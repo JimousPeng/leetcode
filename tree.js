@@ -19,6 +19,44 @@
 8
  */
 
+/** 面试题 04.03. 特定深度节点链表
+ * 给定一棵二叉树，设计一个算法，创建含有某一深度上所有节点的链表（比如，若一棵树的深度为 D，则会创建出 D 个链表）
+ * 返回一个包含所有深度的链表的数组
+ * 输入：[1,2,3,4,5,null,7,8]
+         1
+       /  \ 
+      2    3
+     / \    \ 
+    4   5    7
+   /
+  8
+  输出：[[1],[2,3],[4,5,7],[8]]
+  * @param {TreeNode} tree
+ * @return {ListNode[]}
+ */
+var listOfDepth = function (tree) {
+    // 每一层为一个链表，链表从左到右
+    // 为了方便链表遍历，每一层的数组需要保留对head节点的索引
+    // 即 res[floor] = [head, last]
+    // 在最后的返回值里，只需要返回 head ，舍弃 last 即可
+    const res = []
+    function dfs(root, floor) {
+        if (root === null) return
+        const linkNode = new ListNode(root.val)
+        if (res[floor]) {
+            res[floor][1].next = linkNode
+
+            res[floor][1] = linkNode
+        } else {
+            res[floor] = [linkNode, linkNode]
+        }
+        dfs(root.left, floor + 1)
+        dfs(root.right, floor + 1)
+    }
+    dfs(tree, 0)
+    return res.map(item => item[0])
+}
+
 /** 面试题 04.05. 合法二叉搜索树
  * 实现一个函数，检查一棵二叉树是否为二叉搜索树
  *
