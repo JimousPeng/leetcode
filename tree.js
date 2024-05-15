@@ -19,6 +19,68 @@
 8
  */
 
+/** LCR 054. 把二叉搜索树转换为累加树
+ * 给定一个二叉搜索树，请将它的每个节点的值替换成树中大于或者等于该节点值的所有节点值之和
+ * 输入：root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
+ *                4
+ *          1            6
+ *       0    2        5    7
+ *               3            8
+ * 输出：[30,36,21,36,35,26,15,null,null,null,33,null,null,null,8]
+ *
+ * 输入：root = [3,2,4,1]
+ *     3
+ *   2   4
+ * 1
+ * 输出：[7,9,4,10]
+ * @param {TreeNode} root 树中的节点数介于 0 和 104 之间  树中的所有值 互不相同
+ * @return {TreeNode}
+ */
+var convertBST = function (root) {
+
+
+    /** 思路：
+     * 三次遍历
+     * 1. 遍历找到单调递增数组
+     * 2. 单调递增数组，通过前缀和拿到累加值
+     * 3. 再次遍历，将累加值赋值到对应节点上
+     */
+
+    /** 二叉搜索树：中序遍历是单调递增序列
+     * 需求：将它的每个节点的值替换成树中大于或者等于该节点值的所有节点值之和
+     */
+
+    const nodeList = []
+    function getVal(root) {
+        if (root === null) return
+        getVal(root.left)
+        nodeList.push(root.val)
+        getVal(root.right)
+    }
+
+    /** 第一次遍历拿到节点的值 */
+    getVal(root)
+
+    /** 处理节点更新后的值 -》 前缀和 */
+
+    for (let i = nodeList.length - 2; i >= 0; i--) {
+        nodeList[i] = nodeList[i + 1] + nodeList[i]
+    }
+
+    console.log(nodeList)
+
+    function setVal(root) {
+        if (root === null) return
+        setVal(root.left)
+        root.val = nodeList.shift()
+        setVal(root.right)
+    }
+
+    setVal(root)
+
+    return root
+}
+
 /** LCR 045. 找树左下角的值
  * 给定一个二叉树的 根节点 root，请找出该二叉树的 最底层 最左边 节点的值
  * 假设二叉树中至少有一个节点。
