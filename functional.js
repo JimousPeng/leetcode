@@ -1,5 +1,110 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 面试题 01.09. 字符串轮转
+ * 字符串轮转。给定两个字符串s1和s2，请编写代码检查s2是否为s1旋转而成
+ * （比如，waterbottle是erbottlewat旋转后的字符串）
+ * 输入：s1 = "waterbottle", s2 = "erbottlewat"  输出：True
+ * w a t e r b o t t l e
+ * e r b 0 t t l e w a t    e r b 0 t t l e w a t
+ * 输入：s1 = "aa", s2 = "aba" 输出：False
+ * @param {string} s1
+ * @param {string} s2
+ * @return {boolean}
+ */
+var isFlipedString = function (s1, s2) {
+    if (s1 === s2) return true
+    if (s1.length !== s2.length) return false
+    let countS2 = s2 + s2
+    const resetStr = countS2.split(s1)
+    if (resetStr.length === 1) return false
+    return resetStr[1] + resetStr[0] === s1
+}
+
+/**
+ * LCR 139. 训练计划 I
+ * 教练使用整数数组 actions 记录一系列核心肌群训练项目编号。为增强训练趣味性，需要将所有奇数编号训练项目调整至偶数编号训练项目之前。
+ * 请将调整后的训练项目编号以 数组 形式返回。
+ * 输入：actions = [1,2,3,4,5]  输出：[1,3,5,2,4]  解释：为正确答案之一
+ * @param {number[]} actions
+ * @return {number[]}
+ */
+var trainingPlan = function (actions) {
+    // return actions.sort((a, b) => b % 2 - a % 2)
+
+    // const oddList = []
+    // const evenList = []
+    // const len = actions.length
+    // for (let i = 0; i < len; i++) {
+    //     const num = actions[i]
+    //     if (num % 2 !== 0) {
+    //         oddList.push(num)
+    //     } else {
+    //         evenList.push(num)
+    //     }
+    // }
+    // 双指针减少遍历次数
+    // let left = 0,
+    //     right = len - 1
+    // while (left <= right) {
+    //     const leftNum = actions[left]
+    //     const rightNum = actions[right]
+    //     if (leftNum % 2 !== 0) {
+    //         oddList.push(leftNum)
+    //     } else {
+    //         evenList.push(leftNum)
+    //     }
+    //     if (right > left) {
+    //         if (rightNum % 2 !== 0) {
+    //             oddList.push(rightNum)
+    //         } else {
+    //             evenList.push(rightNum)
+    //         }
+    //     }
+    //     left++
+    //     right--
+    // }
+    // return [...oddList, ...evenList]
+
+    const res = []
+    const len = actions.length
+    let left = 0,
+        right = len - 1
+    while (left <= right) {
+        const leftNum = actions[left]
+        const rightNum = actions[right]
+        if (leftNum % 2 !== 0) {
+            res.unshift(leftNum)
+        } else {
+            res.push(leftNum)
+        }
+        if (right > left) {
+            if (rightNum % 2 !== 0) {
+                res.unshift(rightNum)
+            } else {
+                res.push(rightNum)
+            }
+        }
+        left++
+        right--
+    }
+    return res
+}
+
+/** LCR 135. 报数
+ * 实现一个十进制数字报数程序，请按照数字从小到大的顺序返回一个整数数列，该数列从数字 1 开始，到最大的正整数 cnt 位数字结束
+ * @param {number} cnt
+ * @return {number[]}
+ */
+var countNumbers = function (cnt) {
+    // const maxNum = Number(1 + new Array(cnt).fill(0).join(''))
+    const maxNum = Math.pow(10, cnt)
+    const count = []
+    for (let i = 0; i < maxNum; i++) {
+        count.push(i)
+    }
+    return count
+}
+
 /** 2706. 购买两块巧克力
  * 给你一个整数数组 prices ，它表示一个商店里若干巧克力的价格。同时给你一个整数 money ，表示你一开始拥有的钱数
  * 你必须购买 恰好 两块巧克力，而且剩余的钱数必须是 非负数 。同时你想最小化购买两块巧克力的总花费
