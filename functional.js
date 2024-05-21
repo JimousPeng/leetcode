@@ -1,5 +1,38 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** LCR 173. 点名
+ * 某班级 n 位同学的学号为 0 ~ n-1。点名结果记录于升序数组 records。假定仅有一位同学缺席，请返回他的学号
+ * 输入: records = [0,1,2,3,5]   输出: 4
+ * 输入: records = [0,1,2,4,5]   输出: 3
+ * @param {number[]} records  1 <= records.length <= 10000
+ * @return {number}
+ */
+var takeAttendance = function (records) {
+    // const len = records.length
+    // for (let i = 0; i < len; i++) {
+    //     if (records[i] > i) {
+    //         return i
+    //     }
+    // }
+    // // 为什么return len, 针对[0]  [0, 1] 这种数据
+    // return len
+
+    const len = records.length
+    let left = 0,
+        right = len - 1
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2)
+        if (records[mid] === mid) {
+            // 说明左区间是正常递增，left 扩大
+            left = mid + 1
+        } else {
+            right = mid - 1
+        }
+    }
+    // return records[left] === left ? len : left
+    return left
+}
+
 /** 面试题 01.09. 字符串轮转
  * 字符串轮转。给定两个字符串s1和s2，请编写代码检查s2是否为s1旋转而成
  * （比如，waterbottle是erbottlewat旋转后的字符串）
