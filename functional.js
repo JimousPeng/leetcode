@@ -1,5 +1,37 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 1502. 判断能否形成等差数列
+ * 给你一个数字数组 arr 。如果一个数列中，任意相邻两项的差总等于同一个常数，那么这个数列就称为 等差数列
+ * 如果可以重新排列数组形成等差数列，请返回 true ；否则，返回 false
+ * 输入：arr = [3,5,1] 输出：true
+ * @param {number[]} arr  2 <= arr.length <= 1000
+ * @return {boolean}
+ */
+var canMakeArithmeticProgression = function (arr) {
+    // arr.sort((a, b) => a - b)
+    // const len = arr.length
+    // const flag = arr[1] - arr[0]
+    // for (let i = 1; i < len; i++) {
+    //     if (arr[i] - arr[i - 1] !== flag) return false
+    // }
+    // return true
+
+    arr.sort((a, b) => a - b)
+    const len = arr.length
+    let left = 1,
+        right = len - 1
+    // [1,10,10,10,19]
+    const flag = arr[1] - arr[0]
+    while (left <= right) {
+        if (arr[left] - arr[left - 1] !== flag || arr[right] - arr[right - 1] !== flag) {
+            return false
+        }
+        left++
+        right--
+    }
+    return true
+}
+
 /** LCR 173. 点名
  * 某班级 n 位同学的学号为 0 ~ n-1。点名结果记录于升序数组 records。假定仅有一位同学缺席，请返回他的学号
  * 输入: records = [0,1,2,3,5]   输出: 4
