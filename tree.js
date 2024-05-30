@@ -19,6 +19,51 @@
 8
  */
 
+/** 113. 路径总和 II
+ * 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径
+ * 叶子节点 是指没有子节点的节点
+ * 输入：root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+ * 输出：[[5,4,11,2],[5,8,4,5]]
+ * @param {TreeNode} root
+ * @param {number} targetSum
+ * @return {number[][]}
+ */
+var pathSum = function (root, targetSum) {
+    /**
+     * 1. 路径必须是从根节点要叶子节点
+     * 2. 路径总和 = 目标值
+     *
+     * 优化思路：
+     * 遍历的时候，计算和 - 引入 sum 变量
+     */
+
+    const res = []
+
+    function dfs(root, nodeList, sum) {
+        if (root === null) {
+            return
+        }
+        nodeList.push(root.val)
+        sum += root.val
+
+        if (root.right === null && root.left === null) {
+            if (sum === targetSum) {
+                res.push(nodeList)
+            }
+        }
+
+        dfs(root.left, [...nodeList], sum)
+        dfs(root.right, [...nodeList], sum)
+    }
+    dfs(root, [], sum)
+
+    return res
+
+
+    /** 回溯思路 */
+    
+}
+
 /** LCR 054. 把二叉搜索树转换为累加树
  * 给定一个二叉搜索树，请将它的每个节点的值替换成树中大于或者等于该节点值的所有节点值之和
  * 输入：root = [4,1,6,0,2,5,7,null,null,null,3,null,null,null,8]
@@ -37,8 +82,6 @@
  * @return {TreeNode}
  */
 var convertBST = function (root) {
-
-
     /** 思路：
      * 三次遍历
      * 1. 遍历找到单调递增数组

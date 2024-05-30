@@ -19,17 +19,12 @@
 var maxProfit = function (k, prices) {
     const profit = [] // 记录一个数组,记录每次的收益，最后计算前K个利润
 
-    const dp = []
-    // 股票只有两种状态 持有 || 卖出
-    dp[0] = prices[0] // 持有该只股票的成本
-    dp[1] = 0 // 抛出该只股票的收益
+    /** 回溯算法呢 */
+
     const len = prices.length
-    for(let i = 1; i < len; i++) {
-
+    for (let i = 0; i < len; i++) {
+        
     }
-
-
-
 }
 
 /** 面试题 16.17. 连续数列
