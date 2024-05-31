@@ -1,5 +1,80 @@
 /** 功能性题目，以解决问题为出发点 */
 
+/** 47. 全排列 II
+ * 给定一个可包含重复数字的序列 nums ，按任意顺序 返回所有不重复的全排列
+ * 输入：nums = [1,1,2]
+ * 输出：[[1,1,2],[1,2,1],[2,1,1]]
+ *
+ * 输入：nums = [1,2,3]
+ * 输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+ * @param {number[]} nums  1 <= nums.length <= 8    -10 <= nums[i] <= 10
+ * @return {number[][]}
+ */
+var permuteUnique = function (nums) {
+    const numLen = nums.length
+    const res = []
+    function trackingBack(path) {
+        if (path.length === nums.length) {
+            res.push(path)
+            return
+        }
+        for (let i = 0; i < numLen; i++) {
+            if (path.includes(nums[i])) {
+            }
+            trackingBack([...path, nums[i]], i)
+        }
+    }
+
+    trackingBack([])
+    console.error('---------- aiden --------------', res)
+}
+
+/** LCR 179. 查找总价格为目标值的两个商品
+ * 购物车内的商品价格按照升序记录于数组 price
+ * 请在购物车中找到两个商品的价格总和刚好是 target。若存在多种情况，返回任一结果即可。
+ * 输入：price = [3, 9, 12, 15], target = 18   输出：[3,15] 或者 [15,3]
+ *
+ * 输入：price = [8, 21, 27, 34, 52, 66], target = 61   输出：[27,34] 或者 [34,27]
+ * @param {number[]} price  1 <= price.length <= 10^5   1 <= price[i] <= 10^6
+ * @param {number} target   1 <= target <= 2*10^6
+ * @return {number[]}
+ */
+var twoSum = function (price, target) {
+    // 按照升序 - 可以做剪枝
+    let difMap = {}
+    const priceLen = price.length
+    for (let i = 0; i < priceLen; i++) {
+        const p = price[i]
+        if (p > target) continue
+        if (difMap[p] !== undefined) {
+            return [p, difMap[p]]
+        } else {
+            const dif = target - p
+            difMap[dif] = p
+        }
+    }
+    return []
+
+    // 因为是升序，所以也可以左右指针
+    let left = 0,
+        right = price.length - 1
+    while (price[right] > target) {
+        right--
+    }
+
+    while (left < right) {
+        const sum = price[left] + price[right]
+
+        if (sum > target) {
+            right--
+        } else if (sum < target) {
+            left++
+        } else {
+            return [price[left], price[right]]
+        }
+    }
+}
+
 /** 1502. 判断能否形成等差数列
  * 给你一个数字数组 arr 。如果一个数列中，任意相邻两项的差总等于同一个常数，那么这个数列就称为 等差数列
  * 如果可以重新排列数组形成等差数列，请返回 true ；否则，返回 false
