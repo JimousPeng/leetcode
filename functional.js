@@ -29,6 +29,190 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/**
+ * 2924. 找到冠军 II
+ * 一场比赛中共有 n 支队伍，按从 0 到  n - 1 编号。每支队伍也是 有向无环图（DAG - 有向无环图 是不存在任何环的有向图） 上的一个节点。
+ * 给你一个整数 n 和一个下标从 0 开始、长度为 m 的二维整数数组
+ * edges 表示这个有向无环图，其中 edges[i] = [ui, vi] 表示图中存在一条从 ui 队到 vi 队的有向边
+ * 从 a 队到 b 队的有向边意味着 a 队比 b 队 强 ，也就是 b 队比 a 队 弱 。
+ *
+ * 在这场比赛中，如果不存在某支强于 a 队的队伍，则认为 a 队将会是 冠军 。
+ *
+ * 如果这场比赛存在 唯一 一个冠军，则返回将会成为冠军的队伍。否则，返回 -1 。
+ *
+ * 输入：n = 3, edges = [[0,1],[1,2]] 输出：0
+ * 0 -> 2  1 -> 2
+ * 解释：1 队比 0 队弱。2 队比 1 队弱。所以冠军是 0 队。
+ *
+ * 输入：n = 4, edges = [[0,2],[1,3],[1,2]]   输出：-1
+ * 解释：
+ * 0 -> 2   1 -> 3   1 -> 2
+ * 2 队比 0 队和 1 队弱。3 队比 1 队弱。但是 1 队和 0 队之间不存在强弱对比。所以答案是 -1
+ * @param {number} n  1 <= n <= 100
+ * @param {number[][]} edges  edges[i].length == 2    0 <= edge[i][j] <= n - 1     edges[i][0] != edges[i][1]
+ * @return {number}
+ */
+var findChampion = function (n, edges) {
+    /**
+     * 如果不存在某支强于 a 队的队伍，则认为 a 队将会是 冠军，也就是说 a 队不可能会在左边
+     * 如果这场比赛存在 唯一 一个冠军，则返回将会成为冠军的队伍。否则，返回 -1
+     */
+
+    // const len = edges.length
+    // /** 边界处理，n 与 edges 的范围
+    //  * len === 0 && n === 1：只有一个队伍，没有比赛，直接就是冠军 findChampion(1, [[]])
+    //  * len === 1 && n === 2：只有两个队伍，一场比赛，冠军就是赢得队伍 edges[0][0]  findChampion(2, [[1,0]])
+    //  * len < n-1 比赛场次小于对于数量，说明有队伍之间没有比赛，没有冠军
+    //  */
+    // if (len === 0 && n === 1) return 0
+    // if (len === 1 && n === 2) return edges[0][0]
+
+    // // findChampion(3, [[0,1],[2,1]])
+    // if (len < n - 1) return -1
+    // let score = new Array(n).fill(0) // 统计分数, 这里要注意从n初始化，而不是len，n代表队伍的数量,从0开始，每失败一次则-1
+    // for (let i = 0; i < len; i++) {
+    //     const loss = edges[i][1]
+    //     score[loss]--
+    // }
+    // let res = -1
+    // for (let i = 0; i < n; i++) {
+    //     if (score[i] === 0) {
+    //         if (res > -1) {
+    //             return -1
+    //         }
+    //         res = i
+    //     }
+    // }
+    // return res
+
+    /** 时间复杂度优化 */
+    const len = edges.length
+    if (len === 0 && n === 1) return 0
+    if (len === 1 && n === 2) return edges[0][0]
+    if (len < n - 1) return -1
+    let score = new Array(n).fill(0) // 统计分数, 这里要注意从n初始化，而不是len，n代表队伍的数量,从0开始，每失败一次则-1
+    let left = 0,
+        right = len - 1
+    while (left <= right) {
+        const lossLeft = edges[left][1]
+        const lossRight = edges[right][1]
+        score[lossLeft]--
+        score[lossRight]--
+        left++
+        right--
+    }
+    let res = []
+    ;(left = 0), (right = n - 1)
+    while (left <= right) {
+        if (score[left] === 0) {
+            res.push(left)
+        }
+        if (right !== left && score[right] === 0) {
+            res.push(right)
+        }
+        left++
+        right--
+    }
+    return res.length > 1 ? -1 : res[0]
+
+
+    /** 官解 */
+    let degree = new Array(n).fill(0);
+    edges.forEach(e => {
+        degree[e[1]]++;
+    });
+    let champion = -1;
+    for (let i = 0; i < n; i++) {
+        if (degree[i] === 0) {
+            if (champion === -1) {
+                champion = i;
+            } else {
+                return -1;
+            }
+        }
+    }
+    return champion;
+}
+
+/**
+ * 2923. 找到冠军 I
+ * 一场比赛中共有 n 支队伍，按从 0 到  n - 1 编号。
+ * 给你一个下标从 0 开始、大小为 n * n 的二维布尔矩阵 grid 。对于满足 0 <= i, j <= n - 1 且 i != j 的所有 i, j
+ * 如果 grid[i][j] == 1，那么 i 队比 j 队 强 ；否则，j 队比 i 队 强 。
+ * 在这场比赛中，如果不存在某支强于 a 队的队伍，则认为 a 队将会是 冠军 。 返回这场比赛中将会成为冠军的队伍。
+ * 输入：grid = [[0,1],[0,0]]  输出：0
+ * 解释：比赛中有两支队伍。 grid[0][1] == 1 表示 0 队比 1 队强。所以 0 队是冠军。
+ *
+ * 输入：grid = [[0,0,1],[1,0,1],[0,0,0]]  输出：1
+ * 解释：比赛中有三支队伍。 grid[1][0] == 1 表示 1 队比 0 队强。 grid[1][2] == 1 表示 1 队比 2 队强。 所以 1 队是冠军。
+ *
+ * n == grid.length
+ * n == grid[i].length
+ * 2 <= n <= 100
+ * grid[i][j] 的值为 0 或 1
+ * 对于所有 i， grid[i][i] 等于 0.
+ * 对于满足 i != j 的所有 i, j ，grid[i][j] != grid[j][i] 均成立
+ * 生成的输入满足：如果 a 队比 b 队强，b 队比 c 队强，那么 a 队比 c 队强
+ * @param {number[][]} grid
+ * @return {number}
+ */
+var findChampion = function (grid) {
+    const len = grid.length
+    const max = [0, 0]
+    /** 能不能理解为赢得多的一定是冠军 -_- 没想到真是这样 */
+    for (let i = 0; i < len; i++) {
+        const curScore = grid[i].reduce((total, item) => (total += item), 0)
+
+        if (curScore > max[0]) {
+            max[0] = curScore
+            max[1] = i
+        }
+    }
+    return max[1]
+
+    /** 打擂台 */
+    const len = grid.length
+    let max = 0 // 假设当前冠军的下标是0
+    for (let i = 0; i < len; i++) {
+        if (grid[i][max] === 1) {
+            max = i
+        }
+    }
+    return max
+}
+
+/**LCP 06. 拿硬币
+ * 桌上有 n 堆力扣币，每堆的数量保存在数组 coins 中。我们每次可以选择任意一堆，拿走其中的一枚或者两枚，求拿完所有力扣币的最少次数。
+ * 输入：[4,2,1]  输出：4
+ * 解释：第一堆力扣币最少需要拿 2 次，第二堆最少需要拿 1 次，第三堆最少需要拿 1 次，总共 4 次即可拿完。
+ * 输入：[2,3,10]  输出：8
+ * @param {number[]} coins  1 <= n <= 4
+ * @return {number}   1 <= coins[i] <= 10
+ */
+var minCount = function (coins) {
+    const len = coins.length
+    let count = 0
+    for (let i = 0; i < len - 1; i++) {
+        const num = coins[i]
+        count += Math.ceil(num / 2)
+    }
+    return count
+
+    // [) 左闭右开
+    let left = 0,
+        right = len
+    let count = 0
+    while (left < right) {
+        const leftNum = coins[left]
+        const rightNum = coins[right - 1]
+        count += Math.ceil(leftNum / 2)
+        count += Math.ceil(rightNum)
+        left++
+        right--
+    }
+    return count
+}
+
 /** LCR 179. 查找总价格为目标值的两个商品
  * 购物车内的商品价格按照升序记录于数组 price
  * 请在购物车中找到两个商品的价格总和刚好是 target。若存在多种情况，返回任一结果即可。
