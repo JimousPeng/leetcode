@@ -29,6 +29,93 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** LCR 158. 库存管理 II
+ * 仓库管理员以数组 stock 形式记录商品库存表。stock[i] 表示商品 id，可能存在重复。
+ * 请返回库存表中数量大于 stock.length / 2 的商品 id。
+ * 输入: stock = [6, 1, 3, 1, 1, 1] 输出: 1
+ * @param {number[]} stock 1 <= stock.length <= 50000
+ * @return {number}
+ */
+var inventoryManagement = function (stock) {
+    // const len = stock.length
+    // // 边界处理
+    // if (len === 1) return stock[0]
+    // const flag = Math.floor(len / 2)
+    // const goodsMap = {}
+    // // 可用双指针做时间复杂度优化
+    // for (let i = 0; i < len; i++) {
+    //     const goods = stock[i]
+    //     if (goodsMap[goods] !== undefined) {
+    //         goodsMap[goods]++
+    //         if (goodsMap[goods] > flag) {
+    //             // 过半了就可以结束了
+    //             return goods
+    //         }
+    //     } else {
+    //         goodsMap[goods] = 1
+    //     }
+    // }
+
+    /** 摩尔投票法，由于一定存在半数以上的数，那么任意两个数对比，如果不同则抵消-消消乐，那么最终剩下来的数，肯定是众数 */
+    const len = stock.length
+    let max = stock[0]
+    let count = 1
+    for (let i = 1; i < len; i++) {
+        const goods = stock[i]
+        if (count === 0) {
+            max = goods
+            count++
+        } else {
+            if (goods === max) {
+                count++
+            } else {
+                count--
+            }
+        }
+    }
+    return max
+}
+
+/** LCR 128. 库存管理 I
+ * 仓库管理员以数组 stock 形式记录商品库存表。stock[i] 表示商品 id，可能存在重复。
+ * 原库存表按商品 id 升序排列。
+ * 现因突发情况需要进行商品紧急调拨，管理员将这批商品 id 提前依次整理至库存表最后。
+ * 请你找到并返回库存表中编号的 最小的元素 以便及时记录本次调拨
+ * 输入：stock = [4,5,8,3,4]  输出：3
+ * 输入：stock = [5,7,9,1,2] 输出：1
+ * @param {number[]} stock
+ * @return {number}
+ */
+var stockManagement = function (stock) {
+    // 找出最小元素
+    // let min = Infinity
+    // const len = stock.length
+    // let left = 0,
+    //     right = len - 1
+    // while (left <= right) {
+    //     min = Math.min(stock[left], stock[right], min)
+    //     left++
+    //     right--
+    // }
+    // return min
+
+    const len = stock.length
+    let low = 0,
+        high = len - 1
+    // 二分法，重点是处理区间
+    while (low < high) {
+        const mid = low + Math.floor((high - low) / 2)
+        if (stock[mid] > stock[high]) {
+            low = mid + 1
+        } else if (stock[mid] < stock[high]) {
+            high = mid
+        } else {
+            high--
+        }
+    }
+    return stock[low]
+}
+
 /**
  * 2924. 找到冠军 II
  * 一场比赛中共有 n 支队伍，按从 0 到  n - 1 编号。每支队伍也是 有向无环图（DAG - 有向无环图 是不存在任何环的有向图） 上的一个节点。
@@ -115,23 +202,22 @@ var findChampion = function (n, edges) {
     }
     return res.length > 1 ? -1 : res[0]
 
-
     /** 官解 */
-    let degree = new Array(n).fill(0);
-    edges.forEach(e => {
-        degree[e[1]]++;
-    });
-    let champion = -1;
+    let degree = new Array(n).fill(0)
+    edges.forEach((e) => {
+        degree[e[1]]++
+    })
+    let champion = -1
     for (let i = 0; i < n; i++) {
         if (degree[i] === 0) {
             if (champion === -1) {
-                champion = i;
+                champion = i
             } else {
-                return -1;
+                return -1
             }
         }
     }
-    return champion;
+    return champion
 }
 
 /**
