@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <script>
+            const arr = [1, 2, 6, 9, 4, 5, 8, 0]
+            // 冒泡排序
+            function bubblingSort(arr) {
+                const len = arr.length
+                for (let i = 0; i < len; i++) {
+                    // 每一轮冒泡，都能保证最后一位数是最大的数，所以对于j的遍历范围，取 len - 1 - i
+                    for (let j = 0; j < len - 1 - i; j++) {
+                        if (arr[j] > arr[j + 1]) {
+                            const temp = arr[j]
+                            arr[j] = arr[j + 1]
+                            arr[j + 1] = temp
+                        }
+                    }
+                }
+            }
+            bubblingSort(arr)
+            console.error('---------- aiden --------------', arr)
+        </script>
+    </body>
+</html>

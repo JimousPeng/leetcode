@@ -29,6 +29,71 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/**
+ * 1122. 数组的相对排序 -- 考察：自定义排序规则
+ * 给你两个数组，arr1 和 arr2，arr2 中的元素各不相同，arr2 中的每个元素都出现在 arr1 中
+ * 对 arr1 中的元素进行排序：
+ * 使 arr1 中项的相对顺序和 arr2 中的相对顺序相同；未在 arr2 中出现过的元素需要按照升序放在 arr1 的末尾。
+ *
+ * 输入：arr1 = [2,3,1,3,2,4,6,7,9,2,19], arr2 = [2,1,4,3,9,6]
+ * 输出：[2,2,2,1,4,3,3,9,6,7,19]
+ *
+ * 输入：arr1 = [28,6,22,8,44,17], arr2 = [22,28,8,6]
+ * 输出：[22,28,8,6,17,44]
+ *
+ * @param {number[]} arr1 1 <= arr1.length, arr2.length <= 1000
+ * @param {number[]} arr2  arr2 中的元素 arr2[i]  各不相同  arr2 中的每个元素 arr2[i] 都出现在 arr1 中
+ * @return {number[]}
+ */
+var relativeSortArray = function (arr1, arr2) {
+    // ****************
+    // 相对顺序指的是各个数字的前后相对顺序，不是要求数字是挨着的！！
+    //*****************
+
+    /** 思路分析：
+     * 1. 先将 arr1 排序，并用hash处理值与下标映射
+     * 2. 声明记录的数组变量 res
+     * 3. 遍历 arr2 ，以arr2的顺序，在遍历过程中把相同的数值全部提取到 res 中
+     * 4. 处理剩余的hash
+     *
+     * 为什么 Object.keys 处理数值不需要再排序了？
+     * Object.keys在内部会根据属性名key的类型进行不同的排序逻辑：
+     * 1. 如果属性名的类型是Number，那么Object.keys返回值是按照key从小到大排序 (对于负数是作为字符串处理的)
+     * 2. 如果属性名的类型是String，那么Object.keys返回值是按照属性被创建的时间升序排序
+     * 3. 如果属性名的类型是Symbol，那么逻辑同String相同
+     */
+    arr1.sort((a, b) => a - b)
+    const sortLen = arr1.length
+    const sortMap = {}
+    for (let i = 0; i < sortLen; i++) {
+        const item = arr1[i]
+        if (sortMap[item]) {
+            sortMap[item].count++
+            continue
+        }
+        sortMap[item] = {
+            count: 1,
+            sort: i,
+        }
+    }
+    const res = []
+    const useLen = arr2.length
+    for (let i = 0; i < useLen; i++) {
+        const item = arr2[i]
+        while (sortMap[item].count) {
+            res.push(item)
+            sortMap[item].count--
+        }
+    }
+    Object.keys(sortMap).forEach((key) => {
+        while (sortMap[key].count) {
+            res.push(key)
+            sortMap[key].count--
+        }
+    })
+    return res
+}
+
 /** LCR 158. 库存管理 II
  * 仓库管理员以数组 stock 形式记录商品库存表。stock[i] 表示商品 id，可能存在重复。
  * 请返回库存表中数量大于 stock.length / 2 的商品 id。
