@@ -61,6 +61,8 @@ var relativeSortArray = function (arr1, arr2) {
      * 1. 如果属性名的类型是Number，那么Object.keys返回值是按照key从小到大排序 (对于负数是作为字符串处理的)
      * 2. 如果属性名的类型是String，那么Object.keys返回值是按照属性被创建的时间升序排序
      * 3. 如果属性名的类型是Symbol，那么逻辑同String相同
+     * 如果对象的属性类型是数字，字符与Symbol混合的;
+     * 那么返回顺序永远是数字在前，然后是字符串，最后是Symbol
      */
     arr1.sort((a, b) => a - b)
     const sortLen = arr1.length
