@@ -96,6 +96,76 @@ var relativeSortArray = function (arr1, arr2) {
     return res
 }
 
+/** LCR 180. 文件组合
+ * 待传输文件被切分成多个部分，按照原排列顺序，每部分文件编号均为一个 正整数（至少含有两个文件）
+ * 传输要求为：连续文件编号总和为接收方指定数字 target 的所有文件。请返回所有符合该要求的文件传输组合列表。
+ * 注意，返回时需遵循以下规则：
+ * 每种组合按照文件编号 升序 排列；
+ * 不同组合按照第一个文件编号 升序 排列。
+ *
+ * 输入：target = 12  输出：[[3, 4, 5]]  解释：存在一个连续正整数序列的和为 12，为 [3, 4, 5]。
+ * 输入：target = 18  输出：[[3,4,5,6],[5,6,7]]
+ * @param {number} target  1 <= target <= 10^5
+ * @return {number[][]}
+ */
+var fileCombination = function (target) {
+    // 双重循环
+    // const res = []
+    // const limit = Math.ceil(target / 2)
+    // for (let i = 1; i < limit + 1; i++) {
+    //     let count = i
+    //     let temp = [i]
+    //     for (let j = i + 1; j <= limit + 1; j++) {
+    //         count += j
+    //         temp.push(j)
+    //         if (count === target) {
+    //             res.push(temp)
+    //             break
+    //         } else if (count > target) {
+    //             break
+    //         }
+    //     }
+    // }
+    // return res
+
+    // 双指针
+    const res = []
+    for (let l = 1, r = 2; l < r; ) {
+        // 利用等差数列求和公式 a,b,c   sum(a,b,c) = ((a+c)*(c-a+1))/2
+        const sum = ((l + r) * (r - l + 1)) / 2
+        if (sum === target) {
+            const temp = []
+            for (let i = l; i <= r; i++) {
+                temp.push(i)
+            }
+            res.push(temp)
+            l++
+        } else if (sum > target) {
+            l++
+        } else {
+            r++
+        }
+    }
+    return res
+}
+
+/**
+ * LCR 159. 库存管理 III
+ * 仓库管理员以数组 stock 形式记录商品库存表，其中 stock[i] 表示对应商品库存余量
+ * 请返回库存余量最少的 cnt 个商品余量，返回 顺序不限
+ * 输入：stock = [2,5,7,4], cnt = 1  输出：[2]
+ * 输入：stock = [0,2,3,6], cnt = 2  输出：[0,2] 或 [2,0]
+ * @param {number[]} stock
+ * @param {number} cnt 0 <= cnt <= stock.length <= 10000
+ * @return {number[]}
+ */
+var inventoryManagement = function (stock, cnt) {
+    /** 简单粗暴sort排序 */
+    // if (cnt === 0) return []
+    // stock.sort((a, b) => a - b)
+    // return stock.slice(0, cnt + 1)
+}
+
 /** LCR 158. 库存管理 II
  * 仓库管理员以数组 stock 形式记录商品库存表。stock[i] 表示商品 id，可能存在重复。
  * 请返回库存表中数量大于 stock.length / 2 的商品 id。

@@ -9,6 +9,28 @@
 
     <body>
         <script>
+            var fileCombination = function (target) {
+                const res = []
+                const limit = Math.ceil(target / 2)
+                for (let i = 1; i < limit + 1; i++) {
+                    let count = i
+                    let temp = [i]
+                    for (let j = i + 1; j <= limit + 1; j++) {
+                        count += j
+                        temp.push(j)
+                        if (count === target) {
+                            res.push(temp)
+                            break
+                        } else if (count > target) {
+                            break
+                        }
+                    }
+                }
+                return res
+            }
+            console.error('---------- fileCombination --------------', fileCombination(12))
+        </script>
+        <script>
             var threeSum = function (nums) {
                 const numLen = nums.length
                 const targetSet = new Set()
