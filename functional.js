@@ -30,6 +30,44 @@ var permuteUnique = function (nums) {
 }
 
 /**
+ * 205. 同构字符串
+ * 给定两个字符串 s 和 t ，判断它们是否是同构的
+ * 如果 s 中的字符可以按某种映射关系替换得到 t ，那么这两个字符串是同构的
+ * 每个出现的字符都应当映射到另一个字符，同时不改变字符的顺序。不同字符不能映射到同一个字符上，相同字符只能映射到同一个字符上，字符可以映射到自己本身
+ * 输入：s = "egg", t = "add"  输出：true
+ * 输入：s = "foo", t = "bar"  输出：false
+ * 输入：s = "paper", t = "title"  输出：true
+ * 输入 s = "bbbaaaba"  t = "aaabbbba"  输出 false
+ * @param {string} s  1 <= s.length <= 5 * 104
+ * @param {string} t  t.length == s.length  s 和 t 由任意有效的 ASCII 字符组成
+ * @return {boolean}
+ */
+var isIsomorphic = function (s, t) {
+    /** 同构字符串，要求组合形式一致
+     * 如: egg  xyy 对应 add 也为 xyy格式，所以为同构
+     * 转换来看：就是当前遍历的数字，对应的统计个数是否一致，如果不一致，则说明存在不一致
+     * bbbaaaba
+     * aaabbbba
+     *
+     * 跑用例的时候发现，统计个数会有问题，比如  bbbaaaba  aaabbbba 如果只统计个数，会判断为复核重构，实际不符合
+     * 将条件校验调整为判断当前位的最后一次出现的下标，如果一致，则说明是重构
+     */
+    if (s.length !== t.length) return false
+    let mapS = {},
+        mapT = {}
+    const strLen = s.length
+    for (let i = 0; i < strLen; i++) {
+        const strS = s[i]
+        const strT = t[i]
+        if (mapS[strS] !== mapT[strT]) return false
+        // 更新当前元素最后一次出现的下标
+        mapS[strS] = i
+        mapT[strT] = i
+    }
+    return true
+}
+
+/**
  * 1122. 数组的相对排序 -- 考察：自定义排序规则
  * 给你两个数组，arr1 和 arr2，arr2 中的元素各不相同，arr2 中的每个元素都出现在 arr1 中
  * 对 arr1 中的元素进行排序：
