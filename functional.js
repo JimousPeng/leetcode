@@ -29,6 +29,65 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 459. 重复的子字符串
+ * 给定一个非空的字符串 s ，检查是否可以通过由它的一个子串重复多次构成。
+ * 输入: s = "abab"  输出: true  解释: 可由子串 "ab" 重复两次构成。
+ * 输入: s = "aba"   输出: false
+ * 输入: s = "abcabcabcabc"  输出: true  解释: 可由子串 "abc" 重复四次构成。 (或子串 "abcabc" 重复两次构成。)
+ * @param {string} s  1 <= s.length <= 10^4
+ * @return {boolean}
+ */
+var repeatedSubstringPattern = function (s) {
+    // let newStr = s + s
+    // const newLen = newStr.length
+    // // 将新字符串掐头去尾，如果还能命中 s，说明 s 是由子串重复构成
+    // newStr = newStr.substring(1, newLen - 1)
+    // return newStr.includes(s)
+    // 暴力解法
+    // 一个for循环获取 子串的终止位置， 然后判断子串是否能重复构成字符串，又嵌套一个for循环，所以是O(n^2)的时间复杂度
+
+
+    // 如果一个长度为 n 的字符串 s 可以由它的一个长度为 n ′ 的子串 s ′ 重复多次构成，那么： 
+    // n 一定是 n ′ 的倍数； 
+    // s ′ 一定是 s 的前缀； 
+    // 对于任意的 i∈[n ′ ,n)，有 s[i]=s[i−n ′ ]
+    const sLen = s.length
+    for (let i = 1; i * 2 <= sLen; i++) {
+        if (sLen % i === 0) {
+            let match = true
+            for (let j = i; j < sLen; j++) {
+                if (s[j] !== s[j - i]) {
+                    match = false
+                    break
+                }
+            }
+            if (match) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+/** 476. 数字的补数
+ * 输入：num = 5  输出：2  解释：5 的二进制表示为 101（没有前导零位），其补数为 010。所以你需要输出 2
+ * @param {number} num
+ * @return {number}
+ */
+var findComplement = function (num) {
+    // toString, 将数字转换为对应进制的字符串
+    const getBinaryStr = num.toString(2)
+    const strLen = getBinaryStr.length
+    let str = ''
+    for (let i = 0; i < strLen; i++) {
+        const cur = !Number(getBinaryStr[i])
+        str += Number(cur)
+    }
+    console.log(str)
+    // parseInt(str, 2) 将字符串转换为对应进制的数字
+    return parseInt(str, 2)
+}
+
 /**
  * 205. 同构字符串
  * 给定两个字符串 s 和 t ，判断它们是否是同构的
