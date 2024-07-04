@@ -59,9 +59,49 @@ var pathSum = function (root, targetSum) {
 
     return res
 
-
     /** 回溯思路 */
-    
+}
+
+/** 559. N 叉树的最大深度
+ * 给定一个 N 叉树，找到其最大深度
+ *
+ * 要注意的是，这里的root的数结构，跟常规的 left， right 不一样，非左右子树结构
+ * @param {_Node|null} root
+ * @return {number}
+ */
+/**
+ * // Definition for a _Node.
+ * function _Node(val,children) {
+ *    this.val = val;
+ *    this.children = children;
+ * };
+ * 
+输入：root = [1,null,3,2,4,null,5,6]
+{
+  val: 1,
+  children: [
+    { val: 3, children: [Array] },
+    { val: 2, children: [] },
+    { val: 4, children: [] }
+  ]
+}
+ * 
+ */
+var maxDepth = function (root) {
+    if (root === null) return 0
+    let maxDeep = 0
+    function dfs(root, floor) {
+        floor++
+        console.log(root, floor)
+        maxDeep = Math.max(maxDeep, floor)
+        if (root.children) {
+            for (let i = 0; i < root.children.length; i++) {
+                dfs(root.children[i], floor)
+            }
+        }
+    }
+    dfs(root, 0)
+    return maxDeep
 }
 
 /** LCR 054. 把二叉搜索树转换为累加树
