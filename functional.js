@@ -29,6 +29,114 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 575. 分糖果
+ * Alice 有 n 枚糖，其中第 i 枚糖的类型为 candyType[i] 。
+ * Alice 注意到她的体重正在增长，所以前去拜访了一位医生
+ * 医生建议 Alice 要少摄入糖分，只吃掉她所有糖的 n / 2 即可（n 是一个偶数）。
+ * Alice 非常喜欢这些糖，她想要在遵循医生建议的情况下，尽可能吃到最多不同种类的糖。
+ * 给你一个长度为 n 的整数数组 candyType ，
+ * 返回： Alice 在仅吃掉 n / 2 枚糖的情况下，可以吃到糖的 最多 种类数
+ *
+ * n == candyType.length
+ * n 是一个偶数
+ * 2 <= n <= 10^4
+ *
+ * 输入：candyType = [1,1,2,2,3,3]  输出：3
+ * 解释：Alice 只能吃 6 / 2 = 3 枚糖，由于只有 3 种糖，她可以每种吃一枚。
+ * @param {number[]} candyType
+ * @return {number}
+ */
+var distributeCandies = function (candyType) {
+    // API大法：先去重，然后对比最大种类是否>n/2
+
+    const set = new Set(candyType)
+    return Math.min(set.size, candyType.length / 2)
+
+    const candySet = new Set()
+    const candyLen = candyType.length
+    for (let i = 0; i < candyLen; i++) {
+        const candy = candyType[i]
+        candySet.add(candy)
+    }
+    const candyList = Array.from(candySet).length
+    return Math.min(candyLen / 2, candyList)
+
+    /** 返回可以吃到糖的 最多 种类数 */
+    const len = candyType.length
+    let eatCount = 0
+    const eatMap = {}
+    let left = 0,
+        right = len - 1
+    while (left < right) {
+        const sugarL = candyType[left]
+        const sugarR = candyType[right]
+        if (eatCount === len / 2) return eatCount
+        if (eatMap[sugarL] === undefined) {
+            eatCount++
+            eatMap[sugarL] = true
+        }
+        /** 如果只有两位数，这里需要判断下 */
+        if (eatCount === len / 2) return eatCount
+        if (eatMap[sugarR] === undefined) {
+            eatCount++
+            eatMap[sugarR] = true
+        }
+        left++
+        right--
+    }
+    return eatCount
+    for (let i = 0; i < len; i++) {
+        const sugar = candyType[i]
+        if (eatMap[sugar] !== undefined) {
+            eatCount++
+            eatMap[sugar] = true
+        }
+    }
+}
+
+/** 566. 重塑矩阵
+ * 在 MATLAB 中，有一个非常有用的函数 reshape ，它可以将一个 m x n 矩阵重塑为另一个大小不同（r x c）的新矩阵，但保留其原始数据。
+给你一个由二维数组 mat 表示的 m x n 矩阵，以及两个正整数 r 和 c ，分别表示想要的重构的矩阵的行数和列数。
+
+重构后的矩阵需要将原始矩阵的所有元素以相同的 行遍历顺序 填充。
+
+如果具有给定参数的 reshape 操作是可行且合理的，则输出新的重塑矩阵；否则，输出原始矩阵。
+ * @param {number[][]} mat
+ * @param {number} r
+ * @param {number} c 1 <= r, c <= 300
+ * @return {number[][]}
+ */
+var matrixReshape = function (mat, r, c) {
+    /** 重构后的矩阵需要将原始矩阵的所有元素以相同的 行遍历顺序 填充 */
+
+    /** 如果具有给定参数的 reshape 操作是可行且合理的，则输出新的重塑矩阵；否则，输出原始矩阵。 */
+    let row = 0,
+        col = 0
+    const res = []
+    for (let i = 0; i < r; i++) {
+        res[i] = []
+        for (let j = 0; j < c; j++) {
+            let getCol = mat[row][col]
+            if (getCol !== undefined) {
+                res[i][j] = getCol
+                col++
+            } else {
+                row++
+                col = 0
+                if (!mat[row]) return mat
+                getCol = mat[row][col]
+                if (getCol === undefined) return mat // 不符合填充格式
+                res[i][j] = getCol
+                col++
+            }
+        }
+    }
+    if (mat[row + 1] || mat[row][col]) {
+        return mat
+    }
+    return res
+}
+
 /** 561. 数组拆分
  * 给定长度为 2n 的整数数组 nums ，你的任务是将这些数分成 n 对, 
  * 例如 (a1, b1), (a2, b2), ..., (an, bn) ，使得从 1 到 n 的 min(ai, bi) 总和最大。
