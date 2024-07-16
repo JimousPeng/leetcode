@@ -1,10 +1,16 @@
 /**
  * Definition for a binary tree node.
+ * 二叉树
  * function TreeNode(val) {
  *     this.val = val;
  *     this.left = this.right = null;
  * }
  * 
+ * N叉树
+ * function _Node(val, children) {
+ *    this.val = val;
+ *    this.children = children;
+ * };
  * 
        5
      / \
@@ -60,6 +66,53 @@ var pathSum = function (root, targetSum) {
     return res
 
     /** 回溯思路 */
+}
+
+/**
+ * 590. N 叉树的后序遍历
+ * @param {_Node|null} root
+ * @return {number[]}
+ */
+var postorder = function (root) {
+    const res = []
+    function dfs(root) {
+        if (root === null) return
+        const childLen = root.children.length
+        if (!!childLen) {
+            for (let i = 0; i < childLen; i++) {
+                const cRoot = root.children[i]
+                dfs(cRoot)
+            }
+        }
+        res.push(root.val)
+    }
+    dfs(root)
+    return res
+}
+
+/**
+ * 589. N 叉树的前序遍历
+ * 给定一个 n 叉树的根节点  root ，返回 其节点值的 前序遍历 。
+ * n 叉树 在输入中按层序遍历进行序列化表示，每组子节点由空值 null 分隔（请参见示例）
+ *
+ * @param {_Node|null} root
+ * @return {number[]}
+ */
+var preorder = function (root) {
+    const res = []
+    function dfs(root) {
+        if (root === null) return
+        res.push(root.val)
+        const childLen = root.children.length
+        if (!!childLen) {
+            for (let i = 0; i < childLen; i++) {
+                const cRoot = root.children[i]
+                dfs(cRoot)
+            }
+        }
+    }
+    dfs(root)
+    return res
 }
 
 /** 559. N 叉树的最大深度
