@@ -9,6 +9,52 @@
 
     <body>
         <script>
+            var findLHS = function (nums) {
+                /** 最大值和最小值之间的差别 正好是 1  不改变其余元素的顺序而得到
+                 * 前缀和转化为前缀差
+                 * [1,3,2,2,5,2,3,7]  => [2,-1,0,3,-3, 1, 4] => 计算和的绝对值为 0 或 1 的总数 =》 [-1,0,3,-3, 1], 总数为5
+                 */
+                const len = nums.length
+                let max = 0,
+                    useMap = {}
+                // [-3,-3,-1,-1,-1,-2] 输出3  预期 4
+                for (let i = 0; i < len; i++) {
+                    // 如果剩余长度已经小于当前获取的最大序列，那么没有必要再遍历了
+                    if (len - i < max) break
+                    // countDep[0]表示当前为min, countDep[1]表示当前为max
+                    let countDep = [1, 1],
+                        canUse = [false, false]
+                    const baseNum = nums[i]
+                    if (useMap[baseNum] !== undefined) continue
+                    useMap[baseNum] = true
+                    for (let j = i + 1; j < len; j++) {
+                        const dif = nums[j] - baseNum
+                        if (dif === 1) {
+                            // 说明当前项比 nums[i] 大
+                            canUse[0] = true
+                            countDep[0]++
+                        }
+                        if (dif === -1) {
+                            canUse[1] = true
+                            countDep[1]++
+                        }
+                        if (dif === 0) {
+                            countDep[0]++
+                            countDep[1]++
+                        }
+                    }
+                    if (canUse[0]) {
+                        max = Math.max(max, countDep[0])
+                    }
+                    if (canUse[1]) {
+                        max = Math.max(max, countDep[1])
+                    }
+                }
+                return max
+            }
+            console.error('---------- aiden --------------', findLHS([-3, -3, -1, -1, -1, -2]))
+        </script>
+        <script>
             var fileCombination = function (target) {
                 const res = []
                 const limit = Math.ceil(target / 2)

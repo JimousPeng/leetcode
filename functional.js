@@ -29,6 +29,119 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 599. 两个列表的最小索引总和
+ * 假设 Andy 和 Doris 想在晚餐时选择一家餐厅，并且他们都有一个表示最喜爱餐厅的列表，每个餐厅的名字用字符串表示
+ * 你需要帮助他们用最少的索引和找出他们共同喜爱的餐厅
+ * 如果答案不止一个，则输出所有答案并且不考虑顺序。 你可以假设答案总是存在
+ * 输入:
+ * list1 = ["Shogun", "Tapioca Express", "Burger King", "KFC"]，
+ * list2 = ["Piatti", "The Grill at Torrey Pines", "Hungry Hunter Steakhouse", "Shogun"]
+ * 输出: ["Shogun"] 解释: 他们唯一共同喜爱的餐厅是“Shogun”。
+ *
+ * 输入:
+ * list1 = ["Shogun", "Tapioca Express", "Burger King", "KFC"]，
+ * list2 = ["KFC", "Shogun", "Burger King"]
+ * 输出: ["Shogun"]
+ * 解释: 他们共同喜爱且具有最小索引和的餐厅是“Shogun”，它有最小的索引和1(0+1)。
+ * @param {string[]} list1  list1 的所有字符串都是 唯一 的。
+ * @param {string[]} list2  list2 中的所有字符串都是 唯一 的
+ * @return {string[]}  list1[i] 和 list2[i] 由空格 ' ' 和英文字母组成
+ */
+var findRestaurant = function (list1, list2) {}
+
+/** 区间加法
+ * 给你一个 m x n 的矩阵 M 和一个操作数组 op 。
+ * 矩阵初始化时所有的单元格都为 0
+ * ops[i] = [ai, bi]
+ * 意味着当所有的 0 <= x < ai 和 0 <= y < bi 时， M[x][y] 应该加 1
+ * @param {number} m
+ * @param {number} n
+ * @param {number[][]} ops
+ * @return {number}
+ */
+var maxCount = function (m, n, ops) {
+    if (ops.length === 0) return m * n
+    let minW = Infinity,
+        minH = Infinity
+    for (const numList of ops) {
+        minW = Math.min(numList[0], minW)
+        minH = Math.min(numList[1], minH)
+    }
+    return minW * minH
+}
+
+/** 594. 最长和谐子序列
+ * 和谐数组是指一个数组里元素的最大值和最小值之间的差别 正好是 1
+ * 现在，给你一个整数数组 nums ，请你在所有可能的子序列中找到最长的和谐子序列的长度
+ * 数组的子序列是一个由数组派生出来的序列，它可以通过删除一些元素或不删除元素、且不改变其余元素的顺序而得到
+ *
+ * - < 其实是可以排序的，因为只需要算长度，不需要返回结果 。。。  >
+ *
+ * 输入：nums = [1,3,2,2,5,2,3,7] 输出：5 解释：最长的和谐子序列是 [3,2,2,2,3]
+ *
+ * 输入：nums = [1,2,3,4]  输出：2
+ * 输入：nums = [1,1,1,1]  输出：0
+ *
+ * @param {number[]} nums  1 <= nums.length <= 2 * 104
+ * @return {number}
+ */
+var findLHS = function (nums) {
+    /** 最大值和最小值之间的差别 正好是 1  不改变其余元素的顺序而得到
+     * 前缀和转化为前缀差
+     * [1,3,2,2,5,2,3,7]  => [2,-1,0,3,-3, 1, 4] => 计算和的绝对值为 0 或 1 的总数 =》 [-1,0,3,-3, 1], 总数为5
+     */
+    const len = nums.length
+    let max = 0,
+        useMap = {}
+    // [-3,-3,-1,-1,-1,-2] 输出3  预期 4
+    for (let i = 0; i < len; i++) {
+        // 如果剩余长度已经小于当前获取的最大序列，那么没有必要再遍历了
+        if (len - i < max) break
+        // countDep[0]表示当前为min, countDep[1]表示当前为max
+        let countDep = [1, 1],
+            canUse = [false, false]
+        const baseNum = nums[i]
+        if (useMap[baseNum] !== undefined) break
+        useMap[baseNum] = true
+        for (let j = i + 1; j < len; j++) {
+            const dif = nums[j] - baseNum
+            if (dif === 1) {
+                // 说明当前项比 nums[i] 大
+                canUse[0] = true
+                countDep[0]++
+            }
+            if (dif === -1) {
+                canUse[1] = true
+                countDep[1]++
+            }
+            if (dif === 0) {
+                countDep[0]++
+                countDep[1]++
+            }
+        }
+        if (canUse[0]) {
+            max = Math.max(max, countDep[0])
+        }
+        if (canUse[1]) {
+            max = Math.max(max, countDep[1])
+        }
+    }
+    return max
+
+    /** 用哈希表计算 */
+    const numMap = new Map()
+    let res = 0
+    for (const num of nums) {
+        numMap.set(num, (numMap.get(num) || 0) + 1)
+    }
+    for (const key of numMap.keys()) {
+        if (numMap.has(key + 1)) {
+            res = Math.max(res, numMap.get(key) + numMap.get(key + 1))
+        }
+    }
+    return res
+}
+
 /** 575. 分糖果
  * Alice 有 n 枚糖，其中第 i 枚糖的类型为 candyType[i] 。
  * Alice 注意到她的体重正在增长，所以前去拜访了一位医生
