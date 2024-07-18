@@ -29,6 +29,60 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 605. 种花问题
+ * 假设有一个很长的花坛，一部分地块种植了花，另一部分却没有。可是，花不能种植在相邻的地块上，它们会争夺水源，两者都会死去
+ * 给你一个整数数组 flowerbed 表示花坛，由若干 0 和 1 组成，其中 0 表示没种植花，1 表示种植了花
+ * 另有一个数 n ，能否在不打破种植规则的情况下种入 n 朵花？能则返回 true ，不能则返回 false
+ *
+ * 输入：flowerbed = [1,0,0,0,1], n = 1  输出：true
+ *
+ * 输入：flowerbed = [1,0,0,0,1], n = 2  输出：false
+ * @param {number[]} flowerbed  flowerbed[i] 为 0 或 1
+ * @param {number} n   0 <= n <= flowerbed.length
+ * @return {boolean}
+ */
+var canPlaceFlowers = function (flowerbed, n) {
+    /**
+     * 不打破种植规则的情况下种入 n 朵花
+     * 规则：花不能种植在相邻的地块上，它们会争夺水源，两者都会死去  *只能基于之前0上面种植，不是往中间插值，如[0,0,0] -> [0,1,0]*
+     *
+     * 那么就要找出是否满足 当前可种花的数量（每相连的一对 0 可种一朵花 ）是否 >= n
+     */
+    if (n === 0) return true
+    if (n === 1 && flowerbed.length === 1 && flowerbed[0] === 0) return true
+    const len = flowerbed.length
+    let count = n
+    let gap = 0
+    for (let i = 0; i < len; i++) {
+        if (flowerbed[i] === 0) {
+            gap++
+        } else {
+            gap = 0
+        }
+        if ((i == 1 || i == len - 1) && gap == 2) {
+            count--
+            gap = 1
+        } else if (gap === 3) {
+            count--
+            gap = 1
+        }
+        if (count <= 0) return true
+    }
+    return false
+
+    // for (int i = 0; i < length; i++) {
+    //     if (flowerbed[i] == 0 && (i == 0 || flowerbed[i-1] == 0) && (i == length-1 || flowerbed[i+1] == 0)){
+    //         n--;
+    //         //把花种上
+    //         flowerbed[i] = 1;
+    //     }
+    //     if (n <= 0){
+    //         return true;
+    //     }
+    // }
+    // return false;
+}
+
 /** 599. 两个列表的最小索引总和
  * 假设 Andy 和 Doris 想在晚餐时选择一家餐厅，并且他们都有一个表示最喜爱餐厅的列表，每个餐厅的名字用字符串表示
  * 你需要帮助他们用最少的索引和找出他们共同喜爱的餐厅
@@ -47,7 +101,35 @@ var permuteUnique = function (nums) {
  * @param {string[]} list2  list2 中的所有字符串都是 唯一 的
  * @return {string[]}  list1[i] 和 list2[i] 由空格 ' ' 和英文字母组成
  */
-var findRestaurant = function (list1, list2) {}
+var findRestaurant = function (list1, list2) {
+    // 用最少的索引和找出他们共同喜爱的餐厅
+    const mapOne = {}
+    const mapRes = {}
+    let res = []
+    const lenOne = list1.length
+    const lenTwo = list2.length
+    for (let i = 0; i < lenOne; i++) {
+        const item = list1[i]
+        mapOne[item] = i
+    }
+    for (let i = 0; i < lenTwo; i++) {
+        const item = list2[i]
+        if (mapOne[item] !== undefined) {
+            mapRes[item] = mapOne[item] + i
+        }
+    }
+    // 计算最小索引和  ------  优化点：可以在遍历list2的时候，就计算索引和
+    let min = Infinity
+    Object.keys(mapRes).forEach((key) => {
+        if (mapRes[key] < min) {
+            res = [key]
+            min = mapRes[key]
+        } else if (mapRes[key] === min) {
+            res.push(key)
+        }
+    })
+    return res
+}
 
 /** 区间加法
  * 给你一个 m x n 的矩阵 M 和一个操作数组 op 。
