@@ -29,6 +29,128 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 643. 子数组最大平均数 I
+ * 给你一个由 n 个元素组成的整数数组 nums 和一个整数 k
+ * 请你找出平均数最大且 长度为 k 的连续子数组，并输出该最大平均数
+ * 任何误差小于 10^-5 的答案都将被视为正确答案
+ *
+ * 输入：nums = [1,12,-5,-6,50,3], k = 4  输出：12.75
+ * 解释：最大平均数 (12-5-6+50)/4 = 51/4 = 12.75
+ *
+ * 输入：nums = [5], k = 1  输出：5.00000
+ * @param {number[]} nums
+ * @param {number} k
+ * @return {number}
+ */
+var findMaxAverage = function (nums, k) {
+    if (nums.length === 1) return nums[0]
+    let max = -Infinity
+    let start = 0
+    let baseCount = 0
+    while (start < k) {
+        baseCount += nums[start]
+        start++
+    }
+    max = Math.max(max, baseCount)
+    const len = nums.length
+    while (start < len) {
+        let count = baseCount - nums[start - k] + nums[start]
+        max = Math.max(max, count)
+        start++
+        baseCount = count // 更新 baseCount
+    }
+    return max / k
+
+    /** 会超时 */
+    // let count = 0,
+    //     start = 0,
+    //     len = nums.length,
+    //     maxAverage = -Infinity
+    // for (let i = 0; i <= len - k; i++) {
+    //     count += nums[i]
+    //     start = i + 1
+    //     while (start - i < k) {
+    //         count += nums[start]
+    //         start++
+    //     }
+    //     const average = count / k
+    //     maxAverage = Math.max(maxAverage, average)
+    //     count = 0
+    // }
+    // return maxAverage
+}
+
+/**
+ * 628. 三个数的最大乘积
+ * 给你一个整型数组 nums ，在数组中找出由三个数组成的最大乘积，并输出这个乘积
+ * 输入：nums = [1,2,3]  输出：6
+ * 输入：nums = [1,2,3,4]  输出：24
+ * 输入：nums = [-1,-2,-3]  输出：-6
+ * @param {number[]} nums  3 <= nums.length <= 10^4
+ * @return {number}
+ */
+var maximumProduct = function (nums) {
+    // 三数之和？ 是不是复杂化了
+    // for (let i = 0; i < len; i++) {
+    //     let left = i + 1,
+    //         right = len - 1
+    //     while(left <  right) {}
+    // }
+
+    // 当逻辑题算，就是分成大于0和小于的两组数
+    if (nums.length === 3) return nums[0] * nums[1] * nums[2]
+    const len = nums.length
+    const moreZero = [] // 大于0
+    const lessZero = [] // 小于0
+    let hasZero = false // 是否存在0, 0可能会是最大乘积
+    for (let i = 0; i < len; i++) {
+        if (nums[i] === 0) {
+            hasZero = true
+        } else if (nums[i] > 0) {
+            moreZero.push(nums[i])
+        } else {
+            lessZero.push(nums[i])
+        }
+    }
+    moreZero.sort((a, b) => a - b)
+    lessZero.sort((a, b) => a - b)
+    const moreLen = moreZero.length
+    const lessLen = lessZero.length
+    if (moreLen >= 3) {
+        // 可能两个大负数 * 最大的正数
+        const count = moreZero[moreLen - 2] * moreZero[moreLen - 3]
+        if (lessLen >= 2) {
+            let lessCount = lessZero[0] * lessZero[1]
+            return Math.max(lessCount, count) * moreZero[moreLen - 1]
+        }
+        return count * moreZero[moreLen - 1]
+    }
+    // 正数不够，负数来凑
+    if (lessLen >= 2) {
+        let lessCount = lessZero[0] * lessZero[1]
+        if (moreLen) {
+            return lessCount * moreZero[moreLen - 1]
+        }
+        if (hasZero) return 0
+        return lessZero[lessLen - 1] * lessZero[lessLen - 2] * lessZero[lessLen - 3]
+    }
+    return 0
+
+    /** 换一种思路：
+     * 如果数组中全是非负数，则排序后最大的三个数相乘即为最大乘积；
+     * 如果全是非正数，则最大的三个数相乘同样也为最大乘积
+     *
+     * 如果数组中有正数有负数：
+     * 则最大乘积既可能是三个最大正数的乘积，
+     * 也可能是两个最小负数（即绝对值最大）与最大正数的乘积
+     *
+     * 分别求出三个最大正数的乘积，以及两个最小负数与最大正数的乘积
+     */
+    nums.sort((a, b) => a - b)
+    const n = nums.length
+    return Math.max(nums[0] * nums[1] * nums[n - 1], nums[n - 1] * nums[n - 2] * nums[n - 3])
+}
+
 /** 605. 种花问题
  * 假设有一个很长的花坛，一部分地块种植了花，另一部分却没有。可是，花不能种植在相邻的地块上，它们会争夺水源，两者都会死去
  * 给你一个整数数组 flowerbed 表示花坛，由若干 0 和 1 组成，其中 0 表示没种植花，1 表示种植了花
@@ -81,6 +203,27 @@ var canPlaceFlowers = function (flowerbed, n) {
     //     }
     // }
     // return false;
+
+    // 贪心算法
+    // let count = 0;
+    // const m = flowerbed.length;
+    // let prev = -1;
+    // for (let i = 0; i < m; i++) {
+    //     if (flowerbed[i] === 1) {
+    //         if (prev < 0) {
+    //             count += Math.floor(i / 2);
+    //         } else {
+    //             count += Math.floor((i - prev - 2) / 2);
+    //         }
+    //         prev = i;
+    //     }
+    // }
+    // if (prev < 0) {
+    //     count += (m + 1) / 2;
+    // } else {
+    //     count += (m - prev - 1) / 2;
+    // }
+    // return count >= n;
 }
 
 /** 599. 两个列表的最小索引总和
