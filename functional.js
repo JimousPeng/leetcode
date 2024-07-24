@@ -29,6 +29,89 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 657. 机器人能否返回原点
+ * 在二维平面上，有一个机器人从原点 (0, 0) 开始。给出它的移动顺序，判断这个机器人在完成移动后是否在 (0, 0) 处结束。
+ * 机器人的有效动作有 R（右），L（左），U（上）和 D（下）
+ * 输入: moves = "UD"  输出: true
+ * 解释：机器人向上移动一次，然后向下移动一次。所有动作都具有相同的幅度，因此它最终回到它开始的原点
+ * @param {string} moves 1 <= moves.length <= 2 * 10 ^ 4
+ * moves 只包含字符 'U', 'D', 'L' 和 'R'
+ * @return {boolean}
+ */
+var judgeCircle = function (moves) {
+    let stepMap = {
+        U: 0,
+        D: 0,
+        R: 0,
+        L: 0,
+    }
+    const moveLen = moves.length
+    // "UDDUURLRLLRRUDUDLLRLURLRLRLUUDLULRULRLDDDUDDDDLRRDDRDRLRLURRLLRUDURULULRDRDLURLUDRRLRLDDLUUULUDUUUUL"
+    for (let i = 0; i < moveLen; i++) {
+        const move = moves[i]
+        stepMap[move]++
+    }
+    // 要回到原点，那么必须前进和返回的路径要能互相抵消
+    return stepMap.U === stepMap.D && stepMap.R === stepMap.L
+}
+
+/** 645. 错误的集合
+ * 集合 s 包含从 1 到 n 的整数
+ * 因为数据错误，导致集合里面某一个数字复制了成了集合里面的另外一个数字的值，
+ * 导致集合 丢失了一个数字 并且 有一个数字重复
+ *
+ * 给定一个数组 nums 代表了集合 S 发生错误后的结果。
+ * 请你找出重复出现的整数，再找到丢失的整数，将它们以数组的形式返回。
+ *
+ * 输入：nums = [1,2,2,4]    输出：[2,3]
+ * 输入：nums = [1,1]  输出：[1,2]
+ * @param {number[]} nums  2 <= nums.length <= 10^4
+ * @return {number[]}
+ */
+var findErrorNums = function (nums) {
+    // 效率太慢了，遍历了两轮，还用了 O(n) 的空间复杂度
+    const countMap = {}
+    const len = nums.length
+    for (let i = 0; i < len; i++) {
+        const num = nums[i]
+        if (countMap[num] === undefined) {
+            countMap[num] = 1
+        } else {
+            countMap[num]++
+        }
+    }
+    let repeatNum, misNum
+    for (let i = 0; i < len; i++) {
+        const num = i + 1
+        if (countMap[num] === undefined) {
+            misNum = num
+        }
+        if (countMap[num] > 1) {
+            repeatNum = num
+        }
+    }
+    if (misNum === undefined) {
+        misNum = len
+    }
+    return [repeatNum, misNum]
+
+    // 改造: 求和  1-n 的和 countSum , 与 未去重的数组的和 sum ， 以及 去重后的数组的和 setSumCount
+    // countSum - setSumCount = 缺失的真正元素
+    // sum - setSumCount = 重复的元素
+    const len = nums.length
+    const countSum = ((1 + len) * len) / 2
+    let sum = 0
+    for (let i = 0; i < len; i++) {
+        sum += nums[i]
+    }
+    const setSum = Array.from(new Set(nums))
+    const setSumCount = setSum.reduce((total, num) => {
+        total += num
+        return total
+    }, 0)
+    return [sum - setSumCount, countSum - setSumCount]
+}
+
 /** 643. 子数组最大平均数 I
  * 给你一个由 n 个元素组成的整数数组 nums 和一个整数 k
  * 请你找出平均数最大且 长度为 k 的连续子数组，并输出该最大平均数
