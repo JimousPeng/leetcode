@@ -29,6 +29,73 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 
+ * 674. 最长连续递增序列
+ * 给定一个未经排序的整数数组，找到最长且 连续递增的子序列，并返回该序列的长度。
+ * 输入：nums = [1,3,5,4,7]  输出：3  解释：最长连续递增序列是 [1,3,5], 长度为3。
+ * 尽管 [1,3,5,7] 也是升序的子序列, 但它不是连续的，因为 5 和 7 在原数组里被 4 隔开
+ * 
+ * 输入：nums = [2,2,2,2,2]  输出：1  解释：最长连续递增序列是 [2], 长度为1。
+ * @param {number[]} nums  1 <= nums.length <= 10^4
+ * @return {number}
+ */
+var findLengthOfLCIS = function(nums) {
+
+};
+
+/** 661. 图片平滑器
+ * 
+m == img.length
+n == img[i].length
+1 <= m, n <= 200
+0 <= img[i][j] <= 255
+ * 
+ * [[1,1,1],[1,0,1],[1,1,1]]
+ * 
+ * @param {number[][]} img
+ * @return {number[][]}
+ */
+var imageSmoother = function (img) {
+    // 二维数组, 以下思路是对的，就是会超时
+    const columnLen = img.length
+    const rowLen = img[0].length
+    /** 一定要用个新数组存起来，不然后面的数计算平均值，会被影响 */
+    const res = []
+
+    function sumColumn(row, useRow) {
+        // count[0] = 总数  count[1] = 有效格子数
+        if (!useRow) return [0, 0]
+        let count = [0, 0]
+        count[0] = useRow[row]
+        count[1] = 1
+        if (row - 1 >= 0) {
+            count[0] += useRow[row - 1]
+            count[1]++
+        }
+        if (row + 1 < rowLen) {
+            count[0] += useRow[row + 1]
+            count[1]++
+        }
+        return count
+    }
+
+    for (let i = 0; i < columnLen; i++) {
+        res[i] = []
+        for (let j = 0; j < rowLen; j++) {
+            const curRow = img[i]
+            const lastRow = img[i - 1]
+            const nextRow = img[i + 1]
+            const [curSum, curCount] = sumColumn(j, curRow)
+            const [lastSum, lastCount] = sumColumn(j, lastRow)
+            const [nextSum, nextCount] = sumColumn(j, nextRow)
+            const sumTotal = curSum + lastSum + nextSum
+            const countToal = curCount + lastCount + nextCount
+            res[i][j] = Math.floor(sumTotal / countToal)
+        }
+    }
+    return res
+}
+
 /** 657. 机器人能否返回原点
  * 在二维平面上，有一个机器人从原点 (0, 0) 开始。给出它的移动顺序，判断这个机器人在完成移动后是否在 (0, 0) 处结束。
  * 机器人的有效动作有 R（右），L（左），U（上）和 D（下）
