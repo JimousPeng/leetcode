@@ -29,19 +29,152 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
-/** 
+/**
+ * 693. 交替位二进制数
+ * 给定一个正整数，检查它的二进制表示是否总是 0、1 交替出现
+ * 换句话说，就是二进制表示中相邻两位的数字永不相同。
+ * @param {number} n
+ * @return {boolean}
+ */
+var hasAlternatingBits = function (n) {
+    const binaryStr = n.toString(2)
+    const len = binaryStr.length
+    let left = 0,
+        right = 1
+    while (right < len) {
+        if (binaryStr[left] === binaryStr[right]) return false
+        left++
+        right++
+    }
+    return true
+}
+
+/** 682. 棒球比赛
+ * 你会得到一个记录操作的字符串列表 ops
+ * 其中 ops[i] 是你需要记录的第 i 项操作，ops 遵循下述规则:
+整数 x - 表示本回合新获得分数 x
+"+" - 表示本回合新获得的得分是前两次得分的总和。题目数据保证记录此操作时前面总是存在两个有效的分数。
+"D" - 表示本回合新获得的得分是前一次得分的两倍。题目数据保证记录此操作时前面总是存在一个有效的分数。
+"C" - 表示前一次得分无效，将其从记录中移除。题目数据保证记录此操作时前面总是存在一个有效的分数。
+请你返回记录中所有得分的总和。
+ * 输入：ops = ["5","2","C","D","+"] 输出：30
+"5" - 记录加 5 ，记录现在是 [5]
+"2" - 记录加 2 ，记录现在是 [5, 2]
+"C" - 使前一次得分的记录无效并将其移除，记录现在是 [5].
+"D" - 记录加 2 * 5 = 10 ，记录现在是 [5, 10].
+"+" - 记录加 5 + 10 = 15 ，记录现在是 [5, 10, 15].
+所有得分的总和 5 + 10 + 15 = 30
+ * @param {string[]} operations
+ * @return {number}
+ */
+var calPoints = function (operations) {
+    const len = operations.length
+    const initScore = Number(operations[0])
+    if (len === 1) return initScore
+    // 记录分数： count[0] 倒数第3次  count[1] 倒数第2次  count[3]最近一次
+    let scoreCount = initScore
+    const scoreList = [initScore]
+    for (let i = 1; i < len; i++) {
+        const scoreStr = operations[i]
+        const scoreLen = scoreList.length
+        if (scoreStr === 'C') {
+            // 表示前一次得分无效，将其从记录中移除
+            scoreCount -= scoreList[scoreLen - 1]
+            scoreList.splice(scoreLen - 1, 1)
+        } else if (scoreStr == 'D') {
+            // // 本回合新获得的得分是前一次得分的两倍
+            let score = scoreList[scoreLen - 1] * 2
+            scoreCount += score
+            scoreList.push(score)
+        } else if (scoreStr === '+') {
+            // 本回合新获得的得分是前两次得分的总和
+            let score = scoreList[scoreLen - 1] + scoreList[scoreLen - 2]
+            scoreList.push(score)
+            scoreCount += score
+        } else {
+            // 更新得分
+            let score = Number(scoreStr)
+            scoreList.push(score)
+            scoreCount += score
+        }
+    }
+    return scoreCount
+}
+
+/**
+ * 680. 验证回文串 II
+ * 给你一个字符串 s，最多 可以从中删除一个字符。
+ * 请你判断 s 是否能成为回文字符串：如果能，返回 true ；否则，返回 false
+ *
+ * 输入：s = "aba"  输出：true
+ * 输入：s = "abca" 输出：true  解释：你可以删除字符 'c' 。
+ * 输入：s = "abc"  输出：false
+ *
+ * @param {string} s  1 <= s.length <= 10^5
+ * @return {boolean}
+ */
+var validPalindrome = function (s) {
+    const len = s.length
+    let left = 0,
+        right = len - 1
+
+    function isPalindrome(str) {
+        const len = str.length
+        let left = 0,
+            right = len - 1
+        while (left <= right) {
+            if (str[left] !== str[right]) {
+                return false
+            }
+            left++
+            right--
+        }
+        return true
+    }
+
+    // abca
+    while (left <= right) {
+        if (s[left] === s[right]) {
+            left++
+            right--
+        } else {
+            const leftStr = s.slice(left, right)
+            const rightStr = s.slice(left + 1, right + 1)
+            return isPalindrome(leftStr) || isPalindrome(rightStr)
+        }
+    }
+    return true
+}
+
+/**
  * 674. 最长连续递增序列
  * 给定一个未经排序的整数数组，找到最长且 连续递增的子序列，并返回该序列的长度。
  * 输入：nums = [1,3,5,4,7]  输出：3  解释：最长连续递增序列是 [1,3,5], 长度为3。
  * 尽管 [1,3,5,7] 也是升序的子序列, 但它不是连续的，因为 5 和 7 在原数组里被 4 隔开
- * 
+ *
  * 输入：nums = [2,2,2,2,2]  输出：1  解释：最长连续递增序列是 [2], 长度为1。
  * @param {number[]} nums  1 <= nums.length <= 10^4
  * @return {number}
  */
-var findLengthOfLCIS = function(nums) {
+var findLengthOfLCIS = function (nums) {
+    // 连续，最长
 
-};
+    const len = nums.length
+    let max = 1,
+        count = 1
+
+    for (let i = 1; i < len; i++) {
+        if (nums[i] > nums[i - 1]) {
+            count++
+        } else {
+            count = 1
+            max = Math.max(max, count)
+        }
+    }
+    // 有可能最后一项也是递增的一部分,那么在循环中就走不到else分支，所以最后要比较一下； eg: [1,3,5,4,7]
+    return Math.max(max, count)
+    // return max
+}
 
 /** 661. 图片平滑器
  * 
