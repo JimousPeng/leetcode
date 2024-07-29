@@ -29,6 +29,157 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 703. 数据流中的第 K 大元素
+输入：
+["KthLargest", "add", "add", "add", "add", "add"]
+[[3, [4, 5, 8, 2]], [3], [5], [10], [9], [4]]
+输出：
+[null, 4, 5, 5, 8, 8]
+
+解释：
+KthLargest kthLargest = new KthLargest(3, [4, 5, 8, 2]);
+kthLargest.add(3);   // return 4
+kthLargest.add(5);   // return 5
+kthLargest.add(10);  // return 5
+kthLargest.add(9);   // return 8
+kthLargest.add(4);   // return 8
+/**
+ * @param {number} k
+ * @param {number[]} nums
+ */
+var KthLargest = function (k, nums) {
+    this.sortMax = k
+    nums.sort((a, b) => b - a) // 倒叙
+    this.sortList = nums.slice(0, k + 1)
+}
+
+/**
+ * @param {number} val
+ * @return {number}
+ */
+KthLargest.prototype.add = function (val) {
+    this.sortList.push(val)
+    this.sortList.sort((a, b) => b - a)
+    this.sortList = this.sortList.slice(0, k + 1)
+    return this.sortList[k - 1]
+}
+
+/** 697. 数组的度
+ * 给定一个非空且只包含非负数的整数数组 nums
+ *
+ * 数组的 度 的定义是指数组里任一元素出现频数的最大值
+ *
+ * 你的任务是在 nums 中找到与 nums 拥有相同大小的度的最短连续子数组，返回其长度
+ *
+ * 输入：nums = [1,2,2,3,1]  输出：2
+ * 解释：输入数组的度是 2 ，因为元素 1 和 2 的出现频数最大，均为 2 ,
+ * 连续子数组里面拥有相同度的有如下所示：
+ * [1, 2, 2, 3, 1], [1, 2, 2, 3], [2, 2, 3, 1], [1, 2, 2], [2, 2, 3], [2, 2]
+ * 最短连续子数组 [2, 2] 的长度为 2 ，所以返回 2 。
+ *
+ * 输入：nums = [1,2,2,3,1,4,2] 输出：6
+ * 解释： 数组的度是 3 ，因为元素 2 重复出现 3 次。 所以 [2,2,3,1,4,2] 是最短子数组，因此返回 6 。
+ * @param {number[]} nums  nums.length 在 1 到 50,000 范围内
+ * @return {number}  nums[i] 是一个在 0 到 49,999 范围内的整数
+ */
+var findShortestSubArray = function (nums) {
+    if (nums.length === 1) return 1
+
+    // 先找到度
+
+    const len = nums.length
+    const countMap = {}
+    for (let i = 0; i < len; i++) {
+        const num = nums[i]
+        if (countMap[num] === undefined) {
+            // countMap[num][0] - 统计频率  countMap[num][1] - 起始下标  countMap[num][2] - 终点下标
+            countMap[num] = [1, i, i]
+        } else {
+            countMap[num][0]++
+            countMap[num][2] = i
+        }
+    }
+
+    // useCount[0] 出现的最大频率， useCount[1] 出现的频率对应的数的长度
+    const useCount = [-1, Infinity]
+
+    Object.keys(countMap).forEach((key) => {
+        const countArr = countMap[key]
+        const dif = countArr[2] - countArr[1] + 1
+        if (countArr[0] > useCount[0] || (countArr[0] === useCount[0] && dif < useCount[1])) {
+            useCount[0] = countArr[0]
+            useCount[1] = dif
+        }
+    })
+
+    return useCount[1]
+}
+
+/** 696. 计数二进制子串
+ * 给定一个字符串 s，统计并返回具有相同数量 0 和 1 的非空（连续）子字符串的数量
+ * 并且这些子字符串中的所有 0 和所有 1 都是成组连续的
+ * 重复出现（不同位置）的子串也要统计它们出现的次数
+ *
+ * 输入：s = "00110011"  输出：6
+ * 解释：6 个子串满足具有相同数量的连续 1 和 0 ："0011"、"01"、"1100"、"10"、"0011" 和 "01" 。
+ * 注意，一些重复出现的子串（不同位置）要统计它们出现的次数。
+ * 另外，"00110011" 不是有效的子串，因为所有的 0（还有 1 ）没有组合在一起。
+ *
+ * 输入：s = "10101"  输出：4
+ * 解释：有 4 个子串："10"、"01"、"10"、"01" ，具有相同数量的连续 1 和 0 。
+ * @param {string} s  1 <= s.length <= 10^5
+ * @return {number}
+ */
+var countBinarySubstrings = function (s) {
+    // 0 和 1 不能交替出现，在一个子串中只能是连续的0和连续的1，且0和1的数量相同
+
+    const len = s.length
+    let res = 0
+    // count[0]表示上一个数的个数， count[1]表示当前数的个数
+    let count = [0, 1]
+    let left = 1
+    while (left < len) {
+        if (s[left] === s[left - 1]) {
+            count[1]++
+        } else {
+            const useCount = Math.min(count[0], count[1])
+            res += useCount
+            count[0] = count[1]
+            count[1] = 1
+        }
+        left++
+    }
+    const useCount = Math.min(count[0], count[1])
+    res += useCount
+    return res
+
+    // 利用消消乐的模式， 遇到 0 = -1， 遇到 1 ++  ；  会超时
+    // const len = s.length
+    // let res = 0
+    // for (let i = 0; i < len - 1; i++) {
+    //     let curStr = s[i]
+    //     let right = i + 1
+    //     let count = Number(curStr) || -1
+    //     while (s[right] === curStr) {
+    //         const rightStr = Number(s[right]) || -1
+    //         count += rightStr
+    //         right++
+    //     }
+    // 00001111
+    //     // "00110011"  => 6
+    //     // 000111000 => 6 要注意 0011 和 1100
+    //     while (s[right] && s[right] !== curStr) {
+    //         let rightStr = Number(s[right]) || -1
+    //         count += rightStr
+    //         if (count === 0) {
+    //             res++
+    //         }
+    //         right++
+    //     }
+    // }
+    // return res
+}
+
 /**
  * 693. 交替位二进制数
  * 给定一个正整数，检查它的二进制表示是否总是 0、1 交替出现
