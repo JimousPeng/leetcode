@@ -29,6 +29,80 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 128. 最长连续序列
+ * 给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度
+ *
+ * 请你设计并实现时间复杂度为 O(n) 的算法解决此问题
+ *
+ * 输入：nums = [100,4,200,1,3,2]  输出：4 解释：最长数字连续序列是 [1, 2, 3, 4]。它的长度为 4。
+ *
+ * 输入：nums = [0,3,7,2,5,8,4,6,0,1]  输出：9
+ * @param {number[]} nums  0 <= nums.length <= 10^5
+ * @return {number}  -10^9 <= nums[i] <= 10^9  *存在负数
+ */
+var longestConsecutive = function (nums) {
+    // 如果是有序的那么一次遍历就很方便，无序数组，如何在时间复杂度O(n)的前提下实现呢
+    const len = nums.length
+    if (len <= 1) return len
+
+    // 定义一个保存当前遍历数的hash表
+    const nearByMap = {}
+    for (let i = 0; i < len; i++) {
+        const num = nums[i]
+        // 先处理hash表状态 - item[0]:是否存在前序节点  item[1]: 当前节点是否存在  item[2:]: 是否存在后续节点
+        if (nearByMap[num]) {
+            nearByMap[num][1] = 1
+        } else {
+            nearByMap[num] = [0, 1, 0]
+        }
+
+        if (nearByMap[num - 1]) {
+            nearByMap[num - 1][2] = 1 // num-1的后置节点更新
+        } else {
+            nearByMap[num - 1] = [0, 0, 1]
+        }
+
+        if (nearByMap[num + 1]) {
+            nearByMap[num + 1][0] = 1 // num+1的前置节点更新
+        } else {
+            nearByMap[num + 1] = [1, 0, 0]
+        }
+    }
+
+    // 遍历hash表找出最大序列长度
+    let res = 1
+    const crossMap = {} // 空间换时间：遍历过的序列，就不重复遍历了
+    const numList = Object.keys(nearByMap)
+    const numLen = numList.length
+    for (let i = 0; i < numLen; i++) {
+        // 这里不转换成Num，在处理负数的时候会有问题，'-1'+1 = '-11'，在处理 nextNum 的时候，会出问题
+        const num = Number(numList[i]) 
+
+        if (!nearByMap[num][1]) continue // 当前数不存在nums数组中，跳过
+        if (crossMap[num]) continue // 遍历过的数跳过
+
+        let lastNum = num - 1,
+            nextNum = num + 1,
+            countNum = 1
+        while (nearByMap[lastNum] && nearByMap[lastNum][1]) {
+            countNum++
+            if (!nearByMap[lastNum][0]) break
+            crossMap[lastNum] = true
+            lastNum--
+        }
+        while (nearByMap[nextNum] && nearByMap[nextNum][1]) {
+            countNum++
+            if (!nearByMap[nextNum][2]) break
+            crossMap[nextNum] = true
+            nextNum++
+        }
+        res = Math.max(res, countNum)
+        crossMap[num] = true
+    }
+
+    return res
+}
+
 /** 703. 数据流中的第 K 大元素
 输入：
 ["KthLargest", "add", "add", "add", "add", "add"]
