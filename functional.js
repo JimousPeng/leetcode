@@ -42,10 +42,33 @@ var permuteUnique = function (nums) {
  * @return {number}
  */
 var findDuplicate = function (nums) {
+    // 快慢指针
+    let slow = 0,
+        fast = 0
+    do {
+        slow = nums[slow]
+        fast = nums[nums[fast]]
+    } while (slow != fast)
+    slow = 0
+    while (slow != fast) {
+        slow = nums[slow]
+        fast = nums[fast]
+    }
+    return slow
+
     // 1. 不修改数组
     // 2. 存在至少一个重复的整数 >= 1
     // 3. 常量级O(1)的空间复杂度
-    
+
+    // 空间复杂度应该不是0(1)
+    // const len = nums.length
+    // if (len <= 2) return nums[0]
+    // const hasMap = {}
+    // for (let i = 0; i < len; i++) {
+    //     if (hasMap[nums[i]]) return nums[i]
+    //     hasMap[nums[i]] = true
+    // }
+
     // const len = nums.length
     // 题目要求：必须 不修改 数组 nums
     // nums.sort((a, b) => a - b)
