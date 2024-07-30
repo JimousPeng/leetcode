@@ -29,6 +29,32 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 287. 寻找重复数
+ * 给定一个包含 n + 1 个整数的数组 nums
+ * 其数字都在 [1, n] 范围内（包括 1 和 n），可知至少存在一个重复的整数。
+ * 假设 nums 只有 一个重复的整数 ，返回 这个重复的数
+ * 你设计的解决方案必须 不修改 数组 nums 且只用常量级 O(1) 的额外空间
+ *
+ * 输入：nums = [1,3,4,2,2] 输出：2
+ * 输入：nums = [3,1,3,4,2] 输出：3
+ * 输入：nums = [3,3,3,3,3] 输出：3
+ * @param {number[]} nums
+ * @return {number}
+ */
+var findDuplicate = function (nums) {
+    // 1. 不修改数组
+    // 2. 存在至少一个重复的整数 >= 1
+    // 3. 常量级O(1)的空间复杂度
+    
+    // const len = nums.length
+    // 题目要求：必须 不修改 数组 nums
+    // nums.sort((a, b) => a - b)
+    // for (let i = 0; i < len - 1; i++) {
+    //     if (nums[i] === nums[i + 1]) {
+    //         return nums[i]
+    //     }
+    // }
+}
 /** 128. 最长连续序列
  * 给定一个未排序的整数数组 nums ，找出数字连续的最长序列（不要求序列元素在原数组中连续）的长度
  *
@@ -76,7 +102,7 @@ var longestConsecutive = function (nums) {
     const numLen = numList.length
     for (let i = 0; i < numLen; i++) {
         // 这里不转换成Num，在处理负数的时候会有问题，'-1'+1 = '-11'，在处理 nextNum 的时候，会出问题
-        const num = Number(numList[i]) 
+        const num = Number(numList[i])
 
         if (!nearByMap[num][1]) continue // 当前数不存在nums数组中，跳过
         if (crossMap[num]) continue // 遍历过的数跳过
