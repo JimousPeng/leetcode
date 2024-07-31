@@ -109,24 +109,37 @@ var permuteUnique = function (nums) {
  * @return {number}
  */
 var orangesRotting = function (grid) {
+
+
+    /** 思路总结：
+     * 1. 在遍历中，统计好橘子的个数，更新腐败橘子周边橘子时，计算污染的个数
+     *    最后对比个数差，来判断是否有永远不会污染的橘子
+     * 2. 由于腐烂的橘子存在多个，所以要用数组保存被污染的橘子，然后通过轮数
+     *    污染周边新鲜橘子，并将新鲜橘子的坐标存入到当前腐烂橘子的数组中，每次
+     *    污染都清空当前轮数下的腐烂橘子坐标数，知道没有新橘子被污染
+     * 3. 统计最终的被污染的橘子数和新鲜橘子树，如果有新橘子未被污染，则返回-1
+     *    
+     * 
+     */
+
     // 行数列数都在 [1, 10] 区间内
     const rowLen = grid.length
     const colLen = grid[0].length
 
-    let lastNever = false
-    if (colLen === 1) {
-        // 针对单列情况特殊处理
-        for (let i = 0; i < rowLen; i++) {
-            const row = grid[i]
-            if (row[0] == 0) {
-                lastNever = true
-            } else if (row[0] === 2) {
-                lastNever = false
-            } else {
-                if (lastNever && i === rowLen - 1) return -1
-            }
-        }
-    }
+    // let lastNever = false
+    // if (colLen === 1) {
+    //     // 针对单列情况特殊处理
+    //     for (let i = 0; i < rowLen; i++) {
+    //         const row = grid[i]
+    //         if (row[0] == 0) {
+    //             lastNever = true
+    //         } else if (row[0] === 2) {
+    //             lastNever = false
+    //         } else {
+    //             if (lastNever && i === rowLen - 1) return -1
+    //         }
+    //     }
+    // }
 
     let count = 0,
         existNerver = false,
