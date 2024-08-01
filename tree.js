@@ -25,6 +25,69 @@
 8
  */
 
+/** 437. 路径总和 III
+ * 给定一个二叉树的根节点 root ，和一个整数 targetSum ，求该二叉树里节点值之和等于 targetSum 的 路径 的数目
+ * 路径 不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）
+ * 二叉树的节点个数的范围是 [0,1000]
+ * @param {TreeNode} root -109 <= Node.val <= 109
+ * @param {number} targetSum
+ * @return {number}
+ */
+var pathSum = function (root, targetSum) {
+    /**
+     * 路径求和II区别：
+     * 1. 只需要计算数目，不需要返回路径
+     * 2. 不需要从根节点开始，也不需要在叶子节点结束
+     *
+     * 关键点：
+     * 1. 由于节点值可能是负数，所以一条线路上可能存在多个解，所以单次递归处理路径和获得targetSum后，还不能直接结束
+     * 需要以路径为key，保存当前求和为targetSum的路径
+     * 2. 是否存在不同子节点分支，但是路径值一样的路径呢？ ----> 那么保证是同一个index就行
+     */
+
+    // 减法运算
+
+    if (root === null) return 0
+    let res = nodeSum(root, targetSum)
+    // 对两条子树进行 pathSum
+    res += pathSum(root.left, targetSum)
+    res += pathSum(root.right, targetSum)
+
+    function nodeSum(node, target) {
+        let count = 0
+        if (node === null) return 0
+        const val = node.val
+        if (val === target) {
+            count++
+        }
+        count += nodeSum(node.left, target - val)
+        count += nodeSum(node.right, target - val)
+        return count
+    }
+    return res
+
+    // 求加法
+    // let res = 0
+    // function dfs(root, sum) {
+    //     if (root === null) return
+    //     if (root.val === targetSum) res++
+    //     if (sum.length) {
+    //         sum = sum.map((count) => {
+    //             const sumCur = count + root.val
+    //             if (sumCur === targetSum) res++
+    //             return sumCur
+    //         })
+    //         sum.push(root.val)
+    //     } else {
+    //         sum = [root.val]
+    //     }
+    //     dfs(root.left, [...sum])
+    //     dfs(root.right, [...sum])
+    // }
+    // dfs(root, [])
+    // return res
+}
+
 /** 113. 路径总和 II
  * 给你二叉树的根节点 root 和一个整数目标和 targetSum ，找出所有 从根节点到叶子节点 路径总和等于给定目标和的路径
  * 叶子节点 是指没有子节点的节点
