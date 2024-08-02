@@ -29,6 +29,110 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/** 705. 设计哈希集合 */
+function designHashMap() {
+    // 输入：
+    // ["MyHashSet", "add", "add", "contains", "contains", "add", "contains", "remove", "contains"]
+    // [[], [1], [2], [1], [3], [2], [2], [2], [2]]
+    // 输出：
+    // [null, null, null, true, false, null, true, null, false]
+
+    // 解释：
+    // MyHashSet myHashSet = new MyHashSet();
+    // myHashSet.add(1);      // set = [1]
+    // myHashSet.add(2);      // set = [1, 2]
+    // myHashSet.contains(1); // 返回 True
+    // myHashSet.contains(3); // 返回 False ，（未找到）
+    // myHashSet.add(2);      // set = [1, 2]
+    // myHashSet.contains(2); // 返回 True
+    // myHashSet.remove(2);   // set = [1]
+    // myHashSet.contains(2); // 返回 False ，（已移除）
+
+    var MyHashSet = function () {
+        this.stack = []
+    }
+
+    /**
+     *  向哈希集合中插入值 key
+     * @param {number} key
+     * @return {void}
+     */
+    MyHashSet.prototype.add = function (key) {
+        if (this.stack.includes(key)) return
+        this.stack.push(key)
+    }
+
+    /**
+     * 将给定值 key 从哈希集合中删除。如果哈希集合中没有这个值，什么也不做
+     * @param {number} key
+     * @return {void}
+     */
+    MyHashSet.prototype.remove = function (key) {
+        const getIndex = this.stack.findIndex((item) => item === key)
+        if (getIndex > -1) {
+            this.stack.splice(getIndex, 1)
+        }
+    }
+
+    /**
+     * 返回哈希集合中是否存在这个值 key
+     * @param {number} key
+     * @return {boolean}
+     */
+    MyHashSet.prototype.contains = function (key) {
+        return this.stack.includes(key)
+    }
+
+    /** hash的前提需要有key，上面对key实现 */
+    var MyHashSet = function () {
+        this.BASE = 769
+        this.data = new Array(this.BASE).fill(0).map(() => new Array())
+    }
+
+    MyHashSet.prototype.add = function (key) {
+        const h = this.hash(key)
+        for (const element of this.data[h]) {
+            if (element === key) {
+                return
+            }
+        }
+        this.data[h].push(key)
+    }
+
+    MyHashSet.prototype.remove = function (key) {
+        const h = this.hash(key)
+        const it = this.data[h]
+        for (let i = 0; i < it.length; ++i) {
+            if (it[i] === key) {
+                it.splice(i, 1)
+                return
+            }
+        }
+    }
+
+    MyHashSet.prototype.contains = function (key) {
+        const h = this.hash(key)
+        for (const element of this.data[h]) {
+            if (element === key) {
+                return true
+            }
+        }
+        return false
+    }
+
+    MyHashSet.prototype.hash = function (key) {
+        return key % this.BASE
+    }
+}
+
+/**
+ * Your MyHashSet object will be instantiated and called as such:
+ * var obj = new MyHashSet()
+ * obj.add(key)
+ * obj.remove(key)
+ * var param_3 = obj.contains(key)
+ */
+
 /**
  * 94. 腐烂的橘子
  * 在给定的 m x n 网格 grid 中，每个单元格可以有以下三个值之一
@@ -109,8 +213,6 @@ var permuteUnique = function (nums) {
  * @return {number}
  */
 var orangesRotting = function (grid) {
-
-
     /** 思路总结：
      * 1. 在遍历中，统计好橘子的个数，更新腐败橘子周边橘子时，计算污染的个数
      *    最后对比个数差，来判断是否有永远不会污染的橘子
@@ -118,8 +220,8 @@ var orangesRotting = function (grid) {
      *    污染周边新鲜橘子，并将新鲜橘子的坐标存入到当前腐烂橘子的数组中，每次
      *    污染都清空当前轮数下的腐烂橘子坐标数，知道没有新橘子被污染
      * 3. 统计最终的被污染的橘子数和新鲜橘子树，如果有新橘子未被污染，则返回-1
-     *    
-     * 
+     *
+     *
      */
 
     // 行数列数都在 [1, 10] 区间内
