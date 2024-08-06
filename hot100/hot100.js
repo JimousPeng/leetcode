@@ -389,3 +389,20 @@ var maxArea = function (height) {
     }
     return res
 }
+
+/**
+ * 15. 三数之和
+ * @param {number[]} nums  3 <= nums.length <= 3000
+ * @return {number[][]}
+ */
+var threeSum = function (nums) {
+    /**
+     * 整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0
+     * 返回所有和为 0 且不重复的三元组
+     *
+     * 输入：nums = [-1,0,1,2,-1,-4] 输出：[[-1,-1,2],[-1,0,1]]
+     * 注意，输出的顺序和三元组的顺序并不重要。
+     *
+     * 输入：nums = [0,0,0] 输出：[[0,0,0]]
+     */
+}
