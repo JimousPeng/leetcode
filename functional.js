@@ -48,7 +48,23 @@ var isOneBitCharacter = function (bits) {
     // 输出：false
     // 解释：唯一的解码方式是将其解析为两比特字符和两比特字符。
     // 所以最后一个字符不是一比特字符。
-    
+
+    /** 思路：
+     * 如果要保证最后一个字符不是一比特字符，那么一定要保证在最后一个0之前的连续1是偶数个
+     */
+    const len = bits.length
+    let count = 0
+    let tail = len - 2
+    // 如果倒数第二个也是0，那么最后一个字符必须是一个一比特字符
+    // 因为0只能单独存在
+    if (bits[tail] === 0) return true
+    // 统计连续1的个数
+    while (bits[tail] !== undefined && bits[tail] === 1) {
+        count++
+        tail--
+    }
+    // 如果最后一个字符必须是一个一比特字符，则返回 true
+    return count % 2 === 0
 }
 
 /** 706. 设计哈希映射 */

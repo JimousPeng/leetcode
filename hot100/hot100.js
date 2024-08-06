@@ -364,4 +364,28 @@ var moveZeroes = function (nums) {
  * @param {number[]} height  2 <= height.length <= 10^5    0 <= height[i] <= 10^4
  * @return {number}
  */
-var maxArea = function (height) {}
+var maxArea = function (height) {
+    /**
+     * 容器的水量 = 容器的h * 容器的w
+     * Math.min(height[left], height[right]) * (right - left)
+     */
+    const len = height.length
+    if (len === 2) return Math.min(height[0], height[1])
+
+    let left = 0,
+        right = len - 1,
+        res = 0
+    while (left < right) {
+        const volumn = Math.min(height[left], height[right]) * (right - left)
+        res = Math.max(res, volumn)
+        // 每次移动短边
+        // 因为每次移动意味着width减少，那么用高度来弥补移动带来的损失，
+        // 才有可能找到比当前更大的容量的可能性
+        if (height[left] > height[right]) {
+            right--
+        } else {
+            left++
+        }
+    }
+    return res
+}
