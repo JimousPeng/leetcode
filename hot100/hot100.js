@@ -6,12 +6,17 @@
  *    比如在 [128. 最长连续序列 ] 中，利用hash表存当前序列的三个坐标，[左点位，当前点位， 右点位]
  * 3. 合理列用Set数据结构对数组遍历结果去重
  *
+ * 滑动窗口：
+ * 算法开始时，两个指针通常都指向数据结构的起始位置；然后，右指针right不断向右移动，扩大窗口，直到满足某个特定条件。
+ * 一旦满足条件，左指针left可能会移动，缩小窗口，直到再次满足另一条件或窗口达到合适的大小。
+ * 这个过程会一直重复，直到右指针right达到数据结构的末尾
+ *
  * 细节处理：
  * 1. 不确定类型时，判断用 if(hash[key] !== undefined) 代替 if(hash[key]); 值可能为0, 或者空字符串''
  * 2. 哈希表可以用来做循环遍历中的剪枝操作，对于操作过的数如果需要跳过，可通过hash处理
  * 3. while循环记得更新终止条件，否则容易提交超时
  * 4. 将数组类型的值存入对象中时，通过Object.keys拿到的key是string类型，如果后续要进行计算操作，一定要做类型转换
- *
+ * 5. 数组边界处理时，要小心数字类型存在0时会隐式转换为false, 所以用 !== undefined 替换
  */
 
 /**
@@ -405,4 +410,145 @@ var threeSum = function (nums) {
      *
      * 输入：nums = [0,0,0] 输出：[[0,0,0]]
      */
+
+    /** 思路
+     * 三数之和的需求是从数组中找出不重复的三数之和为目标值的集合
+     * 三数之和的底层逻辑可以转化为两数之和
+     * 要注意的是处理去重，一个是外层对target的去重，一个是对两数之和求值的去重
+     * 当然，判断边界的是要注意0会隐式转换为false，所以需要用undefined处理
+     */
+    nums.sort((a, b) => a - b)
+    const len = nums.length
+    const res = []
+    for (let i = 0; i < len; i++) {
+        // targe也需要去重
+        if (i > 0 && nums[i] === nums[i - 1]) continue
+        // 两数之和的target为 -nums[i]，则保证 target + nums[i] = 0
+        const target = -nums[i]
+        let left = i + 1,
+            right = len - 1
+        while (left < right) {
+            const sum = nums[left] + nums[right]
+            if (sum > target) {
+                right--
+            } else if (sum === target) {
+                res.push([nums[i], nums[left], nums[right]])
+                // 要处理去重
+                while (nums[left + 1] !== undefined && nums[left + 1] === nums[left]) {
+                    left++
+                }
+                while (nums[right - 1] !== undefined && nums[right - 1] === nums[right]) {
+                    right--
+                }
+                left++
+                right--
+            } else {
+                left++
+            }
+        }
+    }
+    return res
+}
+
+/**
+ * 3. 无重复字符的最长子串
+ * 给定一个字符串 s ，请你找出其中不含有重复字符的 最长 子串 的长度
+ * @param {string} s  0 <= s.length <= 5 * 10^4
+ * @return {number}  s 由英文字母、数字、符号和空格组成
+ */
+var lengthOfLongestSubstring = function (s) {
+    // 示例 1:
+    // 输入: s = "abcabcbb"
+    // 输出: 3
+    // 解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+    // 示例 2:
+    // 输入: s = "bbbbb"
+    // 输出: 1
+    // 解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+    // 示例 3:
+    // 输入: s = "pwwkew"
+    // 输出: 3
+    // 解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+    //      请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+
+    // 思路：遍历字符的每一个单位，往两边构建新的无重复字符，并统计新字符长度，然后更新构建后的最大字符长度
+    function generateStr() {
+        const len = s.length
+        if (!s) return 0
+        let max = 0
+        for (let i = 0; i < len; i++) {
+            const str = s[i]
+            let prev = i - 1
+            let next = i + 1
+            let count = 1
+            let strSet = new Set()
+            strSet.add(str)
+            // 往前构建
+            while (prev >= 0 && !strSet.has(s[prev])) {
+                strSet.add(s[prev])
+                count++
+                prev--
+            }
+            // 向后构建
+            while (next < len && !strSet.has(s[next])) {
+                strSet.add(s[next])
+                count++
+                next++
+            }
+            if (count > max) {
+                max = count
+            }
+        }
+        return max
+    }
+
+    // 滑动窗口
+    function slideWindow() {
+        let res = 0
+        const len = s.length
+        const strSet = new Set()
+        if (!s) return 0
+        for (let left = 0, right = 0; right < len; right++) {
+            // 每轮右端点往右加
+            const str = s[right]
+            while (strSet.has(str)) {
+                // 缩小左窗口，直达当前右节点无重复字符
+                strSet.delete(s[left])
+                left++
+            }
+            strSet.add(str)
+            res = Math.max(res, right - left + 1)
+        }
+        return res
+    }
+
+    return generateStr()
+}
+
+/**
+ * 438. 找到字符串中所有字母异位词
+ * @param {string} s  1 <= s.length, p.length <= 3 * 10^4
+ * @param {string} p  s 和 p 仅包含小写字母
+ * @return {number[]}
+ */
+var findAnagrams = function (s, p) {
+    //     给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序
+    //     异位词 指由相同字母重排列形成的字符串（包括相同的字符串）
+    // 示例 1:
+    // 输入: s = "cbaebabacd", p = "abc"
+    // 输出: [0,6]
+    // 解释:
+    // 起始索引等于 0 的子串是 "cba", 它是 "abc" 的异位词。
+    // 起始索引等于 6 的子串是 "bac", 它是 "abc" 的异位词。
+    //  示例 2:
+    // 输入: s = "abab", p = "ab"
+    // 输出: [0,1,2]
+    // 解释:
+    // 起始索引等于 0 的子串是 "ab", 它是 "ab" 的异位词。
+    // 起始索引等于 1 的子串是 "ba", 它是 "ab" 的异位词。
+    // 起始索引等于 2 的子串是 "ab", 它是 "ab" 的异位词。
+
+    // 滑动窗口实现
+    function slideWindow() {}
+    return slideWindow()
 }

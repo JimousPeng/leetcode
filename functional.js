@@ -29,6 +29,24 @@ var permuteUnique = function (nums) {
     console.error('---------- aiden --------------', res)
 }
 
+/**
+ * 728. 自除数
+ * @param {number} left
+ * @param {number} right
+ * @return {number[]}  1 <= left <= right <= 10^4
+ */
+var selfDividingNumbers = function (left, right) {
+    // 自除数 是指可以被它包含的每一位数整除的数
+    // 例如，128 是一个 自除数 ，因为 128 % 1 == 0，128 % 2 == 0，128 % 8 == 0。
+    // 给定两个整数 left 和 right ，返回一个列表，列表的元素是范围 [left, right] 内所有的 自除数
+    //     示例 1：
+    // 输入：left = 1, right = 22
+    // 输出：[1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 15, 22]
+    //     示例 2:
+    // 输入：left = 47, right = 85
+    // 输出：[48,55,66,77]
+}
+
 /** 724. 寻找数组的中心下标
  * @param {number[]} nums
  * @return {number}
@@ -48,6 +66,41 @@ var pivotIndex = function (nums) {
      * 输入：nums = [2, 1, -1] 输出：0
      * 左侧数之和 sum = 0 ，（下标 0 左侧不存在元素）， 右侧数之和 sum = nums[1] + nums[2] = 1 + -1 = 0
      */
+    /**
+     * 找出中心下标，其左侧所有元素相加的和等于右侧所有元素相加的和，如果不存在则返回 -1
+     * 左侧和与右侧和相加
+     */
+    const len = nums.length
+    let leftCount = 0
+    let rightCount = 0
+    let left = 0
+    let right = 1
+    // 假设从左边第一个下标开始，先算出右侧所有元素之和
+    while (right < len) {
+        rightCount += nums[right]
+        right++
+    }
+    while (left < len) {
+        if (left > 0) {
+            leftCount += nums[left - 1]
+            rightCount -= nums[left]
+        }
+        // 先更新 leftCount 和 rightCount 再对比
+        if (leftCount === rightCount) return left
+        left++
+    }
+    return -1
+
+    // 前缀和官方思路 sum=total−nums[i] ​ −sum，即 2×sum+nums[i] ​ =total
+    const total = nums.reduce((a, b) => a + b, 0)
+    let sum = 0
+    for (let i = 0; i < nums.length; i++) {
+        if (2 * sum + nums[i] === total) {
+            return i
+        }
+        sum += nums[i]
+    }
+    return -1
 }
 
 /** 717. 1 比特与 2 比特字符
