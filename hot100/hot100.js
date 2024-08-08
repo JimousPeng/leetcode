@@ -548,7 +548,111 @@ var findAnagrams = function (s, p) {
     // 起始索引等于 1 的子串是 "ba", 它是 "ab" 的异位词。
     // 起始索引等于 2 的子串是 "ab", 它是 "ab" 的异位词。
 
-    // 滑动窗口实现
-    function slideWindow() {}
-    return slideWindow()
+    // 滑动窗口实现 - 会超时
+    // 当p和s的字符长度很大，如果避免超时呢
+    function slideWindow() {
+        let res = []
+        const strlen = p.length
+        const baseStr = p.split('').sort().join('')
+        const len = s.length
+        let strStack = []
+        for (let left = 0, right = 0; right < len; right++) {
+            strStack.push(s[right])
+            if (strStack.length === strlen) {
+                // 这里的排序会影响后面的 shift
+                const sortList = strStack.slice(0)
+                const curStr = sortList.sort().join('')
+                if (curStr === baseStr) {
+                    res.push(left)
+                }
+                strStack.shift()
+                left++
+            }
+        }
+        return res
+    }
+
+    /** hash表处理，也是利用消消乐的方式 */
+    function useHash() {
+        let res = []
+
+        /** 先处理字符p */
+        const pLen = p.length
+        const pMap = {} // 字符p的hash表
+        for (let str of p) {
+            if (pMap[str] !== undefined) {
+                pMap[str]++
+            } else {
+                pMap[str] = 1
+            }
+        }
+
+        // 接着处理字符s
+        let sMap = {} // 字符s的hash表
+        const sLen = s.length
+
+        // 对比两个hash数据
+        function compareMap() {
+            for (const str in pMap) {
+                if (sMap[str] != pMap[str]) {
+                    return false
+                }
+            }
+            return true
+        }
+
+        function updateNum(str) {
+            if (sMap[str]) {
+                sMap[str]++
+            } else {
+                sMap[str] = 1
+            }
+        }
+
+        function delNum(str) {
+            sMap[str]--
+            if (sMap[str] === 0) {
+                delete sMap[str]
+            }
+        }
+
+        for (let left = 0, right = 0; right < sLen; right++) {
+            /**
+             * 需要重置的场景：
+             * 1. 遇到不在 pStr 中的字符
+             */
+            const str = s[right]
+            if (pMap[str] === undefined) {
+                left = right + 1
+                sMap = {}
+                continue
+            }
+            updateNum(str)
+            if (right - left + 1 < pLen) continue
+            if (compareMap()) {
+                res.push(left)
+            }
+            delNum(s[left])
+            left++
+        }
+        return res
+    }
+    return useHash()
+}
+
+/**
+ * 560. 和为 K 的子数组
+ * @param {number[]} nums  1 <= nums.length <= 2 * 10^4
+ * @param {number} k
+ * @return {number}
+ */
+var subarraySum = function (nums, k) {
+    //     给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数
+    //     子数组是数组中元素的连续非空序列
+    // 示例 1：
+    // 输入：nums = [1,1,1], k = 2
+    // 输出：2
+    // 示例 2：
+    // 输入：nums = [1,2,3], k = 3
+    // 输出：2
 }
