@@ -56,6 +56,51 @@ var minCostClimbingStairs = function (cost) {
     // - 支付 1 ，向上爬两个台阶，到达下标为 9 的台阶。
     // - 支付 1 ，向上爬一个台阶，到达楼梯顶部。
     // 总花费为 6 。
+
+    /** 贪心算法试试：向上爬一个还是两个，取决于爬哪个花费更少
+     * 会有问题
+     */
+    function useGreedy() {
+        let start = 0
+        function compareNum(i, j) {
+            if (cost[i] < cost[j]) return j
+            return i
+        }
+    }
+
+    /** 动态规划实现
+     * dp[i]: 爬到第i个台阶花费的最小体力
+     * dp[0]: 爬一个台阶
+     * dp[1]: 爬两个台阶
+     */
+    function useDynamic() {
+        const dp = []
+        // 因为第一个台阶 可以从 0||1 开始，所以跳到1和2是不花费体力的
+        dp[0] = dp[1] = 0
+        const len = cost.length
+        // 因为要跳过len-1，所以最终的目的是 dp[len]
+        for (let i = 2; i <= len; i++) {
+            // 要跳到 dp[i]; dp[i-1]可以直接从dp[i-1]起跳; dp[i-2]需要跳两个台阶
+            dp[i] = Math.min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2])
+        }
+        return dp[len]
+    }
+
+    /** 动态规划优化 */
+    function useDynamicOptimize() {
+        const dp = []
+        // dp[i]只取决于dp[i-1]  dp[i-2]
+        const len = cost.length
+        let prev = 0,
+            cur = 0
+        for (let step = 2; step <= len; step++) {
+            // cur: dp[i - 1];  prev: dp[i-2]  next: dp[i]
+            const next = Math.min(cur + cost[step - 1], prev + cost[step - 2])
+            prev = cur
+            cur = next
+        }
+        return cur
+    }
 }
 
 /** 744. 寻找比目标字母大的最小字母

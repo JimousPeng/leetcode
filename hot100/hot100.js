@@ -835,4 +835,68 @@ var maxSubArray = function (nums) {
     // 示例 3：
     // 输入：nums = [5,4,-1,7,8]
     // 输出：23
+
+    function cross() {
+        const len = nums.length
+        if (len === 1) return nums[0]
+
+        let sum = nums[0],
+            max = -Infinity
+        for (let i = 1; i < len; i++) {
+            /** 每当sum往小变更时，更新一下max */
+            if (sum + num < sum) {
+                max = Math.max(sum, max)
+            }
+            const num = nums[i]
+            if (num > sum + num) {
+                sum = num
+            } else {
+                sum += num
+            }
+        }
+        return Math.max(sum, max)
+    }
+
+    /** 动态规划 */
+    function useDynamic() {
+        // dp[i] 表示 i 时的最大子数组和
+        const dp = []
+        dp[0] = nums[0]
+        let max = nums[0]
+        const len = nums.length
+        for (let i = 1; i < len; i++) {
+            dp[i] = Math.max(dp[i - 1] + nums[i], nums[i])
+            max = Math.max(max, dp[i])
+        }
+        return max
+    }
+
+    /** 动态规划 */
+    function useDynamicOptimize() {
+        let pre = 0
+        let max = nums[0]
+        for (let num of nums) {
+            pre = Math.max(pre + num, num)
+            max = Math.max(max, pre)
+        }
+        return max
+    }
+}
+
+/**
+ * 合并区间
+ * @param {number[][]} intervals 1 <= intervals.length <= 10^4  intervals[i].length == 2
+ * @return {number[][]}  0 <= starti <= endi <= 10^4
+ */
+var merge = function (intervals) {
+    // 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi]
+    // 请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
+    //     示例 1：
+    // 输入：intervals = [[1,3],[2,6],[8,10],[15,18]]
+    // 输出：[[1,6],[8,10],[15,18]]
+    // 解释：区间 [1,3] 和 [2,6] 重叠, 将它们合并为 [1,6].
+    // 示例 2：
+    // 输入：intervals = [[1,4],[4,5]]
+    // 输出：[[1,5]]
+    // 解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
 }
