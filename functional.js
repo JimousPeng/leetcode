@@ -30,6 +30,142 @@ var permuteUnique = function (nums) {
 }
 
 /**
+ * 746. 使用最小花费爬楼梯
+ * @param {number[]} cost  2 <= cost.length <= 1000
+ * @return {number}  0 <= cost[i] <= 999
+ */
+var minCostClimbingStairs = function (cost) {
+    //     给你一个整数数组 cost ，其中 cost[i] 是从楼梯第 i 个台阶向上爬需要支付的费用。
+    // 一旦你支付此费用，即可选择向上爬一个或者两个台阶。
+    // 你可以选择从下标为 0 或下标为 1 的台阶开始爬楼梯。
+    // 请你计算并返回达到楼梯顶部的最低花费。
+    // 示例 1：
+    // 输入：cost = [10,15,20]
+    // 输出：15
+    // 解释：你将从下标为 1 的台阶开始。
+    // - 支付 15 ，向上爬两个台阶，到达楼梯顶部。
+    // 总花费为 15 。
+    // 示例 2：
+    // 输入：cost = [1,100,1,1,1,100,1,1,100,1]
+    // 输出：6
+    // 解释：你将从下标为 0 的台阶开始。
+    // - 支付 1 ，向上爬两个台阶，到达下标为 2 的台阶。
+    // - 支付 1 ，向上爬两个台阶，到达下标为 4 的台阶。
+    // - 支付 1 ，向上爬两个台阶，到达下标为 6 的台阶。
+    // - 支付 1 ，向上爬一个台阶，到达下标为 7 的台阶。
+    // - 支付 1 ，向上爬两个台阶，到达下标为 9 的台阶。
+    // - 支付 1 ，向上爬一个台阶，到达楼梯顶部。
+    // 总花费为 6 。
+}
+
+/** 744. 寻找比目标字母大的最小字母
+ * @param {character[]} letters
+ * 2 <= letters.length <= 10^4  letters[i] 是一个小写字母  letters 按非递减顺序排序 letters 最少包含两个不同的字母
+ * @param {character} target  target 是一个小写字母
+ * @return {character}
+ */
+var nextGreatestLetter = function (letters, target) {
+    // 给你一个字符数组 letters，该数组按非递减顺序排序，以及一个字符 target。letters 里至少有两个不同的字符。
+    // 返回 letters 中大于 target 的最小的字符。如果不存在这样的字符，则返回 letters 的第一个字符。
+    //     示例 1：
+    // 输入: letters = ["c", "f", "j"]，target = "a"
+    // 输出: "c"
+    // 解释：letters 中字典上比 'a' 大的最小字符是 'c'。
+    // 示例 2:
+    // 输入: letters = ["c","f","j"], target = "c"
+    // 输出: "f"
+    // 解释：letters 中字典顺序上大于 'c' 的最小字符是 'f'。
+    // 示例 3:
+    // 输入: letters = ["x","x","y","y"], target = "z"
+    // 输出: "x"
+    // 解释：letters 中没有一个字符在字典上大于 'z'，所以我们返回 letters[0]。
+
+    /** 条件：
+     * 1. 该数组按非递减顺序排序 -> 升序排序
+     * 2. letters 里至少有两个不同的字符
+     * 3. target 是一个小写字母, letters[i] 也是一个小写字母
+     * 4. 返回 letters 中大于 target 的最小的字符。如果不存在这样的字符，则返回 letters 的第一个字符
+     */
+    function sortLetter() {
+        const letterMap = {
+            a: 0,
+            b: 1,
+            c: 2,
+            d: 3,
+            e: 4,
+            f: 5,
+            g: 6,
+            h: 7,
+            i: 8,
+            j: 9,
+            k: 10,
+            l: 11,
+            m: 12,
+            n: 13,
+            o: 14,
+            p: 15,
+            q: 16,
+            r: 17,
+            s: 18,
+            t: 19,
+            u: 20,
+            v: 21,
+            w: 22,
+            x: 23,
+            y: 24,
+            z: 25,
+        }
+        const letterLen = letters.length
+        const tartgetPos = letterMap[target]
+        let left = 0
+        while (left < letterLen) {
+            const letter = letters[left]
+            const leftPos = letterMap[letter]
+            if (leftPos > tartgetPos) {
+                return letter
+            }
+            left++
+        }
+        return letters[0]
+    }
+
+    /** 其实都不需要维护 字母 表，直接字符对比就行 */
+    function diffLetter() {
+        const length = letters.length
+        let nextGreater = letters[0]
+        for (let i = 0; i < length; i++) {
+            if (letters[i] > target) {
+                nextGreater = letters[i]
+                break
+            }
+        }
+        return nextGreater
+    }
+
+    /** 二分查找 */
+    function twoSearch() {
+        const len = letters.length
+        if (target >= letters[len - 1]) return letters[0]
+        // [left, right] 左闭右闭
+        let left = 0,
+            right = len - 1
+        while (left < right) {
+            // 要包含右端点，所以用 Math.floor
+            const mid = left + Math.floor((right - left) / 2)
+            if (letters[mid] > target) {
+                right = mid
+            } else {
+                // letters[mid] <= target
+                left = mid + 1
+            }
+        }
+        return letters[left]
+    }
+
+    return sortLetter()
+}
+
+/**
  * 728. 自除数
  * @param {number} left
  * @param {number} right
@@ -325,8 +461,6 @@ function designHashSet() {
  * obj.remove(key)
  * var param_3 = obj.contains(key)
  */
-
-
 
 /** 287. 寻找重复数
  * 给定一个包含 n + 1 个整数的数组 nums

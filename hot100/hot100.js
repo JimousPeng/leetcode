@@ -642,8 +642,8 @@ var findAnagrams = function (s, p) {
 
 /**
  * 560. 和为 K 的子数组
- * @param {number[]} nums  1 <= nums.length <= 2 * 10^4
- * @param {number} k
+ * @param {number[]} nums  1 <= nums.length <= 2 * 10^4  -1000 <= nums[i] <= 1000
+ * @param {number} k    -10^7 <= k <= 10^7
  * @return {number}
  */
 var subarraySum = function (nums, k) {
@@ -655,4 +655,184 @@ var subarraySum = function (nums, k) {
     // 示例 2：
     // 输入：nums = [1,2,3], k = 3
     // 输出：2
+
+    /** 计算和为target的子数组个数： 子数组是数组中元素的*连续非空*序列，数组是无序的 */
+
+    /** 滑动窗口：会丢失结果，因为是无序的，窗口的移动路径不可预测 */
+    function slideWindow() {
+        const len = nums.length
+        // 因为1 <= nums.length
+        if (len === 1) return Number(nums[0] == k)
+        let res = 0
+        let sum = nums[0]
+        for (let left = 0, right = 1; right < len; right++) {
+            sum += nums[right]
+            /** 这样会丢掉负数， 如： nums = [-1,-1,1]   k = 0, 一致累加到 -1+-1+1 = -1, 始终不会等于0
+             * 而且数组是乱序，滑动窗口其实不太适合
+             */
+            while (sum > k) {
+                sum -= nums[left]
+                left++
+            }
+            if (sum === k) {
+                res++
+            }
+        }
+        return res
+    }
+
+    /** 双指针：指针如何移动确保子数组不会算漏 */
+    function twoPointer() {
+        const len = nums.length
+        let total = nums.reduce((total, item) => {
+            total += item
+            return total
+        }, 0)
+        let res = 0
+        if (total === k) {
+            res++
+        }
+        let left = 0,
+            right = len - 1
+        while (left < right) {
+            if (total > k) {
+            }
+        }
+        return res
+    }
+
+    /** 嵌套遍历 - 会超时 */
+    function crossTwo() {
+        const len = nums.length
+        let res = 0
+        for (let i = 0; i < len; i++) {
+            const num = nums[i]
+            if (num === k) {
+                res++
+            }
+            let count = num
+            let move = i + 1
+            while (move < len) {
+                count += nums[move]
+                if (count === k) {
+                    res++
+                }
+            }
+        }
+        return res
+    }
+
+    /** 深度遍历 + dp 多维数组 */
+    function dfs() {
+        const dp = []
+        const len = nums.length
+        let res = []
+
+        for (let i = 0; i < len; i++) {
+            const num = nums[i]
+            if (num === k) res++
+            if (dp.length) {
+                for (let j = 0; j < dp.length; j++) {
+                    dp[j] += num
+                    if (dp[j] === k) res++
+                }
+            }
+            dp.push(num)
+        }
+
+        return res
+    }
+
+    /** 前缀和：
+     * 对于连续区间[i,j]内的子数组，满足nums[i, j] = k
+     * 则满足：nums[0, j] - nums[0, i] = k
+     */
+    function prefixSum() {
+        let res = 0
+        const sum = []
+        sum[0] = nums[0]
+        const len = nums.length
+        for (let i = 1; i < len; i++) {
+            sum[i] = sum[i - 1] + nums[i]
+        }
+        // [1,2,3] k = 3    [1,2,3] -> [1,3,6]
+        // 有了前缀和列表，就变成了求两数之差
+        const numMap = new Map()
+        for (let i = 0; i < len; i++) {
+            if (sum[i] === k) {
+                res++
+                continue
+            }
+            if (numMap.has(sum[i])) {
+                res += numMap.get(sum[i])
+            }
+            const count = numMap.get(sum[i] + k)
+            if (count) {
+                numMap.set(sum[i] + k, count + 1)
+            } else {
+                numMap.set(sum[i] + k, 1)
+            }
+        }
+        return res
+    }
+
+    /** 前缀和优化 - 合并遍历 */
+    function prefixSumOpt() {
+        let res = 0
+        let sum = 0
+        const numMap = new Map()
+
+        numMap.set(0, 1) // 来标识 sum - k = 0, 即 sum = k 时的计数
+
+        const len = nums.length
+        for (let i = 0; i < len; i++) {
+            sum += nums[i]
+            if (numMap.has(sum - k)) {
+                res += numMap.get(sum - k)
+            }
+            if (numMap.has(sum)) {
+                numMap.set(sum, numMap.get(sum) + 1)
+            } else {
+                numMap.set(sum, 1)
+            }
+        }
+        return res
+    }
+
+    /** 枚举遍历：会超时 */
+    function useEnum() {
+        let count = 0
+        for (let start = 0; start < nums.length; ++start) {
+            let sum = 0
+            for (let end = start; end >= 0; --end) {
+                sum += nums[end]
+                if (sum == k) {
+                    count++
+                }
+            }
+        }
+        return count
+    }
+
+    return slideWindow()
+}
+
+/**
+ * 53. 最大子数组和
+ * @param {number[]} nums 1 <= nums.length <= 10^5
+ * @return {number}  -10^4 <= nums[i] <= 10^4
+ */
+var maxSubArray = function (nums) {
+    // 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和
+    // 子数组是数组中的一个连续部分
+    //     示例 1：
+    // 输入：nums = [-2,1,-3,4,-1,2,1,-5,4]
+    // 输出：6
+    // 解释：连续子数组 [4,-1,2,1] 的和最大，为 6 。
+    // 示例 2：
+    // 输入：nums = [1]
+    // 输出：1
+    // 示例 3：
+    // 输入：nums = [5,4,-1,7,8]
+    // 输出：23
 }
