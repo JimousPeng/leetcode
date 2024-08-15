@@ -899,4 +899,204 @@ var merge = function (intervals) {
     // 输入：intervals = [[1,4],[4,5]]
     // 输出：[[1,5]]
     // 解释：区间 [1,4] 和 [4,5] 可被视为重叠区间。
+
+    /**
+     * 对于区间 int[0, 1] 与 int2[0, 1], 满足 int[1] >= int2[0]， 则存在合并区间
+     *
+     * [[1,4],[0,4]]
+     */
+    function cross() {
+        intervals.sort((a, b) => a[0] - b[0])
+        const len = intervals.length
+        if (len === 1) return intervals
+        let acGap = intervals[0]
+        const res = []
+        for (let i = 1; i < len; i++) {
+            if (acGap[1] >= intervals[i][0]) {
+                acGap[0] = Math.min(acGap[0], intervals[i][0])
+                acGap[1] = Math.max(acGap[1], intervals[i][1])
+            } else {
+                // 说明不存在并集
+                res.push([...acGap])
+                acGap = intervals[i]
+            }
+        }
+        res.push([...acGap])
+        return res
+    }
+}
+
+/**
+ * 189. 轮转数组
+ * @param {number[]} nums  1 <= nums.length <= 10^5  -2^31 <= nums[i] <= 2^31 - 1
+ * @param {number} k  0 <= k <= 10^5
+ * @return {void} Do not return anything, modify nums in-place instead.
+ */
+var rotate = function (nums, k) {
+    // 给定一个整数数组 nums，将数组中的元素向右轮转 k 个位置，其中 k 是非负数
+    //     示例 1:
+    // 输入: nums = [1,2,3,4,5,6,7], k = 3
+    // 输出: [5,6,7,1,2,3,4]
+    // 解释:
+    // 向右轮转 1 步: [7,1,2,3,4,5,6]
+    // 向右轮转 2 步: [6,7,1,2,3,4,5]
+    // 向右轮转 3 步: [5,6,7,1,2,3,4]
+    // 示例 2:
+    // 输入：nums = [-1,-100,3,99], k = 2
+    // 输出：[3,99,-1,-100]
+    // 解释:
+    // 向右轮转 1 步: [99,-1,-100,3]
+    // 向右轮转 2 步: [3,99,-1,-100]
+
+    // 你可以使用空间复杂度为 O(1) 的 原地 算法解决这个问题吗？
+    function cross() {
+        /** 在经过轮转之后的新下标为 (i + k) % nums.length */
+        const len = nums.length
+        // 用一个额外空间储存新下标的值 O(n)
+        const res = []
+        for (let i = 0; i < len; i++) {
+            // [1,2,3,4,5,6,7] -> [1,2,3,1,2,3,1]
+            const newPos = (i + k) % len
+            res[newPos] = nums[i]
+        }
+        for (let i = 0; i < len; i++) {
+            nums[i] = res[i]
+        }
+    }
+
+    // 空间复杂度为 O(1)
+    function crossOptimize() {
+        // gcd 求最大公约数函数 gcd(3,7) = 1
+        const gcd = (x, y) => (y ? gcd(y, x % y) : x)
+        const n = nums.length
+        k = k % n
+        let count = gcd(k, n)
+        for (let start = 0; start < count; ++start) {
+            let current = start
+            let prev = nums[start]
+            // [1,2,3,4,5,6,7]  k = 3
+            /**
+             * current: 当前移动的节点下标  prev:当前节点对应的原始节点的值
+             * current = 0, start = 0, prev=1
+             * 第1轮:  next = (0+3) % 7 = 3
+             * nums[next] -> nums[3] = prev <- prev = 1
+             * nums -> [1,2,3,1,5,6,7]
+             * prev = 4;  current = 3
+             *
+             * 第2轮：移动之前节点nums[current]到新节点： next=(3+3) % 7 = 6
+             * nums[next] -> nums[6] = prev <- prev = 4
+             * nums -> [1,2,3,1,5,6,4]
+             * prev = 7;  current = 6
+             *
+             * 第3轮：移动之前节点nums[current]到新节点： next=(6+3) % 7 = 2
+             * nums[next] -> nums[2] = prev <- prev = 7
+             * nums -> [1,2,7,1,5,6,4]
+             * prev = 3;  current = 2
+             *
+             * 第4轮：移动之前节点nums[current]到新节点： next=(2+3) % 7 = 5
+             * nums[next] -> nums[5] = prev <- prev = 3
+             * nums -> [1,2,7,1,5,3,4]
+             * prev = 6;  current = 5
+             *
+             * 第5轮：移动之前节点nums[current]到新节点： next=(5+3) % 7 = 1
+             * nums[next] -> nums[1] = prev <- prev = 6
+             * nums -> [1,6,7,1,5,3,4]
+             * prev = 2;  current = 1
+             *
+             * 第6轮：移动之前节点nums[current]到新节点： next=(1+3) % 7 = 4
+             * nums[next] -> nums[4] = prev <- prev = 2
+             * nums -> [1,6,7,1,2,3,4]
+             * prev = 5;  current = 4
+             *
+             * 第6轮：移动之前节点nums[current]到新节点： next=(4+3) % 7 = 0
+             * nums[next] -> nums[0] = prev <- prev = 5
+             * nums -> [5,6,7,1,2,3,4]
+             * prev = 1;  current = 0
+             *
+             * current === start 跳出循环
+             *
+             */
+            do {
+                // next：移动到的新位置
+                const next = (current + k) % n
+                const temp = nums[next]
+                nums[next] = prev
+                prev = temp
+                current = next
+            } while (start !== current)
+        }
+    }
+
+    // 空间复杂度为 O(1)
+    // 最大公约数的数学推导不好理解
+    // 使用单独的变量 count 跟踪当前已经访问的元素数量，当 count=n 时，结束遍历过程
+    function crossOptimize() {
+        // gcd 求最大公约数函数 gcd(3,7) = 1
+        const n = nums.length
+        k = k % n
+        let start = 0
+        let count = 0 // 统计已经访问过的num
+        while (count !== n) {
+            let current = start
+            let prev = nums[start]
+            do {
+                // next：移动到的新位置
+                const next = (current + k) % n
+                const temp = nums[next]
+                nums[next] = prev
+                prev = temp
+                current = next
+                count++
+            } while (start !== current)
+            start++
+        }
+    }
+
+    /** 数组翻转
+     * nums = [1,2,3,4,5,6,7], k = 3  ->   [5,6,7,1,2,3,4]
+     */
+    function reverseArray() {
+        // start和end是左闭右闭区间
+        const reverseFn = (start, end) => {
+            while (start < end) {
+                const temp = nums[start]
+                nums[start] = nums[end]
+                nums[end] = temp
+                start++
+                end--
+            }
+        }
+        const len = nums.length
+        const useK = k % len
+        // 第一轮翻转 [1,2,3,4,5,6,7] -> [7,6,5,4,3,2,1]
+        reverseFn(0, len - 1)
+        // 第二轮翻转: k=3 [7,6,5,4,3,2,1] -> [5,6,7,4,3,2,1]
+        reverseFn(0, useK - 1)
+        // 第三轮翻转  [5,6,7,4,3,2,1] -> [5,6,7,1,2,3,4]
+        reverseFn(useK, len - 1)
+    }
+
+    reverseArray()
+}
+
+/**
+ * 238. 除自身以外数组的乘积
+ * @param {number[]} nums  2 <= nums.length <= 10^5  -30 <= nums[i] <= 30
+ * @return {number[]}
+ */
+var productExceptSelf = function (nums) {
+    // 给你一个整数数组 nums，返回 数组 answer
+    // 其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积
+    // 请 不要使用除法，且在 O(n) 时间复杂度内完成此题。
+    //     示例 1:
+    // 输入: nums = [1,2,3,4]
+    // 输出: [24,12,8,6]
+    // 示例 2:
+    // 输入: nums = [-1,1,0,-3,3]
+    // 输出: [0,0,9,0,0]
+    // 进阶：你可以在 O(1) 的额外空间复杂度内完成这个题目吗？
+    // （ 出于对空间复杂度分析的目的，输出数组 不被视为 额外空间。）
+
+    /** 不能使用除法 */
+    function cross() {}
 }
