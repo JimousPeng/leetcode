@@ -572,6 +572,46 @@ var findAnagrams = function (s, p) {
         return res
     }
 
+    /** 使用asii码的码点来处理字母对应的位置
+     * 'a'.charCodeAt() -> 97
+     * 'b'.charCodeAt() -> 98
+     * ...
+     * 'z'.charCodeAt() -> 122
+     */
+    function slideWindowUseAsii() {
+        const sLen = s.length,
+            pLen = p.length
+
+        if (sLen < pLen) {
+            return []
+        }
+
+        const ans = []
+        const sCount = new Array(26).fill(0)
+        const pCount = new Array(26).fill(0)
+        for (let i = 0; i < pLen; ++i) {
+            ++sCount[s[i].charCodeAt() - 'a'.charCodeAt()]
+            ++pCount[p[i].charCodeAt() - 'a'.charCodeAt()]
+        }
+
+        if (sCount.toString() === pCount.toString()) {
+            ans.push(0)
+        }
+
+        // 找到 s 中所有 p 的 异位词 的子串
+        for (let i = 0; i < sLen - pLen; ++i) {
+            // 移动 sCount, 保持长度在 pLen 的范围内，最大移位距离为 sLen - pLen
+            --sCount[s[i].charCodeAt() - 'a'.charCodeAt()]
+            ++sCount[s[i + pLen].charCodeAt() - 'a'.charCodeAt()]
+
+            if (sCount.toString() === pCount.toString()) {
+                ans.push(i + 1)
+            }
+        }
+
+        return ans
+    }
+
     /** hash表处理，也是利用消消乐的方式 */
     function useHash() {
         let res = []
@@ -1097,6 +1137,68 @@ var productExceptSelf = function (nums) {
     // 进阶：你可以在 O(1) 的额外空间复杂度内完成这个题目吗？
     // （ 出于对空间复杂度分析的目的，输出数组 不被视为 额外空间。）
 
-    /** 不能使用除法 */
-    function cross() {}
+    /** 不能使用除法，嵌套遍历估计会超时
+     * 有一个笨方法，记录每一个节点的左乘积和右乘积，即 nums[i].left = nums[0] * ··· * nums[i - 1]  nums[i].right = nums[len-1] * ··· * nums[i+1]
+     * 那么对于 nums[i], res[i] = nums[i].left * nums[i].right
+     * 结合前缀和的思想，构造左右前缀乘积
+     *
+     * 由于使用了两个数组保存两个乘积列表，所以空间复杂度并不为常数
+     */
+    function prefixProduct() {
+        const len = nums.length
+        // prefixLeft 左节点的前缀乘积和
+        const prefixLeft = [1]
+        // prefixRight 右节点的前缀乘积和, 并初始化最末端节点
+        const prefixRight = []
+        prefixRight[len - 1] = 1
+        for (let i = 1; i < len; i++) {
+            // [1,2,3] -> [1, 1, 2]
+            prefixLeft[i] = prefixLeft[i - 1] * nums[i - 1]
+        }
+        for (let i = len - 2; i >= 0; i--) {
+            // [1,2,3] -> []
+            prefixRight[i] = prefixRight[i + 1] * nums[i + 1]
+        }
+        const res = []
+        for (let i = 0; i < len; i++) {
+            res[i] = prefixLeft[i] * prefixRight[i]
+        }
+        return res
+    }
+
+    // 空间复杂优化  输出数组 res 不被视为 额外空间
+    function prefixProductOptimize() {
+        const len = nums.length
+        const res = [1]
+        /** 先计算左前缀乘积和 */
+        for (let i = 1; i < len; i++) {
+            res[i] = res[i - 1] * nums[i - 1]
+        }
+        let count = 1 // O(1)的常量空间
+        for (let i = len - 1; i >= 0; i--) {
+            res[i] = res[i] * count
+            count = count * nums[i + 1]
+        }
+        return res
+    }
+
+    prefixProduct()
+}
+
+/**
+ * 73. 矩阵置零
+ * @param {number[][]} matrix
+ * m == matrix.length  n == matrix[0].length 1 <= m, n <= 200
+ *  -2^31 <= matrix[i][j] <= 2^31 - 1
+ * @return {void} Do not return anything, modify matrix in-place instead.
+ */
+var setZeroes = function (matrix) {
+    // 给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法
+    //     输入：matrix = [[1,1,1],[1,0,1],[1,1,1]]
+    // 1  1  1
+    // 1  0  1
+    // 1  1  1
+    // 输出：[[1,0,1],[0,0,0],[1,0,1]]
+    //     输入：matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+    // 输出：[[0,0,0,0],[0,4,5,0],[0,3,1,0]]
 }
