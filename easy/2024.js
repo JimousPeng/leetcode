@@ -180,4 +180,50 @@ var countPrimeSetBits = function (left, right) {
     // 14 -> 1110 (3 个计算置位, 3 是质数)
     // 15 -> 1111 (4 个计算置位, 4 不是质数)
     // 共计 5 个计算置位为质数的数字。
+
+    /** 置位位数为质数 的整数个数 质数：只能被1和其本身整数的数
+     * 质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数
+     *
+     * 质数定义：一个大于1的整数，除了1和它本身，没有其他的正因数
+     * 检查数 n 是否为质数的一种高效方法是只检查到 √n
+     * 因为如果 n 能被某个数 a 整除，那么 n = a * b，其中 a 和 b 必然至少有一个小于或等于 √n
+     *
+     */
+    function cross() {
+        function isPrime(n) {
+            // 偶数绝对不是质数
+            if (n <= 1) return false // 质数必须大于1
+            if (n <= 3) return true // 2和3是质数
+
+            // 2和3的倍数一定是非质数
+            if (n % 2 === 0 || n % 3 === 0) return false
+
+            // 由于已经排除了2和3的倍数，检查的步长为6; ：即 i 和 i+2，分别为 6 的倍数的两个相邻数
+            //i 为 6的倍数-1； i+2为6的倍数+1
+            // 当i = 5； 只需要考虑 5 和 7； 6,8,9,10 不是2的倍数就是3的倍数
+            for (let i = 5; i <= Math.sqrt(n); i += 6) {
+                if (n % i === 0 || n % (i + 2) === 0) return false
+            }
+            return true
+        }
+        function countOne(str) {
+            let count = 0
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] === '1') {
+                    count++
+                }
+            }
+            return count
+        }
+        let res = 0
+        for (let i = left; i <= right; i++) {
+            const str = i.toString(2)
+            // 计算 当前数的计算置位
+            const num = countOne(str)
+            res += Number(isPrime(num))
+        }
+        return res
+    }
+
+    cross()
 }

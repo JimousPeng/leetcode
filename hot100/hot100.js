@@ -1195,10 +1195,132 @@ var productExceptSelf = function (nums) {
 var setZeroes = function (matrix) {
     // 给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法
     //     输入：matrix = [[1,1,1],[1,0,1],[1,1,1]]
-    // 1  1  1
-    // 1  0  1
-    // 1  1  1
+    // 1  1  1      1 0 1
+    // 1  0  1  =>  0 0 0
+    // 1  1  1      1 0 1
     // 输出：[[1,0,1],[0,0,0],[1,0,1]]
+
     //     输入：matrix = [[0,1,2,0],[3,4,5,2],[1,3,1,5]]
+    //  0 1 2 0
+    //  3 4 5 2
+    //  1 3 1 5
     // 输出：[[0,0,0,0],[0,4,5,0],[0,3,1,0]]
+
+    /** 遍历思路：
+     * 1. 一次遍历找出所有含0的元素对应的 row 和 column
+     * 2. 遍历所有的row 和 col，并更新对应元素的值
+     */
+    function cross() {
+        // 找到所有的0
+        const rowSet = new Set()
+        const colSet = new Set()
+        const rowLen = matrix.length
+        const colLen = matrix[0].length
+        for (let i = 0; i < rowLen; i++) {
+            for (let j = 0; j < colLen; j++) {
+                if (matrix[i][j] === 0) {
+                    rowSet.add(i)
+                    colSet.add(j)
+                }
+            }
+        }
+        for (const row of rowSet) {
+            let start = 0
+            while (start < colLen) {
+                matrix[row][start] = 0
+                start++
+            }
+        }
+        for (const col of colSet) {
+            let start = 0
+            while (start < rowLen) {
+                matrix[start][col] = 0
+                start++
+            }
+        }
+    }
+
+    /**
+     * 进阶：
+     * 一个直观的解决方案是使用  O(mn) 的额外空间，但这并不是一个好的解决方案。
+     * 一个简单的改进方案是使用 O(m + n) 的额外空间，但这仍然不是最好的解决方案。
+     * 你能想出一个仅使用常量空间的解决方案吗？
+     */
+
+    /** 空间优化： 时间换空间 */
+    function crossOptimize() {
+        const rowLen = matrix.length
+        const colLen = matrix[0].length
+        for (let i = 0; i < rowLen; i++) {
+            for (let j = 0; j < colLen; j++) {
+                if (matrix[i][j] === 0) {
+                    let start = 0
+                    while (start < rowLen) {
+                        if (matrix[start][j] !== 0) {
+                            matrix[start][j] = 'x'
+                        }
+                        start++
+                    }
+                    start = 0
+                    while (start < colLen) {
+                        if (matrix[i][start] !== 0) {
+                            matrix[i][start] = 'x'
+                        }
+                        start++
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < rowLen; i++) {
+            for (let j = 0; j < colLen; j++) {
+                if (matrix[i][j] === 'x') {
+                    matrix[i][j] = 0
+                }
+            }
+        }
+    }
+
+    function guanfang() {
+        // 首先预处理出两个标记变量，接着使用其他行与列去处理第一行与第一列，
+        // 然后反过来使用第一行与第一列去更新其他行与列，
+        // 最后使用两个标记变量更新第一行与第一列即可。
+        const m = matrix.length,
+            n = matrix[0].length
+        let flagCol0 = false,
+            flagRow0 = false
+        for (let i = 0; i < m; i++) {
+            if (matrix[i][0] === 0) {
+                flagCol0 = true
+            }
+        }
+        for (let j = 0; j < n; j++) {
+            if (matrix[0][j] === 0) {
+                flagRow0 = true
+            }
+        }
+        for (let i = 1; i < m; i++) {
+            for (let j = 1; j < n; j++) {
+                if (matrix[i][j] === 0) {
+                    matrix[i][0] = matrix[0][j] = 0
+                }
+            }
+        }
+        for (let i = 1; i < m; i++) {
+            for (let j = 1; j < n; j++) {
+                if (matrix[i][0] === 0 || matrix[0][j] === 0) {
+                    matrix[i][j] = 0
+                }
+            }
+        }
+        if (flagCol0) {
+            for (let i = 0; i < m; i++) {
+                matrix[i][0] = 0
+            }
+        }
+        if (flagRow0) {
+            for (let j = 0; j < n; j++) {
+                matrix[0][j] = 0
+            }
+        }
+    }
 }
