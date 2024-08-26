@@ -1327,7 +1327,7 @@ var setZeroes = function (matrix) {
 
 /**
  * 54. 螺旋矩阵
- * @param {number[][]} matrix  m == matrix.length   n == matrix[i].length 
+ * @param {number[][]} matrix  m == matrix.length   n == matrix[i].length
  * @return {number[]}          1 <= m, n <= 10    -100 <= matrix[i][j] <= 100
  */
 var spiralOrder = function (matrix) {
@@ -1339,6 +1339,8 @@ var spiralOrder = function (matrix) {
      * 4  5  6 ---->  4 -> 5 -> 6
      *                ↑         ↓
      * 7  8  9        7 <- 8 <- 9
+     *
+     * 10 11 12
      * 输出：[1,2,3,6,9,8,7,4,5]
      *
      * 输入：matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
@@ -1347,6 +1349,101 @@ var spiralOrder = function (matrix) {
      * 5    6    7    8
      *
      * 9   10   11   12
+     *
+     * 13  14   15    16
+     * 17  18   19    20
+     * 21  22   23    14
      * 输出：[1,2,3,4,8,12,11,10,9,5,6,7]
+     *
+     *
+     * 2  3  4
+     * 5  6  7
+     * 8  9  10
+     * 11 12 13
      */
+
+    /** 被卡住过的用例 - 最后只剩单列的时候，直接遍历单列即可
+     * 2  3  4
+     * 5  6  7
+     * 8  9  10
+     * 11 12 13
+     * 14 15 16
+     *
+     * 多输出了一个9
+     * [2,3,4,7,10,13,16,15,14,11,8,5,6,9,12]
+     * [2,3,4,7,10,13,16,15,14,11,8,5,6,9,12,9]
+     */
+    /** 遍历的顺象为从第一行到找到边界，找到右边界往下，找到下边界往左，找到左边界往上，找到上边界往右 */
+    function cross() {
+        let rowLen = matrix.length
+        let colLen = matrix[0].length
+
+        if (rowLen === 1) return matrix[0]
+
+        if (colLen == 1)
+            return matrix.map((item) => {
+                return item[0]
+            })
+
+        const res = []
+        // 可用边界 [上, 下] [左, 右]
+        const confinesRow = [0, rowLen - 1]
+        const confinesCol = [0, colLen - 1]
+
+        while (confinesRow[0] <= confinesRow[1] && confinesCol[0] <= confinesCol[1]) {
+            let startRow = confinesRow[0],
+                startCol = confinesCol[0]
+
+            // 只剩单行
+            if (confinesRow[0] === confinesRow[1]) {
+                // 填充最后一行
+                while (startCol <= confinesCol[1]) {
+                    res.push(matrix[startRow][startCol])
+                    startCol++
+                }
+                return res
+            }
+
+            // 只剩单列
+            if (confinesCol[0] === confinesCol[1]) {
+                while (startRow <= confinesRow[1]) {
+                    res.push(matrix[startRow][startCol])
+                    startRow++
+                }
+                return res
+            }
+
+            // 从左往右
+            while (startCol < confinesCol[1]) {
+                res.push(matrix[startRow][startCol])
+                startCol++
+            }
+
+            // 从右往下
+            while (startRow < confinesRow[1]) {
+                res.push(matrix[startRow][startCol])
+                startRow++
+            }
+
+            //从下往左
+            while (startCol > confinesCol[0]) {
+                res.push(matrix[startRow][startCol])
+                startCol--
+            }
+
+            // 从左往上
+            while (startRow > confinesRow[0]) {
+                res.push(matrix[startRow][startCol])
+                startRow--
+            }
+
+            // 更新边界
+            confinesRow[0]++
+            confinesRow[1]--
+            confinesCol[0]++
+            confinesCol[1]--
+        }
+
+        return res
+    }
 }

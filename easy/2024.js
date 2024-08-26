@@ -253,4 +253,62 @@ var isToeplitzMatrix = function (matrix) {
      * 如果矩阵存储在磁盘上，并且内存有限，以至于一次最多只能将矩阵的一行加载到内存中，该怎么办？
      * 如果矩阵太大，以至于一次只能将不完整的一行加载到内存中，该怎么办？
      */
+
+    /**
+     * 托普利茨矩阵 - 矩阵上每一条由左上到右下的对角线上的元素都相同
+     * matrix[i][j] === matrix[i+1][j+1]
+     */
+    function cross() {
+        const rowLen = matrix.length
+        const colLen = matrix[0].length
+        function checkConfines(row, col) {
+            if (row < 0 || row > rowLen - 1) return false
+            if (col < 0 || col > colLen - 1) return false
+            return true
+        }
+        // check 处理左上，matrix[0]
+        let row = 0,
+            col = 0
+        for (let i = 0; i < colLen; i++) {
+            col = i
+            row = 0
+            let diffNum = matrix[row][col]
+            while (checkConfines(row, col)) {
+                if (matrix[row][col] !== diffNum) return false
+                row++
+                col++
+            }
+        }
+        row = 0
+        col = 0
+        for (let r = 0; r < rowLen; r++) {
+            row = r
+            col = 0
+            let diffNum = matrix[row][col]
+            while (checkConfines(row, col)) {
+                if (matrix[row][col] !== diffNum) return false
+                row++
+                col++
+            }
+        }
+        return true
+    }
+
+    /**
+     * 1 2 3 4
+     * 5 1 2 3
+     * 9 5 1 2
+     *
+     * 遍历优化
+     */
+    function crossOptimize() {
+        const rowLen = matrix.length
+        const colLen = matrix[0].length
+        for (let r = 1; r < rowLen; r++) {
+            for (let c = 1; c < colLen; c++) {
+                if (matrix[r][c] !== matrix[r - 1][c - 1]) return flase
+            }
+        }
+        return true
+    }
 }
