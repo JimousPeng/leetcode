@@ -346,3 +346,49 @@ var numJewelsInStones = function (jewels, stones) {
     }
     return res
 }
+
+/**
+ * 796. 旋转字符串 给定两个字符串, s 和 goal。如果在若干次旋转操作之后，s 能变成 goal ，那么返回 true
+ * s 的 旋转操作 就是将 s 最左边的字符移动到最右边
+ * 例如, 若 s = 'abcde'，在旋转一次之后结果就是'bcdea' 。
+ * 
+示例 1:
+输入: s = "abcde", goal = "cdeab"
+输出: true
+
+示例 2:
+输入: s = "abcde", goal = "abced"
+输出: false
+ * 
+ * @param {string} s  1 <= s.length, goal.length <= 100
+ * @param {string} goal
+ * @return {boolean}
+ */
+var rotateString = function (s, goal) {
+    function cross() {
+        const sLen = s.length
+        const gLen = goal.length
+        if (sLen !== gLen) return false
+        // 将 s 最左边的字符移动到最右边， 先找到基点字符 baseleft === baseRight
+        let baseleft = '',
+            baseRight = ''
+        let left = 0,
+            right = gLen - 1
+        while (right >= 0) {
+            baseleft += s[left]
+            baseRight = goal[right] + baseRight
+            if (baseleft === baseRight) {
+                // substring() 方法返回的子串包括 开始 处的字符，但不包括 结束 处的字符
+                let res = s.substring(left + 1, sLen) === goal.substring(0, right)
+                if (res) return true
+            }
+            left++
+            right--
+        }
+        return false
+    }
+
+    function diff() {
+        return s.length === goal.length && (s + s).includes(goal)
+    }
+}
