@@ -1545,3 +1545,103 @@ var rotate = function (matrix) {
         // }
     }
 }
+
+/**
+ * 240. 搜索二维矩阵 II
+ * 编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。该矩阵具有以下特性：
+ * 1. 每行的元素从左到右升序排列
+ * 2. 每列的元素从上到下升序排列。
+ * @param {number[][]} matrix  m == matrix.length   n == matrix[i].length   1 <= n, m <= 300
+ * @param {number} target
+ * @return {boolean}
+ */
+var searchMatrix = function (matrix, target) {
+    // 1  4  7  11  15
+    // 2  5  8  12  19
+    // 3  6  9  16  22
+    // 10 13 14 17  24
+    // 18 21 23 26  30
+    // 输入：matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5
+    // 输出：true
+
+    /** 会超时: 220 x 170 的二维矩阵用例 */
+    function cross() {
+        const rowLen = matrix.length
+        const colLen = matrix[0].length
+
+        // 每行的元素从左到右升序排列, 即 matrix[i] 是升序
+        // 每列的元素从上到下升序排列，即 matrix[i][i], matrix[i+1][i] 是升序
+
+        for (let r = 0; r < rowLen; r++) {
+            if (matrix[r][0] > target) break
+
+            if (matrix[r][colLen - 1] < target) continue
+
+            for (let c = 0; c < colLen; c++) {
+                if (matrix[r][c] === target) return true
+            }
+        }
+        return false
+    }
+
+    /** 超时优化-还是会超时 */
+    function cross() {
+        const rowLen = matrix.length
+        const colLen = matrix[0].length
+
+        // 每行的元素从左到右升序排列, 即 matrix[i] 是升序
+        // 每列的元素从上到下升序排列，即 matrix[i][i], matrix[i+1][i] 是升序
+
+        // 记录一下target可能的区间范围
+        let targetGap = [0, colLen - 1]
+
+        for (let r = 0; r < rowLen; r++) {
+            if (matrix[r][0] > target) break
+
+            if (matrix[r][colLen - 1] < target) continue
+
+            // 这里 c 的起始位置能不能处理  matrix[r][c]
+            for (let c = targetGap[0]; c <= targetGap[1]; c++) {
+                if (matrix[r][c] > target) {
+                    targetGap[1] = c - 1
+                    break
+                }
+                if (matrix[r][c] === target) return true
+            }
+        }
+        return false
+    }
+
+    /** 超时优化2 */
+    function cross() {
+        const rowLen = matrix.length
+        const colLen = matrix[0].length
+
+        // 每行的元素从左到右升序排列, 即 matrix[i] 是升序
+        // 每列的元素从上到下升序排列，即 matrix[i][i], matrix[i+1][i] 是升序
+
+        // 记录一下target可能的区间范围
+        let end = colLen - 1
+
+        for (let r = 0; r < rowLen; r++) {
+            if (matrix[r][0] > target) break
+
+            if (matrix[r][colLen - 1] < target) continue
+
+            let start = 0
+
+            // [start, end] -> 左闭右闭，那么就需要保留右
+            while (start <= end) {
+                const mid = start + Math.ceil((end - start) / 2)
+                if (matrix[r][mid] === target) {
+                    return true
+                } else if (matrix[r][mid] < target) {
+                    start = mid + 1
+                } else {
+                    end = mid - 1
+                }
+            }
+        }
+        return false
+    }
+}

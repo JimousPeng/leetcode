@@ -392,3 +392,75 @@ var rotateString = function (s, goal) {
         return s.length === goal.length && (s + s).includes(goal)
     }
 }
+
+/**
+ * 804. 唯一摩尔斯密码词
+ * @param {string[]} words
+ * @return {number}
+ */
+var uniqueMorseRepresentations = function (words) {
+    /**
+     * [".-","-...","-.-.","-..",".","..-.","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--.."]
+     * 对 words 中所有单词进行单词翻译，返回不同 单词翻译 的数量
+     * 
+     * 输入: words = ["gin", "zen", "gig", "msg"]
+输出: 2
+解释: 
+各单词翻译如下:
+"gin" -> "--...-."
+"zen" -> "--...-."
+"gig" -> "--...--."
+"msg" -> "--...--."
+
+共有 2 种不同翻译, "--...-." 和 "--...--.".
+
+示例 2：
+
+输入：words = ["a"]
+输出：1
+     */
+    function useMap() {
+        const len = words.length
+        if (len === 1) return 1
+        const wordsEnums = [
+            '.-',
+            '-...',
+            '-.-.',
+            '-..',
+            '.',
+            '..-.',
+            '--.',
+            '....',
+            '..',
+            '.---',
+            '-.-',
+            '.-..',
+            '--',
+            '-.',
+            '---',
+            '.--.',
+            '--.-',
+            '.-.',
+            '...',
+            '-',
+            '..-',
+            '...-',
+            '.--',
+            '-..-',
+            '-.--',
+            '--..',
+        ]
+        const resSet = new Set()
+        for (let i = 0; i < len; i++) {
+            const word = words[i]
+            const wordLen = word.length
+            let res = ''
+            for (let j = 0; j < wordLen; j++) {
+                const index = word[j].charCodeAt() - 'a'.charCodeAt()
+                res += wordsEnums[index]
+            }
+            resSet.add(res)
+        }
+        return resSet.size
+    }
+}
