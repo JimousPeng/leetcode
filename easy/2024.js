@@ -464,3 +464,31 @@ var uniqueMorseRepresentations = function (words) {
         return resSet.size
     }
 }
+
+/**
+ * 806. 写字符串需要的行数
+ * 我们要把给定的字符串 S 从左到右写到每一行上，每一行的最大宽度为100个单位，
+ * 如果我们在写某个字母的时候会使这行超过了100 个单位，那么我们应该把这个字母写到下一行
+ * 给定了一个数组 widths ，这个数组 widths[0] 代表 'a' 需要的单位， widths[1] 代表 'b' 需要的单位，...， widths[25] 代表 'z' 需要的单位
+ * @param {number[]} widths  widths 是长度为 26的数组
+ * @param {string} s S 只包含小写字母  字符串 S 的长度在 [1, 1000] 的范围
+ * @return {number[]}
+ */
+var numberOfLines = function (widths, s) {
+    // 输入: widths = [10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10]
+    //  S = "abcdefghijklmnopqrstuvwxyz" 输出: [3, 60]
+    // 解释: 所有的字符拥有相同的占用单位10。所以书写所有的26个字母， 我们需要2个整行和占用60个单位的一行。
+    let count = 0
+    let row = 1
+    const sLen = s.length
+    for (let i = 0; i < sLen; i++) {
+        const _index = s[i].charCodeAt('a') - 'a'.charCodeAt()
+        if (count + widths[_index] > 100) {
+            row++
+            count = widths[_index]
+        } else {
+            count += widths[_index]
+        }
+    }
+    return [row, count]
+}

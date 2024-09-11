@@ -1645,3 +1645,158 @@ var searchMatrix = function (matrix, target) {
         return false
     }
 }
+
+/**
+ * 160. 相交链表
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ * @param {ListNode} headA
+ * @param {ListNode} headB
+ * @return {ListNode}
+ */
+var getIntersectionNode = function (headA, headB) {
+    /**
+     *
+     * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。
+     * 如果两个链表不存在相交节点，返回 null
+     * 题目数据 保证 整个链式结构中不存在环
+     *
+     * 如果相交，链表中存在某个节点满足：
+     * a + c + b = b + c + a
+     * 其中，c为相交后的公共链表数据段
+     */
+    function getCommonNode() {
+        if (headA === null || headB === null) return null
+        let nodeA = headA
+        let nodeB = headB
+        while (nodeA !== nodeB) {
+            nodeA = nodeA === null ? headB : nodeA.next
+            nodeB = nodeB === null ? headA : nodeB.next
+        }
+        return nodeA
+    }
+
+    function useMap() {
+        if (headA === null || headB === null) return null
+        const nodeMap = new Set()
+        while (headA) {
+            nodeMap.add(headA)
+            headA = headA.next
+        }
+        while (headB) {
+            if (nodeMap.has(headB)) {
+                return headB
+            }
+            headB = headB.next
+        }
+        return null
+    }
+}
+
+/**
+ * 206. 反转链表
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var reverseList = function (head) {
+    /** 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表 */
+
+    // 遍历反转 - 双指针， 一个 prev 指针， 一个 cur 指针
+    function cross() {
+        if (head === null) return null
+        let cur = head
+        let prev = null
+        while (cur) {
+            let temp = cur.next
+            cur.next = prev
+            prev = cur
+            cur = temp
+        }
+        return prev
+    }
+
+    // 基于双指针 - 递归
+    function reverse() {
+        function dep(cur, prev) {
+            if (cur === null) return prev
+            const temp = cur.next
+            cur.next = prev
+            return dep(temp, cur)
+        }
+        return dep(head, null)
+    }
+
+    // 递归反转 - 官解
+    function reverse() {
+        function dep(node) {
+            if (node === null || node.next === null) return node
+            const cur = dep(node.next)
+
+            node.next.next = node
+            node.next = null
+
+            return cur
+        }
+        return dep(head)
+    }
+}
+
+/**
+ * 234. 回文链表
+ * 给你一个单链表的头节点 head ，请你判断该链表是否为 回文链表 。如果是，返回 true ；否则，返回 false
+ * @param {ListNode} head  0 <= Node.val <= 9  链表中节点数目在范围[1, 10^5] 内
+ * @return {boolean}
+ */
+var isPalindrome = function (head) {
+    // 示例 1： 输入：head = [1,2,2,1] 输出：true
+    // 示例 2： 输入：head = [1,2] 输出：false
+
+    // 使用栈 - 其实用了栈就不用再遍历head了，用双指针判断stack的值是否满足回文即可
+    function twoPoint() {
+        const stack = []
+        let node = head
+        while (node) {
+            stack.push(node.val)
+            node = node.next
+        }
+        // while (head) {
+        //     const val = stack.pop()
+        //     if (val !== head.val) {
+        //         return false
+        //     }
+        //     head = head.next
+        // }
+        // return true
+
+        let left = 0,
+            right = stack.length - 1
+        while (left < right) {
+            if (stack[left] !== stack[right]) return false
+            left++
+            right--
+        }
+        return true
+    }
+
+    // 进阶：你能否用 O(n) 时间复杂度和 O(1) 空间复杂度解决此题？
+    // 递归写法
+    function recursion() {
+        let frontPointer = head // 声明一个变量进行前序迭代
+        function dep(node) {
+            // node !== null
+            if (node) {
+                // 但凡前后对比出现过false，那么最终都会返回false
+                if (!dep(node.next)) return false
+
+                // 这一步是用递归向前的尾节点与全局变量从head向后的节点对比
+                if (node.val !== frontPointer) return false
+
+                frontPointer = frontPointer.next
+            }
+            return true
+        }
+        return dep(head)
+    }
+}
