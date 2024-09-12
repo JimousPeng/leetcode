@@ -1800,3 +1800,115 @@ var isPalindrome = function (head) {
         return dep(head)
     }
 }
+
+/**
+ * 141. 环形链表  给你一个链表的头节点 head ，判断链表中是否有环
+ * @param {ListNode} head
+ * @return {boolean}
+ */
+var hasCycle = function (head) {
+    // hash存节点，看是否有重复
+    function useMap() {
+        const nodeSet = new Set()
+        while (head) {
+            if (nodeSet.has(head)) return true
+            nodeSet.add(head)
+            head = head.next
+        }
+        return false
+    }
+
+    // 快慢指针 快指针一次走两步，慢指针一次走一步; 也可以让快指针先走n步，然后再进入while循环
+    function twoPoint() {
+        if (head === null) return false
+        let slow = head
+        let fast = slow.next
+        while (fast) {
+            if (slow === fast) return true
+            slow = slow.next
+            fast = fast.next?.next || null
+        }
+        return false
+    }
+}
+
+/**
+ * 142. 环形链表 II
+ * 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+var detectCycle = function (head) {
+    // 输入：head = [3,2,0,-4], pos = 1 输出：返回索引为 1 的链表节点
+    // 解释：链表中有一个环，其尾部连接到第二个节点 [3,2,0,-4] -> 2,0,-4,...
+    // 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。
+    // 为了表示给定链表中的环，评测系统内部使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。
+    // 如果 pos 是 -1，则在该链表中没有环。注意：pos 不作为参数进行传递，仅仅是为了标识链表的实际情况
+
+    function useMap() {
+        if (head === null || head.next === null) return null
+        // 可以把 Map 换成  Set, 不需要 head.pos = nodeMap.get(head) 这一步
+        const nodeMap = new Map()
+        let flag = 0
+        while (head) {
+            if (nodeMap.has(head)) {
+                head.pos = nodeMap.get(head)
+                return head
+            }
+            nodeMap.set(head, flag)
+            head = head.next
+            flag++
+        }
+        return null
+
+        /** 官解 */
+        // const visited = new Set()
+        // while (head !== null) {
+        //     if (visited.has(head)) {
+        //         return head
+        //     }
+        //     visited.add(head)
+        //     head = head.next
+        // }
+        // return null
+    }
+
+    /** 官解
+     * 快慢指针要特别注意的是 fast与slow指针相遇的点未必是入环节点
+     * 所以不能用 141. 环形链表 的快慢指针的处理方式
+     */
+    function twoPoint() {
+        if (head === null || head.next === null) return null
+        let slow = head,
+            fast = head
+        while (fast !== null) {
+            slow = slow.next
+            if (fast.next !== null) {
+                fast = fast.next.next
+            } else {
+                return null
+            }
+            // 此时两指针相遇，那么定义一个新的指针 ptr 从 head 出发，slow往前出发
+            // 最终，它们会在入环点相遇
+            /** 数学分析：
+             * 因为快指针的速度是慢指针的两步，如果从入环处一起出发，
+             * 理论上两个指针每次都会快指针移动2n倍距离后在入环处相遇
+             *
+             * 由于慢指针到达入环口出发时，快指针多走了一个从链表起点到入环口的距离，而这块距离，则是
+             * 两个指针在环内相遇距离入环口相遇的便宜量
+             *
+             * 所以当快慢指针相遇后，驱使一个新的指针从head开始移动，当慢指针移动入环口，就是新指针移动到
+             * 入环口的距离
+             */
+            if (fast === slow) {
+                let ptr = head
+                while (ptr !== slow) {
+                    ptr = ptr.next
+                    slow = slow.next
+                }
+                return ptr
+            }
+        }
+        return null
+    }
+}
