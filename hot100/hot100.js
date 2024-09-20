@@ -1912,3 +1912,181 @@ var detectCycle = function (head) {
         return null
     }
 }
+
+/**
+ * 21. 合并两个有序链表
+ * 将两个升序链表合并为一个新的 升序 链表并返回。新链表是通过拼接给定的两个链表的所有节点组成的
+ * @param {ListNode} list1
+ * @param {ListNode} list2
+ * @return {ListNode}  两个链表的节点数目范围是 [0, 50]
+ */
+var mergeTwoLists = function (list1, list2) {
+    /**
+     * 示例 1： 输入：l1 = [1,2,4], l2 = [1,3,4] 输出：[1,1,2,3,4,4]
+     * 示例 2： 输入：l1 = [], l2 = [] 输出：[]
+     */
+
+    // 新链表是通过拼接给定的两个链表的所有节点组成的，这里是创建了每一个全新的链表节点
+    function cross() {
+        // 直接用stack接收所有项
+        if (list1 === null && list2 === null) return null
+        const stack = []
+        while (list1) {
+            stack.push(list1.val)
+            list1 = list1.next
+        }
+        while (list2) {
+            stack.push(list2.val)
+            list2 = list2.next
+        }
+        stack.sort((a, b) => a - b)
+        let head = new ListNode(stack[0])
+        let node = head
+        for (let i = 1; i < stack.length; i++) {
+            node.next = new ListNode(stack[i])
+            node = node.next
+        }
+        node.next = null
+        return head
+    }
+
+    /** 迭代 */
+    function twoPoint() {
+        let preHead = new ListNode(-1) // 两个链表的节点数目范围是 [0, 50]
+        let prev = preHead
+        while (list1 && list2) {
+            if (list1.val <= list2.val) {
+                prev.next = list1
+                list1 = list1.next
+            } else {
+                prev.next = list2
+                list2 = list2.next
+            }
+            prev = prev.next
+        }
+        prev.next = list1 || list2
+        return preHead.next
+    }
+
+    /** 递归：官解 */
+    function dep() {
+        /** 思路：
+         * 如果 l1 或者 l2 一开始就是空链表 ，那么没有任何操作需要合并，所以我们只需要返回非空链表。
+         * 否则，我们要判断 l1 和 l2 哪一个链表的头节点的值更小，
+         * 然后递归地决定下一个添加到结果里的节点。如果两个链表有一个为空，递归结束
+         * <秒呀!>
+         */
+        function deep(l1, l2) {
+            if (l1 === null) {
+                return l2
+            } else if (l2 === null) {
+                return l1
+            } else if (l1.val < l2.val) {
+                l1.next = deep(l1.next, l2)
+                return l1
+            } else {
+                l2.next = deep(l1, l2.next)
+                return l2
+            }
+        }
+        return deep()
+    }
+}
+
+/**
+ * 两数相加
+ * 给你两个 非空 的链表，表示两个非负的整数。
+ * 它们每位数字都是按照 逆序 的方式存储的，并且每个节点只能存储 一位 数字
+ * 请你将两个数相加，并以相同形式返回一个表示和的链表<你可以假设除了数字 0 之外，这两个数都不会以 0 开头>
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode} 每个链表中的节点数在范围 [1, 100] 内  0 <= Node.val <= 9
+ */
+var addTwoNumbers = function (l1, l2) {
+    /**
+     * 2 -> 4 -> 3
+     * 5 -> 6 -> 4
+     * 7 -> 0 -> 8
+     * 输入：l1 = [2,4,3], l2 = [5,6,4] 输出：[7,0,8] 解释：342 + 465 = 807.
+     *
+     * 9 -> 9 -> 9 -> 9 -> 9 -> 9 -> 9
+     * 9 -> 9 -> 9 -> 9
+     * 8 -> 9 -> 9 -> 9 -> 0 -> 0 -> 0 -> 1
+     * 输入：l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9] 输出：[8,9,9,9,0,0,0,1]
+     */
+    let preHead = new ListNode(0)
+    let pre = preHead
+    let count = 0
+    while (l1 && l2) {
+        const sum = l1.val + l2.val + count
+        const useNum = sum % 10
+        pre.next = new ListNode(useNum)
+        pre = pre.next
+        count = sum > 9 ? 1 : 0
+        l1 = l1.next
+        l2 = l2.next
+    }
+    let resetNode = l1 || l2
+    while (resetNode) {
+        const sum = resetNode.val + count
+        const num = sum % 10
+        pre.next = new ListNode(num)
+        pre = pre.next
+        resetNode = resetNode.next
+        count = sum > 9 ? 1 : 0
+    }
+    if (count) {
+        pre.next = new ListNode(count)
+    }
+    return preHead.next
+}
+
+/**
+ * 62. 不同路径
+ * @param {number} m
+ * @param {number} n 1 <= m, n <= 100
+ * @return {number}
+ */
+var uniquePaths = function (m, n) {
+    /**
+     * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+     * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
+     * 问总共有多少条不同的路径？
+     *
+     * 输入：m = 3, n = 7 输出：28
+     *
+     * 0 0
+     * 0 0
+     * 0 0
+     * 输入：m = 3, n = 2 输出：3
+     * 从左上角开始，总共有 3 条路径可以到达右下角。 1. 向右 -> 向下 -> 向下 2. 向下 -> 向下 -> 向右 3. 向下 -> 向右 -> 向下
+     */
+}
+
+/**
+ * 1143. 最长公共子序列 - 多维动态规划
+ * @param {string} text1
+ * @param {string} text2  1 <= text1.length, text2.length <= 1000
+ * @return {number}
+ */
+var longestCommonSubsequence = function (text1, text2) {
+    /**
+     * 给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
+     * 一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
+     * 例如，"ace" 是 "abcde" 的子序列，但 "aec" 不是 "abcde" 的子序列。
+     * 两个字符串的 公共子序列 是这两个字符串所共同拥有的子序列。
+     *
+     * 示例 1： 输入：text1 = "abcde", text2 = "ace" 输出：3 解释：最长公共子序列是 "ace" ，它的长度为 3 。
+     * 示例 2： 输入：text1 = "abc", text2 = "abc" 输出：3 解释：最长公共子序列是 "abc" ，它的长度为 3
+     * 输入：text1 = "abc", text2 = "def" 输出：0 解释：两个字符串没有公共子序列，返回 0
+     *
+     * 一个字符串的 子序列 是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串
+     */
+
+    // 多维动态规划？
+    function dp() {
+        const len1 = text1.length
+        const len2 = text2.length
+        for (let i = 0; i < len1; i++) {}
+    }
+}
