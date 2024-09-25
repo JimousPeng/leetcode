@@ -67,4 +67,58 @@ var inorderTraversal = function (root) {
  * @param {TreeNode} root
  * @return {number}
  */
-var maxDepth = function (root) {}
+var maxDepth = function (root) {
+    /** 最大深度，那就用递归处理 */
+    function useDfs() {
+        if (root === null) return 0
+        let max = 1
+        function dep(root, deep) {
+            if (root.left === null && root.right === null) {
+                max = Math.max(max, deep)
+                return
+            }
+            if (root.left == null) {
+                return dep(root.right, deep + 1)
+            }
+            if (root.right === null) {
+                return dep(root.left, deep + 1)
+            }
+            dep(root.left, deep + 1)
+            dep(root.right, deep + 1)
+        }
+        dep(root, 1)
+        return max
+    }
+
+    /** 递归优化
+     * 如果我们知道了左子树和右子树的最大深度 l 和 r，那么该二叉树的最大深度即为
+     * max(l, r)+1
+     * 而左子树和右子树的最大深度又可以以同样的方式进行计算
+     */
+    function useDfsOptimize() {
+        function dep(root) {
+            if (root === null) return 0
+            return Math.max(dep(root.left), dep(root.right)) + 1
+        }
+        return dep(root)
+    }
+
+    /** 广度遍历, 也就是层序遍历 */
+    function bfs() {
+        if (root === null) return 0
+        let stack = []
+        stack.push(root)
+        let res = 0
+        while (stack.length) {
+            let nextStack = []
+            for (let i = 0; i < stack.length; i++) {
+                const node = stack[i]
+                if (node.left) nextStack.push(node.left)
+                if (node.right) nextStack.push(node.right)
+            }
+            stack = nextStack
+            res++
+        }
+        return res
+    }
+}
