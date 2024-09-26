@@ -492,3 +492,64 @@ var numberOfLines = function (widths, s) {
     }
     return [row, count]
 }
+
+/**
+ * 2980. 检查按位或是否存在尾随零
+ * @param {number[]} nums  2 <= nums.length <= 100
+ * @return {boolean}
+ */
+var hasTrailingZeros = function (nums) {
+    /** 给你一个 正整数 数组 nums 。
+你需要检查是否可以从数组中选出 两个或更多 元素，满足这些元素的按位或运算（ OR）结果的二进制表示中 至少 存在一个尾随零。
+例如，数字 5 的二进制表示是 "101"，不存在尾随零，而数字 4 的二进制表示是 "100"，存在两个尾随零。
+如果可以选择两个或更多元素，其按位或运算结果存在尾随零，返回 true；否则，返回 false
+输入：nums = [1,2,3,4,5] 输出：true 解释：如果选择元素 2 和 4，按位或运算结果是 6，二进制表示为 "110" ，存在一个尾随零。
+*/
+    function cross() {
+        // 先计算 位运算后的值，再看是否存在以0结尾
+
+        let count = 0
+        for (const num of nums) {
+            let str = num.toString(2)
+            if (str.endsWith('0')) {
+                if (++count >= 2) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+}
+
+/**
+ * 35. 搜索插入位置
+ * @param {number[]} nums  1 <= nums.length <= 104
+ * @param {number} target  nums 为 无重复元素 的 升序 排列数组
+ * @return {number}
+ */
+var searchInsert = function (nums, target) {
+    // 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。
+    // 如果目标值不存在于数组中，返回它将会被按顺序插入的位置
+    // 请必须使用时间复杂度为 O(log n) 的算法
+
+    // 二分法
+    function twoSplit() {
+        // 要求时间复杂度为 O(log n)
+        // 已知：nums 为 无重复元素 的 升序 排列数组
+        const len = nums.length
+        let left = 0,
+            right = len - 1
+        while (left <= right) {
+            const mid = left + Math.ceil((right - left) / 2)
+            if (nums[mid] === target) {
+                return mid
+            } else if (nums[mid] > target) {
+                right = mid - 1
+            } else {
+                // mid 比 target 小
+                left = mid + 1
+            }
+        }
+        return left
+    }
+}
