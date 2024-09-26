@@ -47,14 +47,91 @@ var compareVersion = function (version1, version2) {
 
 /**
  * 82. 删除排序链表中的重复元素 II
+ * @param {ListNode} head 链表中节点数目在范围 [0, 300] 内
+ * @return {ListNode}
+ */
+var deleteDuplicates = function (head) {
+    /**
+     * 输入：head = [1,2,3,3,4,4,5] 输出：[1,2,5]
+     */
+
+    // 遍历操作
+    function cross() {
+        /**
+         * 需要考虑的情况：
+         * 1. 前置节点存在相同
+         * 2. 后置节点存在相同
+         */
+        if (head === null || head.next === null) return head
+
+        const tempNode = new ListNode(0, head)
+
+        let cur = tempNode
+        while (cur.next && cur.next.next) {
+            if (cur.next.val === cur.next.next.val) {
+                const mark = cur.next.val
+                while (cur.next && cur.next.val === mark) {
+                    cur.next = cur.next.next
+                }
+            } else {
+                cur = cur.next
+            }
+        }
+        return tempNode.next
+    }
+}
+
+/**
+ * 206. 反转链表  给你单链表的头节点 head ，请你反转链表，并返回反转后的链表
  * @param {ListNode} head
  * @return {ListNode}
  */
-var deleteDuplicates = function (head) {}
+var reverseList = function (head) {
+    function cross() {
+        // 反转链表
+        let prev = null
+        let node = head
+        while (node) {
+            let temp = node.next
+            node.next = prev
+            prev = node
+            node = temp
+        }
+        return prev
+    }
 
-/**
- * 206. 反转链表
- */
+    /** 递归 */
+    function dfs() {
+        function dp(head, prev) {
+            if (head === null) return prev
+
+            let temp = head.next
+            head.next = prev
+
+            return dp(temp, head)
+        }
+
+        return dp(head, null)
+    }
+
+    /** 递归2 */
+    function dfs() {
+        function dep(node) {
+            // 保证只遍历到最后一个有效节点就返回
+            if (node && node.next === null) return node
+
+            const cur = dep(node.next)
+
+            node.next.next = node
+
+            node.next = null
+
+            // cur 只是为了返回最后一个节点
+            return cur
+        }
+        return dep(head)
+    }
+}
 
 /**
  * LCR 026. 重排链表
