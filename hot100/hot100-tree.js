@@ -122,3 +122,36 @@ var maxDepth = function (root) {
         return res
     }
 }
+
+/**
+ * 226. 翻转二叉树
+ * @param {TreeNode} root
+ * @return {TreeNode}
+ */
+var invertTree = function(root) {
+
+    // 翻转的场景适合用中序遍历
+    function dep(root) {
+        if(root == null) return
+
+        const tempNode = root.left
+
+        root.left = root.right
+        root.right = tempNode
+
+        dep(root.left)
+        dep(root.right)
+    }
+    dep(root)
+
+    return root
+};
+
+/**
+ * 101. 对称二叉树
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isSymmetric = function(root) {
+    
+};
