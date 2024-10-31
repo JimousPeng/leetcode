@@ -2169,4 +2169,12 @@ var majorityElement = function(nums) {
       }
     }
   }
+
+  /** 排序 */
+  function sort() {
+    const len = nums.length;
+    const start = Math.floor(len / 2);
+    nums.sort((a, b) => a - b);
+    return nums[start];
+  }
 };
