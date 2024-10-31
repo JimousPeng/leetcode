@@ -2140,3 +2140,33 @@ var singleNumber = function(nums) {
   }
   return res;
 };
+
+/**
+ * 169. 多数元素
+ * @param {number[]} nums
+ * @return {number}
+ */
+var majorityElement = function(nums) {
+  // 给定一个大小为 n 的数组 nums ，返回其中的多数元素
+  // 多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
+  // 你可以假设数组是非空的，并且给定的数组总是存在多数元素
+
+  // 用哈希表
+  function useMap() {
+    let numMap = new Map();
+    let len = nums.length;
+    // 当数组长度 < 2, 直接返回第0项即可
+    if (len < 2) return nums[0];
+    const mid = Math.ceil(len / 2);
+    for (let i = 0; i < len; i++) {
+      const num = nums[i];
+      const count = numMap.get(num);
+      if (count) {
+        if (count + 1 >= mid) return num;
+        numMap.set(num, count + 1);
+      } else {
+        numMap.set(num, 1);
+      }
+    }
+  }
+};

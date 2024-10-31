@@ -459,4 +459,308 @@ var rightSideView = function(root) {
     }
     return res;
   }
+
+  //迭代法 - 用中序遍历?
+  function useBfs() {
+    if (root === null) return [];
+
+    const res = [];
+
+    let stack = [root];
+
+    while (stack.length) {
+      // 入栈的时候定义好规则，即最右侧的最先入栈，这样取数组最后一个元素即可
+
+      let next = [];
+
+      const len = stack.length;
+      res.push(stack[len - 1].val);
+
+      let node = stack.shift();
+      while (node) {
+        if (node.left !== null) {
+          next.push(node.left);
+        }
+        if (node.right !== null) {
+          next.push(node.right);
+        }
+        node = stack.shift();
+      }
+      stack = next;
+    }
+    return res;
+  }
+};
+
+/**
+ * 114. 二叉树展开为链表
+ * @param {TreeNode} root
+ * @return {void} Do not return anything, modify root in-place instead.
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ *
+ * 进阶：你可以使用原地算法（O(1) 额外空间）展开这棵树吗？
+ */
+var flatten = function(root) {
+  /**
+   * 给你二叉树的根结点 root ，请你将它展开为一个单链表
+   * 展开后的单链表应该同样使用 TreeNode ，其中 right 子指针指向链表中下一个结点，而左子指针始终为 null
+   * 展开后的单链表应该与二叉树 先序遍历 顺序相同
+   */
+
+  /**
+   * 思路有一种是：先构造先序遍历数组，再基于数组构造链表； 这里要注意的是，存入的是treeNode节点，而不是treeNode的值
+   * 之后遍历数组的时候，基于treeNode节点更新它的left/right指针即可。
+   */
+  function useDfs() {
+    if (root === null) return;
+    let prev;
+    function dfs(root) {
+      if (root === null) return;
+      // 保留左右节点
+      let leftNode = root.left;
+      let rightNode = root.right;
+      root.left = null;
+      if (prev) {
+        prev.right = root;
+      }
+      prev = root;
+      dfs(leftNode);
+      dfs(rightNode);
+    }
+    dfs(root);
+  }
+
+  function useDfs() {
+    if (root === null) return [];
+    let nodeList = [];
+    function Dep(root) {
+      if (root === null) return;
+      nodeList.push(root);
+      Dep(root.left);
+      Dep(root.right);
+    }
+    Dep(root);
+
+    for (let i = 1; i < nodeList.length; i++) {
+      const prev = i - 1;
+      nodeList[prev].right = nodeList[i];
+      nodeList[prev].left = null;
+    }
+    return nodeList;
+  }
+};
+
+/**
+ * 105. 从前序与中序遍历序列构造二叉树
+ * @param {number[]} preorder  1 <= preorder.length <= 3000
+ * @param {number[]} inorder
+ * @return {TreeNode}
+ */
+var buildTree = function(preorder, inorder) {
+  /**
+   * 给定两个整数数组 preorder 和 inorder ，
+   * 其中 preorder 是二叉树的先序遍历， inorder 是同一棵树的中序遍历，请构造二叉树并返回其根节点。
+   *
+   * preorder 和 inorder 均 无重复 元素  inorder 均出现在 preorder
+   *
+   * 基于先序遍历和中序遍历，可知：
+   * 1. 先序遍历的第一个节点是root节点
+   * 2. 中序遍历基于root节点划分了左右子树
+   *
+   * 因此可以知道：
+   * 对于子树的构建，基于 中序遍历  - start表示当前子树的左边界，end表示当前子树的右边界
+   * 基于前序遍历，可以知道root的节点
+   */
+  function createNode() {
+    const len = inorder.length;
+    let rootPos = 0;
+
+    function createTree(start, end) {
+      // 边界处理：由于是左闭右闭区间，所以存在 start === end 的情况
+      if (start > end) return null;
+
+      // 怎么找到当前root点
+      const val = preorder[rootPos++];
+      const rootIndex = inorder.indexOf(val);
+      const root = new TreeNode(val);
+      root.left = createTree(start, rootIndex - 1);
+      root.right = createTree(rootIndex + 1, end);
+      return root;
+    }
+
+    return createTree(0, len - 1);
+  }
+
+  /** 优化 inorder.indexOf  */
+  function createNodeOptimize() {
+    const len = inorder.length;
+    let rootPos = 0;
+
+    const midMap = new Map();
+
+    inorder.forEach((item, _index) => {
+      midMap.set(item, _index);
+    });
+
+    function createTree(start, end) {
+      // 边界处理：由于是左闭右闭区间，所以存在 start === end 的情况
+      if (start > end) return null;
+
+      // 怎么找到当前root点
+      const val = preorder[rootPos++];
+      const rootIndex = midMap.get(val);
+      const root = new TreeNode(val);
+      root.left = createTree(start, rootIndex - 1);
+      root.right = createTree(rootIndex + 1, end);
+      return root;
+    }
+
+    return createTree(0, len - 1);
+  }
+};
+
+/**
+ * 延申：
+ * 106. 从中序与后序遍历序列构造二叉树
+ * @param {number[]} inorder
+ * @param {number[]} postorder
+ * @return {TreeNode}
+ */
+var buildTree = function(inorder, postorder) {
+  /**
+   *
+   * inorder 和 postorder 都由 不同 的值组成 postorder 中每一个值都在 inorder 中
+   *
+   * 思路：
+   * 以 前序遍历和中序遍历为例，依赖中序遍历划分左右子树
+   * 后续遍历中，节点位置是 左-右-中，root节点是后续遍历的最后节点
+   */
+  function createNode() {
+    const len = postorder.length;
+
+    /**
+     *    1
+     *  2    3   -> 中序[4,2,1,5,3]   后序[4,2,5,3,1]
+     * 4    5
+     */
+
+    const midMap = new Map();
+    let rootPos = len - 1;
+
+    inorder.map((item, index) => {
+      midMap.set(item, index);
+    });
+
+    function createTree(start, end) {
+      if (start > end) return null;
+      // 找到ROOT的下标
+      const rootVal = postorder[rootPos--];
+      const rootIndex = midMap.get(rootVal);
+      const root = new TreeNode(rootVal);
+
+      root.right = createTree(rootIndex + 1, end);
+      root.left = createTree(start, rootIndex - 1);
+
+      return root;
+    }
+
+    return createTree(0, len - 1);
+  }
+};
+
+/**
+ * 236. 二叉树的最近公共祖先  所有 Node.val 互不相同
+ * @param {TreeNode} root
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {TreeNode}
+ */
+var lowestCommonAncestor = function(root, p, q) {
+  /**
+   * 给定一个二叉树, 找到该树中两个指定节点的最近公共祖先
+   * 最近公共祖先的定义为：“对于有根树 T 的两个节点 p、q，最近公共祖先表示为一个节点 x，
+   * 满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”
+   */
+
+  function useDfs() {
+    /** 要找到最近公共祖先节点，利用前序遍历这几种情况：
+     * 1. 当前节点的左子树/右子树中存在q，p，那么该节点即最近的公共祖先；
+     * 2. 当前节点是p/q节点，它的子树中存在q/p节点，那么该节点即最近的公共祖先；
+     */
+    let res;
+    function dfs(root) {
+      if (root === null || res !== undefined) return false;
+      const leftNode = dfs(root.left);
+      const rightNode = dfs(root.right);
+
+      const inSubTree = leftNode && rightNode;
+      const curIsAncestor =
+        (leftNode || rightNode) && (root.val === p.val || root.val === q.val);
+
+      if (inSubTree || curIsAncestor) {
+        res = root;
+      }
+
+      // 返回当前子树的状态是否存在 p q
+      return leftNode || rightNode || root.val === p.val || root.val === q.val;
+    }
+    dfs(root);
+    return res;
+  }
+};
+
+/**
+ * 124. 二叉树中的最大路径和
+ * @param {TreeNode} root
+ * @return {number}
+ */
+var maxPathSum = function(root) {
+  /**
+   * 二叉树中的 路径 被定义为一条节点序列，序列中每对相邻节点之间都存在一条边。
+   * 同一个节点在一条路径序列中 至多出现一次 。该路径 至少包含一个 节点，且不一定经过根节点
+   *
+   * 路径和 是路径中各【节点值】的总和。
+   */
+  function useDfs() {
+    let countMax = -Infinity;
+    function dfs(root) {
+      if (root === null) return 0;
+      let leftCount = dfs(root.left);
+      let rightCount = dfs(root.right);
+
+      countMax = Math.max(
+        countMax,
+        leftCount + rightCount + root.val,
+        root.val + leftCount,
+        root.val + rightCount,
+        root.val
+      );
+
+      return Math.max(root.val + leftCount, root.val + rightCount, root.val);
+    }
+    dfs(root);
+
+    return countMax;
+  }
+
+  // 递归处理优化
+  function useDfsOptimize() {
+    let countMax = -Infinity;
+    function dfs(root) {
+      if (root === null) return 0;
+      let leftCount = Math.max(dfs(root.left), 0);
+      let rightCount = Math.max(dfs(root.right), 0);
+
+      countMax = Math.max(countMax, leftCount + rightCount + root.val);
+
+      return Math.max(root.val + leftCount, root.val + rightCount, root.val);
+    }
+    dfs(root);
+
+    return countMax;
+  }
 };
