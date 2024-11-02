@@ -50,3 +50,19 @@ var climbStairs = function (n) {
     return r;
   }
 };
+
+/**
+ * 118. 杨辉三角
+ * @param {number} numRows  1 <= numRows <= 30
+ * @return {number[][]}
+ */
+var generate = function (numRows) {
+  // 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行
+  /**
+   * 输入: numRows = 5
+   * 输出: [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
+   */
+
+  // 暴力遍历
+  function cross() {}
+};
