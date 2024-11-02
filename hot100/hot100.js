@@ -2178,3 +2178,4 @@ var majorityElement = function(nums) {
     return nums[start];
   }
 };
+
