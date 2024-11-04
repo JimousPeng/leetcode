@@ -608,4 +608,31 @@ var shortestToChar = function (s, c) {
     }
     return result;
   }
+
+  function twoCross() {
+    let len = s.length;
+    const res = new Array(len).fill(len + 1);
+
+    // 从左往右遍历，假设C的位置在最后
+    let indexC;
+    for (let i = 0; i < len; i++) {
+      if (s[i] === c) {
+        indexC = i;
+      }
+      if (indexC !== undefined) {
+        res[i] = i - indexC;
+      }
+    }
+    // 从右往左遍历，初始化C的位置为2n
+    indexC = undefined;
+    for (let i = len - 1; i >= 0; i--) {
+      if (s[i] === c) {
+        indexC = i;
+      }
+      if (indexC !== undefined) {
+        res[i] = Math.min(res[i], indexC - i);
+      }
+    }
+    return res;
+  }
 };
