@@ -218,7 +218,8 @@ var sortList = function (head) {
     // 输入：head = [4,2,1,3] 输出：[1,2,3,4]
     // 输入：head = [-1,5,3,4,0] 输出：[-1,0,3,4,5]
 
-    function cross() {
+    // 使用额外的数组空间
+    function useStack() {
         if (head === null || head.next === null) return head
         let node = head
         const nodeStack = []
@@ -237,5 +238,19 @@ var sortList = function (head) {
         }
         cur.next = null
         return newHead
+    }
+
+    // 归并排序
+    function sortMerge() {
+        const toSortList = (head, tail) => {
+            if (head === null) return head
+            if (head.next === tail) {
+                // 说明就是最后一个节点了
+                head.next = null
+                return head
+            }
+        }
+
+        function sortLink() {}
     }
 }
