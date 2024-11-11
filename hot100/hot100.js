@@ -31,7 +31,7 @@
  * @param {number} target
  * @return {number[]}  只会存在一个有效答案
  */
-var twoSum = function(nums, target) {
+var twoSum = function (nums, target) {
   const targetMap = {};
   const len = nums.length;
   for (let i = 0; i < len; i++) {
@@ -57,7 +57,7 @@ var twoSum = function(nums, target) {
  * @param {string[]} strs  1 <= strs.length <= 10^4   0 <= strs[i].length <= 100
  * @return {string[][]}  strs[i] 仅包含小写字母
  */
-var groupAnagrams = function(strs) {
+var groupAnagrams = function (strs) {
   /**
    * 总结：
    * 需要解决的关键是如何在遍历的过程中，高效对比两次字母是否是异位词，并将相同的异位词存入同一个数组内
@@ -140,9 +140,9 @@ var groupAnagrams = function(strs) {
       }
     }
     // 得到的 indexList 是一个下标集合列表，eg: [ [ 0, 1, 3 ], [ 2, 4 ], [ 5 ] ]
-    const indexList = Object.keys(resMap).map(str => resMap[str]);
-    return indexList.map(item => {
-      return item.map(i => strs[i]);
+    const indexList = Object.keys(resMap).map((str) => resMap[str]);
+    return indexList.map((item) => {
+      return item.map((i) => strs[i]);
     });
   }
 
@@ -177,7 +177,7 @@ var groupAnagrams = function(strs) {
  * @param {number[]} nums  0 <= nums.length <= 10^5
  * @return {number}  -10^9 <= nums[i] <= 10^9  *存在负数
  */
-var longestConsecutive = function(nums) {
+var longestConsecutive = function (nums) {
   /**
    * 这题的关键是时间复杂度需要在 O(n)，也就是一次遍历找出最长序列的长度
    * 方法1：
@@ -201,7 +201,7 @@ var longestConsecutive = function(nums) {
     const posMap = {};
     // 更新节点位置信息，posMap[num][0]-前置节点，posMap[num][1]-当前节点，posMap[num][2]-后置节点
     // 每一个节点的值为0-不存在 1-存在
-    const updatePos = num => {
+    const updatePos = (num) => {
       // num 为当前遍历节点
       if (posMap[num]) {
         posMap[num][1] = 1;
@@ -297,7 +297,7 @@ var longestConsecutive = function(nums) {
  * @param {number[]} nums  1 <= nums.length <= 10^4
  * @return {void} Do not return anything, modify nums in-place instead.
  */
-var moveZeroes = function(nums) {
+var moveZeroes = function (nums) {
   // 必须在不复制数组的情况下原地对数组进行操作
   // 保持非零元素的相对顺序
 
@@ -369,7 +369,7 @@ var moveZeroes = function(nums) {
  * @param {number[]} height  2 <= height.length <= 10^5    0 <= height[i] <= 10^4
  * @return {number}
  */
-var maxArea = function(height) {
+var maxArea = function (height) {
   /**
    * 容器的水量 = 容器的h * 容器的w
    * Math.min(height[left], height[right]) * (right - left)
@@ -400,7 +400,7 @@ var maxArea = function(height) {
  * @param {number[]} nums  3 <= nums.length <= 3000
  * @return {number[][]}
  */
-var threeSum = function(nums) {
+var threeSum = function (nums) {
   /**
    * 整数数组 nums ，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足 i != j、i != k 且 j != k ，同时还满足 nums[i] + nums[j] + nums[k] == 0
    * 返回所有和为 0 且不重复的三元组
@@ -459,7 +459,7 @@ var threeSum = function(nums) {
  * @param {string} s  0 <= s.length <= 5 * 10^4
  * @return {number}  s 由英文字母、数字、符号和空格组成
  */
-var lengthOfLongestSubstring = function(s) {
+var lengthOfLongestSubstring = function (s) {
   // 示例 1:
   // 输入: s = "abcabcbb"
   // 输出: 3
@@ -534,7 +534,7 @@ var lengthOfLongestSubstring = function(s) {
  * @param {string} p  s 和 p 仅包含小写字母
  * @return {number[]}
  */
-var findAnagrams = function(s, p) {
+var findAnagrams = function (s, p) {
   //     给定两个字符串 s 和 p，找到 s 中所有 p 的 异位词 的子串，返回这些子串的起始索引。不考虑答案输出的顺序
   //     异位词 指由相同字母重排列形成的字符串（包括相同的字符串）
   // 示例 1:
@@ -556,10 +556,7 @@ var findAnagrams = function(s, p) {
   function slideWindow() {
     let res = [];
     const strlen = p.length;
-    const baseStr = p
-      .split("")
-      .sort()
-      .join("");
+    const baseStr = p.split("").sort().join("");
     const len = s.length;
     let strStack = [];
     for (let left = 0, right = 0; right < len; right++) {
@@ -692,7 +689,7 @@ var findAnagrams = function(s, p) {
  * @param {number} k    -10^7 <= k <= 10^7
  * @return {number}
  */
-var subarraySum = function(nums, k) {
+var subarraySum = function (nums, k) {
   //     给你一个整数数组 nums 和一个整数 k ，请你统计并返回 该数组中和为 k 的子数组的个数
   //     子数组是数组中元素的连续非空序列
   // 示例 1：
@@ -868,7 +865,7 @@ var subarraySum = function(nums, k) {
  * @param {number[]} nums 1 <= nums.length <= 10^5
  * @return {number}  -10^4 <= nums[i] <= 10^4
  */
-var maxSubArray = function(nums) {
+var maxSubArray = function (nums) {
   // 给你一个整数数组 nums ，请你找出一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和
   // 子数组是数组中的一个连续部分
   //     示例 1：
@@ -934,7 +931,7 @@ var maxSubArray = function(nums) {
  * @param {number[][]} intervals 1 <= intervals.length <= 10^4  intervals[i].length == 2
  * @return {number[][]}  0 <= starti <= endi <= 10^4
  */
-var merge = function(intervals) {
+var merge = function (intervals) {
   // 以数组 intervals 表示若干个区间的集合，其中单个区间为 intervals[i] = [starti, endi]
   // 请你合并所有重叠的区间，并返回 一个不重叠的区间数组，该数组需恰好覆盖输入中的所有区间 。
   //     示例 1：
@@ -978,7 +975,7 @@ var merge = function(intervals) {
  * @param {number} k  0 <= k <= 10^5
  * @return {void} Do not return anything, modify nums in-place instead.
  */
-var rotate = function(nums, k) {
+var rotate = function (nums, k) {
   // 给定一个整数数组 nums，将数组中的元素向右轮转 k 个位置，其中 k 是非负数
   //     示例 1:
   // 输入: nums = [1,2,3,4,5,6,7], k = 3
@@ -1130,7 +1127,7 @@ var rotate = function(nums, k) {
  * @param {number[]} nums  2 <= nums.length <= 10^5  -30 <= nums[i] <= 30
  * @return {number[]}
  */
-var productExceptSelf = function(nums) {
+var productExceptSelf = function (nums) {
   // 给你一个整数数组 nums，返回 数组 answer
   // 其中 answer[i] 等于 nums 中除 nums[i] 之外其余各元素的乘积
   // 请 不要使用除法，且在 O(n) 时间复杂度内完成此题。
@@ -1198,7 +1195,7 @@ var productExceptSelf = function(nums) {
  *  -2^31 <= matrix[i][j] <= 2^31 - 1
  * @return {void} Do not return anything, modify matrix in-place instead.
  */
-var setZeroes = function(matrix) {
+var setZeroes = function (matrix) {
   // 给定一个 m x n 的矩阵，如果一个元素为 0 ，则将其所在行和列的所有元素都设为 0 。请使用 原地 算法
   //     输入：matrix = [[1,1,1],[1,0,1],[1,1,1]]
   // 1  1  1      1 0 1
@@ -1336,7 +1333,7 @@ var setZeroes = function(matrix) {
  * @param {number[][]} matrix  m == matrix.length   n == matrix[i].length
  * @return {number[]}          1 <= m, n <= 10    -100 <= matrix[i][j] <= 100
  */
-var spiralOrder = function(matrix) {
+var spiralOrder = function (matrix) {
   /**
    * 给你一个 m 行 n 列的矩阵 matrix ，请按照 顺时针螺旋顺序 ，返回矩阵中的所有元素
    * 输入：matrix = [[1,2,3],[4,5,6],[7,8,9]]
@@ -1387,7 +1384,7 @@ var spiralOrder = function(matrix) {
     if (rowLen === 1) return matrix[0];
 
     if (colLen == 1)
-      return matrix.map(item => {
+      return matrix.map((item) => {
         return item[0];
       });
 
@@ -1485,7 +1482,7 @@ var spiralOrder = function(matrix) {
  * @param {number[][]} matrix  n == matrix.length == matrix[i].length  1 <= n <= 20
  * @return {void} Do not return anything, modify matrix in-place instead.
  */
-var rotate = function(matrix) {
+var rotate = function (matrix) {
   /**
    * 顺时针旋转90度，也就是意味着横的变竖的
    * 先试试不原地旋转怎么解决
@@ -1564,7 +1561,7 @@ var rotate = function(matrix) {
  * @param {number} target
  * @return {boolean}
  */
-var searchMatrix = function(matrix, target) {
+var searchMatrix = function (matrix, target) {
   // 1  4  7  11  15
   // 2  5  8  12  19
   // 3  6  9  16  22
@@ -1665,7 +1662,7 @@ var searchMatrix = function(matrix, target) {
  * @param {ListNode} headB
  * @return {ListNode}
  */
-var getIntersectionNode = function(headA, headB) {
+var getIntersectionNode = function (headA, headB) {
   /**
    *
    * 给你两个单链表的头节点 headA 和 headB ，请你找出并返回两个单链表相交的起始节点。
@@ -1709,7 +1706,7 @@ var getIntersectionNode = function(headA, headB) {
  * @param {ListNode} head
  * @return {ListNode}
  */
-var reverseList = function(head) {
+var reverseList = function (head) {
   /** 给你单链表的头节点 head ，请你反转链表，并返回反转后的链表 */
 
   // 遍历反转 - 双指针， 一个 prev 指针， 一个 cur 指针
@@ -1758,7 +1755,7 @@ var reverseList = function(head) {
  * @param {ListNode} head  0 <= Node.val <= 9  链表中节点数目在范围[1, 10^5] 内
  * @return {boolean}
  */
-var isPalindrome = function(head) {
+var isPalindrome = function (head) {
   // 示例 1： 输入：head = [1,2,2,1] 输出：true
   // 示例 2： 输入：head = [1,2] 输出：false
 
@@ -1815,7 +1812,7 @@ var isPalindrome = function(head) {
  * @param {ListNode} head
  * @return {boolean}
  */
-var hasCycle = function(head) {
+var hasCycle = function (head) {
   // hash存节点，看是否有重复
   function useMap() {
     const nodeSet = new Set();
@@ -1847,7 +1844,7 @@ var hasCycle = function(head) {
  * @param {ListNode} head
  * @return {ListNode}
  */
-var detectCycle = function(head) {
+var detectCycle = function (head) {
   // 输入：head = [3,2,0,-4], pos = 1 输出：返回索引为 1 的链表节点
   // 解释：链表中有一个环，其尾部连接到第二个节点 [3,2,0,-4] -> 2,0,-4,...
   // 如果链表中有某个节点，可以通过连续跟踪 next 指针再次到达，则链表中存在环。
@@ -1929,7 +1926,7 @@ var detectCycle = function(head) {
  * @param {ListNode} list2
  * @return {ListNode}  两个链表的节点数目范围是 [0, 50]
  */
-var mergeTwoLists = function(list1, list2) {
+var mergeTwoLists = function (list1, list2) {
   /**
    * 示例 1： 输入：l1 = [1,2,4], l2 = [1,3,4] 输出：[1,1,2,3,4,4]
    * 示例 2： 输入：l1 = [], l2 = [] 输出：[]
@@ -2011,7 +2008,7 @@ var mergeTwoLists = function(list1, list2) {
  * @param {ListNode} l2
  * @return {ListNode} 每个链表中的节点数在范围 [1, 100] 内  0 <= Node.val <= 9
  */
-var addTwoNumbers = function(l1, l2) {
+var addTwoNumbers = function (l1, l2) {
   /**
    * 2 -> 4 -> 3
    * 5 -> 6 -> 4
@@ -2056,7 +2053,7 @@ var addTwoNumbers = function(l1, l2) {
  * @param {number} n 1 <= m, n <= 100
  * @return {number}
  */
-var uniquePaths = function(m, n) {
+var uniquePaths = function (m, n) {
   /**
    * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
    * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
@@ -2104,7 +2101,7 @@ var uniquePaths = function(m, n) {
  * @param {string} text2  1 <= text1.length, text2.length <= 1000
  * @return {number}
  */
-var longestCommonSubsequence = function(text1, text2) {
+var longestCommonSubsequence = function (text1, text2) {
   /**
    * 给定两个字符串 text1 和 text2，返回这两个字符串的最长 公共子序列 的长度。如果不存在 公共子序列 ，返回 0 。
    * 一个字符串的 子序列 是指这样一个新的字符串：它是由原字符串在不改变字符的相对顺序的情况下删除某些字符（也可以不删除任何字符）后组成的新字符串。
@@ -2132,7 +2129,7 @@ var longestCommonSubsequence = function(text1, text2) {
  * @param {number[]} nums
  * @return {number}
  */
-var singleNumber = function(nums) {
+var singleNumber = function (nums) {
   let res = nums[0];
   const len = nums.length;
   for (let i = 1; i < len; i++) {
@@ -2146,7 +2143,7 @@ var singleNumber = function(nums) {
  * @param {number[]} nums
  * @return {number}
  */
-var majorityElement = function(nums) {
+var majorityElement = function (nums) {
   // 给定一个大小为 n 的数组 nums ，返回其中的多数元素
   // 多数元素是指在数组中出现次数 大于 ⌊ n/2 ⌋ 的元素。
   // 你可以假设数组是非空的，并且给定的数组总是存在多数元素
@@ -2179,3 +2176,155 @@ var majorityElement = function(nums) {
   }
 };
 
+/**
+ * 35. 搜索插入位置
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var searchInsert = function (nums, target) {
+  /**
+   * 给定一个排序数组和一个目标值，在数组中找到目标值，并返回其索引。
+   * 如果目标值不存在于数组中，返回它将会被按顺序插入的位置
+   *
+   * 输入: nums = [1,3,5,6], target = 5 输出: 2
+   * 输入: nums = [1,3,5,6], target = 2 输出: 1
+   */
+
+  function splitTwo(nums, target) {
+    const len = nums.length;
+
+    // 优化
+    if (target > nums[len - 1]) return len;
+    if (target < nums[0]) return 0;
+
+    let left = 0,
+      right = len - 1;
+    // 左闭右闭，如果找不到target，能保证left一定是插入位置，因为 nums[mid] > target，移动的是right
+    while (left <= right) {
+      const mid = left + Math.floor((right - left) / 2);
+      if (nums[mid] === target) {
+        return mid;
+      } else if (nums[mid] > target) {
+        right = mid - 1;
+      } else {
+        left = mid + 1;
+      }
+    }
+    return left;
+  }
+};
+
+/**
+ * 74. 搜索二维矩阵
+ * @param {number[][]} matrix
+ * @param {number} target
+ * @return {boolean}
+ */
+var searchMatrix = function (matrix, target) {
+  /**
+   * 给你一个满足下述两条属性的 m x n 整数矩阵：
+   * 1. 每行中的整数从左到右按非严格递增顺序排列
+   * 2. 每行的第一个整数大于前一行的最后一个整数。
+   *
+   * 给你一个整数 target ，如果 target 在矩阵中，返回 true ；否则，返回 false
+   *
+   * 输入：matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3   输出：true
+   * 输入：matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13  输出：false
+   */
+
+  function splitTwo() {
+    const rowLen = matrix.length;
+    const colLen = matrix[0].length;
+
+    // 由已知条件可知 matrix[i][colLen-1] < matrix[i+1][0]
+
+    if (matrix[0][0] > target) return false;
+    if (matrix[rowLen - 1][colLen - 1] < target) return false;
+
+    let left = 0,
+      right = rowLen - 1;
+    while (left <= right) {
+      const mid = left + Math.floor((right - left) / 2);
+
+      let min = matrix[mid][0];
+      let max = matrix[mid][colLen - 1];
+
+      if (min === target || max === target) return true;
+
+      if (min <= target && max >= target) {
+        // 找到区间
+        left = mid;
+        break;
+      } else if (min > target) {
+        right = mid - 1;
+      } else if (max < target) {
+        left = mid + 1;
+      }
+    }
+
+    // 从当前区间行找到target
+    const useNums = matrix[left];
+    // 重置 left, right 边界, 左右端点已经在while循环中diff过了
+    (left = 1), (right = colLen - 2);
+    while (left <= right) {
+      const mid = left + Math.floor((right - left) / 2);
+      if (useNums[mid] === target) {
+        return true;
+      } else if (useNums[mid] < target) {
+        left = mid + 1;
+      } else {
+        right = mid - 1;
+      }
+    }
+
+    return false;
+  }
+};
+
+/**
+ * 34. 在排序数组中查找元素的第一个和最后一个位置
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var searchRange = function (nums, target) {
+  /**
+   * 给你一个按照非递减顺序排列的整数数组 nums，和一个目标值 target。
+   * 请你找出给定目标值在数组中的开始位置和结束位置。
+   * 如果数组中不存在目标值 target，返回 [-1, -1]
+   *
+   * 输入：nums = [5,7,7,8,8,10], target = 8 输出：[3,4]
+   * 输入：nums = [5,7,7,8,8,10], target = 6 输出：[-1,-1]
+   * 输入：nums = [], target = 0 输出：[-1,-1]
+   */
+
+  // 非递减顺序 -> 递增数组
+  function splitTwo(nums, target) {
+    const len = nums.length;
+    let left = 0,
+      right = len - 1,
+      base;
+
+    while (left <= right) {
+      const mid = left + Math.floor((right - left) / 2);
+      if (nums[mid] == target) {
+        let prev = mid,
+          next = mid;
+        while (nums[prev - 1] === target) {
+          prev--;
+        }
+        while (nums[next + 1] === target) {
+          next++;
+        }
+        return [prev, next];
+      } else if (nums[mid] < target) {
+        left = mid + 1;
+      } else {
+        right = mid - 1;
+      }
+    }
+
+    return [-1, -1];
+  }
+};

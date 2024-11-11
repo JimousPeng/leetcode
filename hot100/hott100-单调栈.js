@@ -79,3 +79,44 @@ var dailyTemperatures = function (temperatures) {
     return result;
   }
 };
+
+/**
+ * 20. 有效的括号
+ * @param {string} s 1 <= s.length <= 104
+ * @return {boolean}
+ */
+var isValid = function (s) {
+  /**
+   * 给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串 s ，判断字符串是否有效。
+   * 有效字符串需满足：
+   * 1. 左括号必须用相同类型的右括号闭合。
+   * 2. 左括号必须以正确的顺序闭合
+   * 3. 每个右括号都有一个对应的相同类型的左括号
+   *
+   * 输入：s = "()[]{}" 输出：true
+   * 输入：s = "()[{]}" false
+   * 输入：s = "(]" 输出：false
+   */
+
+  // 使用单调栈
+  function useStack(s) {
+    const len = s.length;
+    if (len % 2 !== 0) return false;
+    const strMap = {
+      "(": ")",
+      "{": "}",
+      "[": "]",
+    };
+    const stack = [];
+    stack.push(strMap[s[0]]);
+    for (let i = 1; i < len; i++) {
+      const str = s[i];
+      if (str === stack[0]) {
+        stack.shift();
+      } else {
+        stack.unshift(strMap[str]);
+      }
+    }
+    return stack.length === 0;
+  }
+};
