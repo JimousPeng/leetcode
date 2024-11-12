@@ -95,4 +95,40 @@ var resultsArray = function (nums, k) {
     return twoPoint(nums, k)
 }
 
-console.log(resultsArray([1, 2, 3, 4, 3, 2, 5], 3))
+/**
+ * 3258. 统计满足 K 约束的子字符串数量 I
+ * @param {string} s 1 <= s.length <= 50
+ * @param {number} k 1 <= k <= s.length
+ * @return {number}
+ */
+var countKConstraintSubstrings = function (s, k) {
+    /**
+     * 给你一个 二进制 字符串 s 和一个整数 k
+     * 如果一个 二进制字符串 满足以下任一条件，则认为该字符串满足 k 约束：
+     * 1. 字符串中 0 的数量最多为 k
+     * 2. 字符串中 1 的数量最多为 k
+     * 返回一个整数，表示 s 的所有满足 k 约束 的 子字符串 的数量
+     *
+     * 输入：s = "10101", k = 1 输出：12
+     * s 的所有子字符串中，除了 "1010"、"10101" 和 "0101" 外，其余子字符串都满足 k 约束
+     *
+     * 输入：s = "1010101", k = 2 输出：25
+     * s 的所有子字符串中，除了长度大于 5 的子字符串外，其余子字符串都满足 k 约束。
+     */
+
+    const len = s.length
+    let count = 0
+    for (let left = 0; left < len; left++) {
+        count++
+        // 计算子串
+        let zeroCount = Number(s[left] === '0')
+        let oneCount = Number(s[left] === '1')
+        for (let right = left + 1; right < len; right++) {
+            zeroCount += Number(s[right] === '0')
+            oneCount += Number(s[right] === '1')
+            if (zeroCount > k && oneCount > k) break
+            count++
+        }
+    }
+    return count
+}
